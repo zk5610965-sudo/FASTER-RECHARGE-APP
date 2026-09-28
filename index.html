@@ -354,7 +354,7 @@
 
             <div class="card-box" id="adminBoxContainer" style="margin-top: 10px;">
                 <h3 style="font-size: 13px; color: #512da8; margin-bottom: 6px; font-weight: bold;">🔐 Admin Panel (Manage Prices & Plans)</h3>
-                <div class="form-group"><label>Admin Password</label><input type="password" id="adminPassInput" class="form-control" placeholder="zkadmin123"></div>
+                <div class="form-group"><label>Admin Password</label><input type="password" id="adminPassInput" class="form-control" placeholder="••••••••"></div>
                 <button class="btn-main" onclick="verifyAdmin()" style="margin-top: 4px;">Open Admin Controls</button>
 
                 <div id="adminControlsArea" style="display: none; margin-top: 10px; border-top: 1px solid #eee; padding-top: 8px;">
@@ -404,8 +404,8 @@
                 <label>Operator / Sim Provider</label>
                 <select id="operatorSelect" class="form-control" onchange="renderPlans()">
                     <option value="Jio">🔴 MyJio - Jio Prepaid[span_0](start_span)[span_0](end_span)</option>
-                    <option value="Airtel">🔴 Airtel - Airtel Prepaid[span_1](start_span)[span_1](end_span)</option>
-                    <option value="Vi">🔴 Vi - Vi App Prepaid[span_2](start_span)[span_2](end_span)</option>
+                    <option value="Airtel">🔴 Airtel - Airtel Prepaid</option>
+                    <option value="Vi">🔴 Vi - Vi App Prepaid[span_1](start_span)[span_1](end_span)</option>
                     <option value="BSNL">🔵 BSNL - BSNL Prepaid</option>
                 </select>
             </div>
@@ -581,7 +581,6 @@
         window.addEventListener('DOMContentLoaded', () => {
             const urlParams = new URLSearchParams(window.location.search);
             if(urlParams.has('ref')) {
-                // Show bonus popup for new referral user
                 setTimeout(() => {
                     document.getElementById('bonusPopupModal').style.display = 'flex';
                 }, 1000);
@@ -1141,10 +1140,10 @@
                 document.getElementById('priceCableAirtel').value = cablePrices["Airtel Digital TV"] || 650;
                 document.getElementById('priceCableTata').value = cablePrices["Tata Play HD"] || 700;
                 document.getElementById('priceCableSun').value = cablePrices["Sun Direct"] || 500;
-                document.getElementById('priceCableDish').value = cablePrices["D2H / Dish TV"] || 550;
+                document.getElementById('priceCableDish').value = cablePrices="D2H / Dish TV" || 550;
                 alert("🔓 Admin Unlocked!");
             } else {
-                alert("❌ Incorrect Password!");
+                alert("❌ Incorrect Password!")[span_2](start_span)[span_2](end_span);
             }
         }
 
