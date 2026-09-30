@@ -4,6 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fastest Recharge & Loot</title>
+    <link rel="manifest" href="data:application/manifest+json,{
+      &quot;name&quot;: &quot;Fastest Recharge&quot;,
+      &quot;short_name&quot;: &quot;FastRecharge&quot;,
+      &quot;start_url&quot;: &quot;/&quot;,
+      &quot;display&quot;: &quot;standalone&quot;,
+      &quot;background_color&quot;: &quot;%23512da8&quot;,
+      &quot;theme_color&quot;: &quot;%23512da8&quot;,
+      &quot;icons&quot;: [{
+        &quot;src&quot;: &quot;https://api.qrserver.com/v1/create-qr-code/?size=192x192&amp;data=FastestRecharge&quot;,
+        &quot;sizes&quot;: &quot;192x192&quot;,
+        &quot;type&quot;: &quot;image/png&quot;
+      }]
+    }">
     <style>
         * {
             box-sizing: border-box;
@@ -194,7 +207,7 @@
         }
         .nav-item span { font-size: 16px; display: block; }
         
-        #qrModal, #cableOrderModal, #cablePaymentModal, #redeemModal, #redeemPaymentModal, #rechargeModal, #loginOverlay, #bonusPopupModal {
+        #qrModal, #cableOrderModal, #cablePaymentModal, #redeemModal, #redeemPaymentModal, #rechargeModal, #bonusPopupModal {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -231,25 +244,6 @@
     </style>
 </head>
 <body>
-
-    <!-- LOGIN PAGE OVERLAY -->
-    <div id="loginOverlay" style="display: flex; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #512da8; z-index: 6000; justify-content: center; align-items: center; padding: 15px;">
-        <div class="qr-card">
-            <h2 style="font-size: 18px; color: #512da8; margin-bottom: 4px;">⚡ Fastest Recharge Login</h2>
-            <p style="font-size: 11px; color: #666; margin-bottom: 12px;">Enter your credentials to access app</p>
-            
-            <div class="form-group"><label>Email ID</label><input type="email" id="loginEmail" class="form-control" placeholder="example@gmail.com"></div>
-            <div class="form-group"><label>Password</label><input type="password" id="loginPassword" class="form-control" placeholder="••••••••"></div>
-
-            <div style="background: #f3f0f7; padding: 10px; border-radius: 6px; margin: 10px 0; text-align: left;">
-                <label style="font-size: 12px; font-weight: bold; display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                    <input type="checkbox" id="emailVerifyCheck" style="width: 18px; height: 18px; accent-color: #2196f3;"> Email Checking & Human Verification
-                </label>
-            </div>
-
-            <button class="btn-main" onclick="submitAppLogin()" style="background: #2e7d32; margin-top: 6px;">Login & Continue 🔓</button>
-        </div>
-    </div>
 
     <!-- YOU GOT 25 RS BONUS POPUP MODAL -->
     <div id="bonusPopupModal">
@@ -365,27 +359,6 @@
                     <div class="form-group"><label>Sun Direct (₹)</label><input type="number" id="priceCableSun" class="form-control" value="500"></div>
                     <div class="form-group"><label>D2H / Dish TV (₹)</label><input type="number" id="priceCableDish" class="form-control" value="550"></div>
                     <button class="btn-main" onclick="saveCablePrices()" style="margin-bottom: 10px;">Save Cable Prices 💾</button>
-
-                    <h4 style="font-size: 12px; color: #333; margin-bottom: 6px;">Add New Recharge Plan:</h4>
-                    <div class="form-group"><label>Operator</label>
-                        <select id="newPlanOp" class="form-control">
-                            <option value="Jio">Jio</option>
-                            <option value="Airtel">Airtel</option>
-                            <option value="Vi">Vi</option>
-                            <option value="BSNL">BSNL</option>
-                        </select>
-                    </div>
-                    <div class="form-group"><label>Plan Name</label><input type="text" id="newPlanName" class="form-control" placeholder="e.g. 1.5GB/Day (28 Days)"></div>
-                    <div class="form-group"><label>Category</label>
-                        <select id="newPlanCategory" class="form-control">
-                            <option value="Unlimited">Unlimited</option>
-                            <option value="Basic">Basic</option>
-                            <option value="Data">Data</option>
-                        </select>
-                    </div>
-                    <div class="form-group"><label>Calls / SMS Details</label><input type="text" id="newPlanDetails" class="form-control" placeholder="e.g. Unlimited Calls | 100 SMS/Day"></div>
-                    <div class="form-group"><label>Price (₹)</label><input type="number" id="newPlanPrice" class="form-control" placeholder="Amount"></div>
-                    <button class="btn-main" onclick="addNewPlan()">Add Plan ➕</button>
                 </div>
             </div>
         </div>
@@ -403,9 +376,9 @@
             <div class="form-group">
                 <label>Operator / Sim Provider</label>
                 <select id="operatorSelect" class="form-control" onchange="renderPlans()">
-                    <option value="Jio">🔴 MyJio - Jio Prepaid[span_0](start_span)[span_0](end_span)</option>
+                    <option value="Jio">🔴 MyJio - Jio Prepaid</option>
                     <option value="Airtel">🔴 Airtel - Airtel Prepaid</option>
-                    <option value="Vi">🔴 Vi - Vi App Prepaid[span_1](start_span)[span_1](end_span)</option>
+                    <option value="Vi">🔴 Vi - Vi App Prepaid</option>
                     <option value="BSNL">🔵 BSNL - BSNL Prepaid</option>
                 </select>
             </div>
@@ -416,6 +389,22 @@
                 <div class="filter-chip" onclick="filterPlans('Unlimited', this)">🔥 Unlimited</div>
                 <div class="filter-chip" onclick="filterPlans('Basic', this)">⚡ Basic</div>
                 <div class="filter-chip" onclick="filterPlans('Data', this)">📊 Data Add-on</div>
+            </div>
+
+            <!-- Admin Add Plan Box Inside Recharge Modal -->
+            <div id="adminAddPlanModalBox" style="display:none; background:#f3e5f5; border:1px solid #ce93d8; padding:8px; border-radius:6px; margin:8px 0; text-align:left;">
+                <h4 style="font-size:11px; color:#6a1b9a; margin-bottom:4px; font-weight:bold;">➕ Add Plan for Selected Operator (Admin)</h4>
+                <div class="form-group" style="margin-bottom:4px;"><label style="font-size:10px;">Plan Name</label><input type="text" id="modalPlanName" class="form-control" placeholder="e.g. 1.5GB/Day (28 Days)" style="padding:5px; font-size:11px;"></div>
+                <div class="form-group" style="margin-bottom:4px;"><label style="font-size:10px;">Category</label>
+                    <select id="modalPlanCategory" class="form-control" style="padding:5px; font-size:11px;">
+                        <option value="Unlimited">Unlimited</option>
+                        <option value="Basic">Basic</option>
+                        <option value="Data">Data</option>
+                    </select>
+                </div>
+                <div class="form-group" style="margin-bottom:4px;"><label style="font-size:10px;">Calls / SMS Details</label><input type="text" id="modalPlanDetails" class="form-control" placeholder="e.g. Unlimited Calls | 100 SMS/Day" style="padding:5px; font-size:11px;"></div>
+                <div class="form-group" style="margin-bottom:6px;"><label style="font-size:10px;">Price (₹)</label><input type="number" id="modalPlanPrice" class="form-control" placeholder="Amount" style="padding:5px; font-size:11px;"></div>
+                <button class="btn-main" onclick="addNewPlanFromModal()" style="padding:6px; font-size:11px; background:#6a1b9a;">Add Plan Now ➕</button>
             </div>
 
             <div id="plansContainer" style="margin-top: 8px; text-align: left;"></div>
@@ -436,7 +425,7 @@
     </div>
 
     <!-- REDEEM PAYMENT MODAL (ONLINE UPI) -->
-    <div id="redeemPaymentModal">
+    <div id="redeemPaymentModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:3000; justify-content:center; align-items:center; padding:15px;">
         <div class="qr-card">
             <h3 style="font-size: 15px; color: #512da8; margin-bottom: 6px;">💳 Online Payment for Redeem Code</h3>
             <div id="redeemPayAmountInfo" style="font-size: 13px; font-weight: bold; color: #388e3c; margin-bottom: 10px;"></div>
@@ -503,7 +492,7 @@
     </div>
 
     <!-- QR PAYMENT MODAL FOR RECHARGE -->
-    <div id="qrModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:3000; justify-content:center; align-items:center; padding:15px;">
+    <div id="qrModal">
         <div class="qr-card">
             <h3 style="font-size: 15px; color: #512da8; margin-bottom: 4px;">Scan & Pay via UPI / Fam</h3>
             <div style="font-size: 13px; font-weight: bold; color: #d32f2f; margin-bottom: 6px;">⏱️ Time Left: <span id="timerDisplay" style="background: #ffebee; padding: 2px 6px; border-radius: 4px;">04:00</span></div>
@@ -577,7 +566,6 @@
     </nav>
 
     <script>
-        // Check if user came via referral link
         window.addEventListener('DOMContentLoaded', () => {
             const urlParams = new URLSearchParams(window.location.search);
             if(urlParams.has('ref')) {
@@ -651,24 +639,6 @@
             document.getElementById('adDesc').innerText = banner.desc;
         }, 3500);
 
-        function submitAppLogin() {
-            let email = document.getElementById('loginEmail').value.trim();
-            let pass = document.getElementById('loginPassword').value.trim();
-            let verified = document.getElementById('emailVerifyCheck').checked;
-
-            if(!email || !pass) {
-                alert("Please enter Email ID and Password!");
-                return;
-            }
-            if(!verified) {
-                alert("Please complete the Email Checking & Human Verification tick!");
-                return;
-            }
-
-            document.getElementById('loginOverlay').style.display = 'none';
-            alert("✅ Login Successful! Welcome to Fastest Recharge.");
-        }
-
         function saveCablePrices() {
             cablePrices["JioFiber TV"] = Number(document.getElementById('priceCableJio').value) || 600;
             cablePrices["Airtel Digital TV"] = Number(document.getElementById('priceCableAirtel').value) || 650;
@@ -729,7 +699,7 @@
                 timerEl.innerText = `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
                 if(timeLeft <= 0) {
                     clearInterval(redeemTimerInterval);
-                    alert("⏱️ Payment time expired!");
+                    alert("⏱️️ Payment time expired!");
                     document.getElementById('redeemPaymentModal').style.display = 'none';
                 }
                 timeLeft--;
@@ -865,10 +835,19 @@
             let container = document.getElementById('plansContainer');
             container.innerHTML = "";
             let selectedOp = document.getElementById('operatorSelect').value;
+
+            // Show/Hide Admin Add Plan box inside modal if admin is logged in
+            let adminAddBox = document.getElementById('adminAddPlanModalBox');
+            if(isAdminLoggedIn) {
+                adminAddBox.style.display = 'block';
+            } else {
+                adminAddBox.style.display = 'none';
+            }
+
             let filtered = plansList.filter(p => p.operator === selectedOp && (activeCategoryFilter === 'All' || p.category === activeCategoryFilter));
 
             if(filtered.length === 0) {
-                container.innerHTML = `<p style="font-size:11px; color:#777; text-align:center; padding:10px;">No plans found for ${selectedOp} in this category.</p>`;
+                container.innerHTML += `<p style="font-size:11px; color:#777; text-align:center; padding:10px;">No plans found for ${selectedOp} in this category.</p>`;
                 return;
             }
 
@@ -891,6 +870,76 @@
                     </div>
                 `;
             });
+        }
+
+        function addNewPlanFromModal() {
+            let op = document.getElementById('operatorSelect').value;
+            let name = document.getElementById('modalPlanName').value.trim();
+            let cat = document.getElementById('modalPlanCategory').value;
+            let details = document.getElementById('modalPlanDetails').value.trim();
+            let price = Number(document.getElementById('modalPlanPrice').value);
+
+            if(!name || !details || !price) {
+                alert("Please fill in Plan Name, Details, and Price!");
+                return;
+            }
+
+            let newObj = {
+                id: Date.now(),
+                operator: op,
+                name: name,
+                category: cat,
+                details: details,
+                price: price
+            };
+
+            plansList.push(newObj);
+            localStorage.setItem('zk_plans_v15', JSON.stringify(plansList));
+            
+            document.getElementById('modalPlanName').value = "";
+            document.getElementById('modalPlanDetails').value = "";
+            document.getElementById('modalPlanPrice').value = "";
+            
+            alert(`✅ New Plan added successfully for ${op}!`);
+            renderPlans();
+        }
+
+        function deletePlan(id) {
+            if(confirm("Are you sure you want to delete this plan?")) {
+                plansList = plansList.filter(p => p.id !== id);
+                localStorage.setItem('zk_plans_v15', JSON.stringify(plansList));
+                renderPlans();
+            }
+        }
+
+        function openEditModal(id) {
+            let p = plansList.find(x => x.id === id);
+            if(p) {
+                document.getElementById('editPlanId').value = p.id;
+                document.getElementById('editPlanOp').value = p.operator;
+                document.getElementById('editPlanName').value = p.name;
+                document.getElementById('editPlanCategory').value = p.category;
+                document.getElementById('editPlanDetails').value = p.details;
+                document.getElementById('editPlanPrice').value = p.price;
+                document.getElementById('editPlanModal').style.display = 'flex';
+            }
+        }
+
+        function updatePlanData() {
+            let id = Number(document.getElementById('editPlanId').value);
+            let p = plansList.find(x => x.id === id);
+            if(p) {
+                p.operator = document.getElementById('editPlanOp').value;
+                p.name = document.getElementById('editPlanName').value.trim();
+                p.category = document.getElementById('editPlanCategory').value;
+                p.details = document.getElementById('editPlanDetails').value.trim();
+                p.price = Number(document.getElementById('editPlanPrice').value);
+
+                localStorage.setItem('zk_plans_v15', JSON.stringify(plansList));
+                document.getElementById('editPlanModal').style.display = 'none';
+                alert("✅ Plan updated successfully!");
+                renderPlans();
+            }
         }
 
         function switchTab(tabName) {
@@ -987,6 +1036,24 @@
                               `📍 Address: ${d.address}\n` +
                               `📅 Date: ${histObj.date}\n\n` +
                               `Verify payment and approve in Admin panel!`;
+                    waUrl = `https://wa.me/${adminWhatsApp}?text=` + encodeURIComponent(msg);
+                } else {
+                    histObj = {
+                        id: Date.now(),
+                        title: `${currentCheckoutItem.title} - ${currentCheckoutItem.mobile} (${currentCheckoutItem.sim})`,
+                        price: currentCheckoutItem.price,
+                        date: new Date().toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' }),
+                        status: "⏳ Payment Verification Pending (Admin Approval Required)"
+                    };
+
+                    let adminWhatsApp = "919767136557"; 
+                    let msg = `⚡ NEW RECHARGE / ORDER RECEIVED!\n\n` +
+                              `📱 Mobile Number: ${currentCheckoutItem.mobile}\n` +
+                              `📶 Sim Operator: ${currentCheckoutItem.sim}\n` +
+                              `📦 Plan/Item: ${currentCheckoutItem.title}\n` +
+                              `💰 Amount Paid: ₹${currentCheckoutItem.price}\n` +
+                              `📅 Date: ${histObj.date}\n\n` +
+                              `Verify payment and process recharge!`;
                     waUrl = `https://wa.me/${adminWhatsApp}?text=` + encodeURIComponent(msg);
                 }
 
@@ -1099,36 +1166,8 @@
         function confirmPaymentAndSendWhatsApp() {
             clearInterval(timerInterval);
             document.getElementById('qrModal').style.display = 'none';
-            
-            playSuccessChime();
-            document.getElementById('successOverlay').style.display = 'flex';
-
-            let histObj = {
-                id: Date.now(),
-                title: `${currentCheckoutItem.title} - ${currentCheckoutItem.mobile} (${currentCheckoutItem.sim})`,
-                price: currentCheckoutItem.price,
-                date: new Date().toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' }),
-                status: "⏳ Wait Few Minutes (Verification in Progress)"
-            };
-            historyList.unshift(histObj);
-            localStorage.setItem('zk_history_v15', JSON.stringify(historyList));
-            
-            let adminWhatsApp = "919767136557"; 
-            let msg = `⚡ NEW RECHARGE / ORDER RECEIVED!\n\n` +
-                      `📱 Mobile Number: ${currentCheckoutItem.mobile}\n` +
-                      `📶 Sim Operator: ${currentCheckoutItem.sim}\n` +
-                      `📦 Plan/Item: ${currentCheckoutItem.title}\n` +
-                      `💰 Amount Paid: ₹${currentCheckoutItem.price}\n` +
-                      `📅 Date: ${histObj.date}\n\n` +
-                      `Please verify payment and process recharge!`;
-
-            let waUrl = `https://wa.me/${adminWhatsApp}?text=` + encodeURIComponent(msg);
-
-            setTimeout(() => {
-                document.getElementById('successOverlay').style.display = 'none';
-                window.open(waUrl, '_blank');
-                switchTab('history');
-            }, 1500);
+            verificationTargetType = 'recharge';
+            startVerificationProcess();
         }
 
         function verifyAdmin() {
@@ -1140,10 +1179,11 @@
                 document.getElementById('priceCableAirtel').value = cablePrices["Airtel Digital TV"] || 650;
                 document.getElementById('priceCableTata').value = cablePrices["Tata Play HD"] || 700;
                 document.getElementById('priceCableSun').value = cablePrices["Sun Direct"] || 500;
-                document.getElementById('priceCableDish').value = cablePrices="D2H / Dish TV" || 550;
-                alert("🔓 Admin Unlocked!");
+                document.getElementById('priceCableDish').value = cablePrices["D2H / Dish TV"] || 550;
+                alert("🔓 Admin Unlocked successfully!");
+                renderPlans();
             } else {
-                alert("❌ Incorrect Password!")[span_2](start_span)[span_2](end_span);
+                alert("❌ Incorrect Password!");
             }
         }
 
