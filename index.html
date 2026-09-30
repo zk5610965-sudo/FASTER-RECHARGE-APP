@@ -4,19 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fastest Recharge & Loot</title>
-    <link rel="manifest" href="data:application/manifest+json,{
-      &quot;name&quot;: &quot;Fastest Recharge&quot;,
-      &quot;short_name&quot;: &quot;FastRecharge&quot;,
-      &quot;start_url&quot;: &quot;/&quot;,
-      &quot;display&quot;: &quot;standalone&quot;,
-      &quot;background_color&quot;: &quot;%23512da8&quot;,
-      &quot;theme_color&quot;: &quot;%23512da8&quot;,
-      &quot;icons&quot;: [{
-        &quot;src&quot;: &quot;https://api.qrserver.com/v1/create-qr-code/?size=192x192&amp;data=FastestRecharge&quot;,
-        &quot;sizes&quot;: &quot;192x192&quot;,
-        &quot;type&quot;: &quot;image/png&quot;
-      }]
-    }">
+    <meta name="description" content="Fastest Mobile Recharge, DTH, Redeem Codes and Cable TV Booking Hub with instant rewards and secure payment flow.">
+    <link rel="manifest" href="manifest.json">
     <style>
         * {
             box-sizing: border-box;
@@ -207,7 +196,7 @@
         }
         .nav-item span { font-size: 16px; display: block; }
         
-        #qrModal, #cableOrderModal, #cablePaymentModal, #redeemModal, #redeemPaymentModal, #rechargeModal, #bonusPopupModal {
+        #qrModal, #cableOrderModal, #cablePaymentModal, #redeemModal, #redeemPaymentModal, #rechargeModal, #bonusPopupModal, #editPlanModal {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -275,7 +264,6 @@
                 <p style="font-size: 11px; opacity: 0.9;">Instant Mobile, DTH, Redeem Code & Cable TV!</p>
             </div>
 
-            <!-- Only 4 Main Active Services Grid -->
             <div class="card-box">
                 <h3 style="font-size: 12px; color: #512da8; margin-bottom: 6px; font-weight: bold;">⚡ Select Service</h3>
                 <div class="services-grid">
@@ -294,13 +282,11 @@
                 </div>
             </div>
 
-            <!-- Auto-Sliding Promotional Banner -->
             <div class="ad-slider-box" id="adBannerBox">
                 <h3 style="font-size: 13px; font-weight: bold; margin-bottom: 2px;" id="adTitle">🔥 Flat 20% Cashback on First Recharge!</h3>
                 <p style="font-size: 10px; opacity: 0.9;" id="adDesc">Use UPI/Fam app to get instant credit.</p>
             </div>
 
-            <!-- Purple Background Banner -->
             <div class="purple-promo-banner">
                 <h3 style="font-size: 14px; font-weight: bold; margin-bottom: 3px;">Low Price Recharge Enjoy App</h3>
                 <p style="font-size: 11px; opacity: 0.9;">Experience the fastest and cheapest recharges online!</p>
@@ -359,6 +345,27 @@
                     <div class="form-group"><label>Sun Direct (₹)</label><input type="number" id="priceCableSun" class="form-control" value="500"></div>
                     <div class="form-group"><label>D2H / Dish TV (₹)</label><input type="number" id="priceCableDish" class="form-control" value="550"></div>
                     <button class="btn-main" onclick="saveCablePrices()" style="margin-bottom: 10px;">Save Cable Prices 💾</button>
+
+                    <h4 style="font-size: 12px; color: #333; margin-bottom: 6px;">Add New Recharge Plan (Admin):</h4>
+                    <div class="form-group"><label>Operator</label>
+                        <select id="newPlanOp" class="form-control">
+                            <option value="Jio">Jio</option>
+                            <option value="Airtel">Airtel</option>
+                            <option value="Vi">Vi</option>
+                            <option value="BSNL">BSNL</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><label>Plan Name</label><input type="text" id="newPlanName" class="form-control" placeholder="e.g. 1.5GB/Day (28 Days)"></div>
+                    <div class="form-group"><label>Category</label>
+                        <select id="newPlanCategory" class="form-control">
+                            <option value="Unlimited">Unlimited</option>
+                            <option value="Basic">Basic</option>
+                            <option value="Data">Data</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><label>Calls / SMS Details</label><input type="text" id="newPlanDetails" class="form-control" placeholder="e.g. Unlimited Calls | 100 SMS/Day"></div>
+                    <div class="form-group"><label>Price (₹)</label><input type="number" id="newPlanPrice" class="form-control" placeholder="Amount"></div>
+                    <button class="btn-main" onclick="addNewPlan()" style="background: #2e7d32; margin-top: 4px;">Add Plan ➕</button>
                 </div>
             </div>
         </div>
@@ -383,28 +390,11 @@
                 </select>
             </div>
 
-            <!-- Slide Filter Bar -->
             <div class="filter-scroll" style="margin-top: 10px;">
                 <div class="filter-chip active" onclick="filterPlans('All', this)">All Plans</div>
                 <div class="filter-chip" onclick="filterPlans('Unlimited', this)">🔥 Unlimited</div>
                 <div class="filter-chip" onclick="filterPlans('Basic', this)">⚡ Basic</div>
                 <div class="filter-chip" onclick="filterPlans('Data', this)">📊 Data Add-on</div>
-            </div>
-
-            <!-- Admin Add Plan Box Inside Recharge Modal -->
-            <div id="adminAddPlanModalBox" style="display:none; background:#f3e5f5; border:1px solid #ce93d8; padding:8px; border-radius:6px; margin:8px 0; text-align:left;">
-                <h4 style="font-size:11px; color:#6a1b9a; margin-bottom:4px; font-weight:bold;">➕ Add Plan for Selected Operator (Admin)</h4>
-                <div class="form-group" style="margin-bottom:4px;"><label style="font-size:10px;">Plan Name</label><input type="text" id="modalPlanName" class="form-control" placeholder="e.g. 1.5GB/Day (28 Days)" style="padding:5px; font-size:11px;"></div>
-                <div class="form-group" style="margin-bottom:4px;"><label style="font-size:10px;">Category</label>
-                    <select id="modalPlanCategory" class="form-control" style="padding:5px; font-size:11px;">
-                        <option value="Unlimited">Unlimited</option>
-                        <option value="Basic">Basic</option>
-                        <option value="Data">Data</option>
-                    </select>
-                </div>
-                <div class="form-group" style="margin-bottom:4px;"><label style="font-size:10px;">Calls / SMS Details</label><input type="text" id="modalPlanDetails" class="form-control" placeholder="e.g. Unlimited Calls | 100 SMS/Day" style="padding:5px; font-size:11px;"></div>
-                <div class="form-group" style="margin-bottom:6px;"><label style="font-size:10px;">Price (₹)</label><input type="number" id="modalPlanPrice" class="form-control" placeholder="Amount" style="padding:5px; font-size:11px;"></div>
-                <button class="btn-main" onclick="addNewPlanFromModal()" style="padding:6px; font-size:11px; background:#6a1b9a;">Add Plan Now ➕</button>
             </div>
 
             <div id="plansContainer" style="margin-top: 8px; text-align: left;"></div>
@@ -424,8 +414,8 @@
         </div>
     </div>
 
-    <!-- REDEEM PAYMENT MODAL (ONLINE UPI) -->
-    <div id="redeemPaymentModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:3000; justify-content:center; align-items:center; padding:15px;">
+    <!-- REDEEM PAYMENT MODAL (ONLINE UPI WITH SCREENSHOT UPLOAD) -->
+    <div id="redeemPaymentModal">
         <div class="qr-card">
             <h3 style="font-size: 15px; color: #512da8; margin-bottom: 6px;">💳 Online Payment for Redeem Code</h3>
             <div id="redeemPayAmountInfo" style="font-size: 13px; font-weight: bold; color: #388e3c; margin-bottom: 10px;"></div>
@@ -433,7 +423,12 @@
             <div style="background: #e8f5e9; border: 1px dashed #4caf50; padding: 10px; border-radius: 6px; margin-bottom: 10px; text-align: center;">
                 <div style="font-size: 12px; font-weight: bold; color: #d32f2f; margin-bottom: 4px;">⏱️ Pay within: <span id="redeemTimerDisplay">03:00</span></div>
                 <img src="https://api.qrserver.com/v1/create-qr-code/?size=130x130&data=upi://pay?pa=9767136557@fam&pn=Fastest%20Recharge" alt="QR" style="width: 120px; height: 120px; display: block; margin: auto; border: 2px solid #333; border-radius: 4px; margin-bottom: 6px;">
-                <div style="font-size: 11px; font-weight: bold; color: #2e7d32;">UPI ID: 9767136557@fam</div>
+                <div style="font-size: 11px; font-weight: bold; color: #2e7d32; margin-bottom: 8px;">UPI ID: 9767136557@fam</div>
+                
+                <div style="background: #fff; padding: 8px; border-radius: 5px; border: 1px solid #ccc; text-align: left;">
+                    <label style="font-size: 11px; font-weight: bold; color: #d32f2f; display: block; margin-bottom: 3px;">📸 Upload Payment Screenshot (Required):</label>
+                    <input type="file" id="redeemProof" class="form-control" accept="image/*" style="font-size: 11px; padding: 4px;">
+                </div>
             </div>
 
             <button class="btn-main" onclick="proceedToRedeemVerification()" style="background: #2e7d32; margin-bottom: 6px;">I Have Paid / Confirm ✅</button>
@@ -472,7 +467,12 @@
             <div id="cableUpiBox" style="background: #e8f5e9; border: 1px dashed #4caf50; padding: 10px; border-radius: 6px; margin-bottom: 10px; text-align: center;">
                 <div style="font-size: 12px; font-weight: bold; color: #d32f2f; margin-bottom: 4px;">⏱️ Pay within: <span id="cableTimerDisplay">03:00</span></div>
                 <img src="https://api.qrserver.com/v1/create-qr-code/?size=130x130&data=upi://pay?pa=9767136557@fam&pn=Fastest%20Recharge" alt="QR" style="width: 120px; height: 120px; display: block; margin: auto; border: 2px solid #333; border-radius: 4px; margin-bottom: 6px;">
-                <div style="font-size: 11px; font-weight: bold; color: #2e7d32;">UPI ID: 9767136557@fam</div>
+                <div style="font-size: 11px; font-weight: bold; color: #2e7d32; margin-bottom: 8px;">UPI ID: 9767136557@fam</div>
+                
+                <div style="background: #fff; padding: 8px; border-radius: 5px; border: 1px solid #ccc; text-align: left;">
+                    <label style="font-size: 11px; font-weight: bold; color: #d32f2f; display: block; margin-bottom: 3px;">📸 Upload Payment Screenshot (Required):</label>
+                    <input type="file" id="cableProof" class="form-control" accept="image/*" style="font-size: 11px; padding: 4px;">
+                </div>
             </div>
 
             <button class="btn-main" onclick="proceedToCableVerification()" style="background: #2e7d32; margin-bottom: 6px;">I Have Paid / Confirm Order ✅</button>
@@ -491,8 +491,8 @@
         </div>
     </div>
 
-    <!-- QR PAYMENT MODAL FOR RECHARGE -->
-    <div id="qrModal">
+    <!-- QR PAYMENT MODAL FOR RECHARGE (WITH SCREENSHOT UPLOAD) -->
+    <div id="qrModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:3000; justify-content:center; align-items:center; padding:15px;">
         <div class="qr-card">
             <h3 style="font-size: 15px; color: #512da8; margin-bottom: 4px;">Scan & Pay via UPI / Fam</h3>
             <div style="font-size: 13px; font-weight: bold; color: #d32f2f; margin-bottom: 6px;">⏱️ Time Left: <span id="timerDisplay" style="background: #ffebee; padding: 2px 6px; border-radius: 4px;">04:00</span></div>
@@ -502,7 +502,12 @@
             </div>
             
             <div style="font-size: 12px; font-weight: bold; color: #2e7d32; margin-bottom: 4px;">UPI ID: <span style="color: #512da8;">9767136557@fam</span></div>
-            <div id="qrItemInfo" style="font-size: 12px; color: #555; margin-bottom: 10px; font-weight: bold;"></div>
+            <div id="qrItemInfo" style="font-size: 12px; color: #555; margin-bottom: 8px; font-weight: bold;"></div>
+            
+            <div style="background: #f9f9f9; padding: 8px; border-radius: 5px; border: 1px solid #ccc; text-align: left; margin-bottom: 10px;">
+                <label style="font-size: 11px; font-weight: bold; color: #d32f2f; display: block; margin-bottom: 3px;">📸 Upload Payment Screenshot (Required):</label>
+                <input type="file" id="rechargeProof" class="form-control" accept="image/*" style="font-size: 11px; padding: 4px;">
+            </div>
             
             <button class="btn-main" onclick="confirmPaymentAndSendWhatsApp()" style="background: #2e7d32; margin-bottom: 6px;">I Have Paid ✅</button>
             <button class="btn-main" onclick="document.getElementById('qrModal').style.display='none'; clearInterval(timerInterval);" style="background: #dc3545;">Cancel</button>
@@ -530,7 +535,7 @@
     </div>
 
     <!-- EDIT PLAN MODAL -->
-    <div id="editPlanModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 3000; justify-content: center; align-items: center; padding: 15px;">
+    <div id="editPlanModal">
         <div class="qr-card">
             <h3 style="font-size: 15px; color: #512da8; margin-bottom: 8px;">✏️ Edit Recharge Plan</h3>
             <input type="hidden" id="editPlanId">
@@ -649,6 +654,62 @@
             alert("✅ Cable TV Prices saved successfully!");
         }
 
+        function addNewPlan() {
+            let op = document.getElementById('newPlanOp').value;
+            let name = document.getElementById('newPlanName').value.trim();
+            let cat = document.getElementById('newPlanCategory').value;
+            let details = document.getElementById('newPlanDetails').value.trim();
+            let price = Number(document.getElementById('newPlanPrice').value);
+
+            if(!name || !details || !price) {
+                alert("Please fill in all plan details!");
+                return;
+            }
+
+            let newP = { id: Date.now(), operator: op, name, category: cat, details, price };
+            plansList.push(newP);
+            localStorage.setItem('zk_plans_v15', JSON.stringify(plansList));
+            alert("✅ New Plan added successfully!");
+            document.getElementById('newPlanName').value = "";
+            document.getElementById('newPlanDetails').value = "";
+            document.getElementById('newPlanPrice').value = "";
+        }
+
+        function deletePlan(id) {
+            plansList = plansList.filter(p => p.id !== id);
+            localStorage.setItem('zk_plans_v15', JSON.stringify(plansList));
+            renderPlans();
+            alert("🗑️ Plan deleted successfully!");
+        }
+
+        function openEditModal(id) {
+            let p = plansList.find(item => item.id === id);
+            if(!p) return;
+            document.getElementById('editPlanId').value = p.id;
+            document.getElementById('editPlanOp').value = p.operator;
+            document.getElementById('editPlanName').value = p.name;
+            document.getElementById('editPlanCategory').value = p.category;
+            document.getElementById('editPlanDetails').value = p.details;
+            document.getElementById('editPlanPrice').value = p.price;
+            document.getElementById('editPlanModal').style.display = 'flex';
+        }
+
+        function updatePlanData() {
+            let id = Number(document.getElementById('editPlanId').value);
+            let p = plansList.find(item => item.id === id);
+            if(p) {
+                p.operator = document.getElementById('editPlanOp').value;
+                p.name = document.getElementById('editPlanName').value.trim();
+                p.category = document.getElementById('editPlanCategory').value;
+                p.details = document.getElementById('editPlanDetails').value.trim();
+                p.price = Number(document.getElementById('editPlanPrice').value);
+                localStorage.setItem('zk_plans_v15', JSON.stringify(plansList));
+                document.getElementById('editPlanModal').style.display = 'none';
+                renderPlans();
+                alert("✅ Plan updated successfully!");
+            }
+        }
+
         function openRechargeModal() {
             document.getElementById('rechargeModal').style.display = 'flex';
             renderPlans();
@@ -686,6 +747,7 @@
             document.getElementById('redeemModal').style.display = 'none';
             document.getElementById('redeemPayAmountInfo').innerText = `Total Amount to Pay: ₹${totalPayable} for ₹${amt} Play Store Redeem Code`;
             document.getElementById('redeemPaymentModal').style.display = 'flex';
+            document.getElementById('redeemProof').value = "";
             startRedeemTimer();
         }
 
@@ -699,7 +761,7 @@
                 timerEl.innerText = `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
                 if(timeLeft <= 0) {
                     clearInterval(redeemTimerInterval);
-                    alert("⏱️️ Payment time expired!");
+                    alert("⏱️ Payment time expired!");
                     document.getElementById('redeemPaymentModal').style.display = 'none';
                 }
                 timeLeft--;
@@ -707,6 +769,11 @@
         }
 
         function proceedToRedeemVerification() {
+            let proofInput = document.getElementById('redeemProof');
+            if(!proofInput.files || proofInput.files.length === 0) {
+                alert("⚠️ Please upload payment screenshot to proceed!");
+                return;
+            }
             clearInterval(redeemTimerInterval);
             document.getElementById('redeemPaymentModal').style.display = 'none';
             verificationTargetType = 'redeem';
@@ -767,6 +834,7 @@
             document.getElementById('cablePayAmountInfo').innerText = `Total Amount to Pay: ₹${selectedCablePrice} for ${selectedCableProvider}`;
             document.getElementById('cablePaymentModal').style.display = 'flex';
             toggleCablePaymentMode();
+            document.getElementById('cableProof').value = "";
             startCableTimer();
         }
 
@@ -800,6 +868,14 @@
         }
 
         function proceedToCableVerification() {
+            let mode = document.querySelector('input[name="cablePayMode"]:checked').value;
+            if(mode === 'Online') {
+                let proofInput = document.getElementById('cableProof');
+                if(!proofInput.files || proofInput.files.length === 0) {
+                    alert("⚠️ Please upload payment screenshot to proceed!");
+                    return;
+                }
+            }
             clearInterval(cableTimerInterval);
             document.getElementById('cablePaymentModal').style.display = 'none';
             verificationTargetType = 'cable';
@@ -835,19 +911,10 @@
             let container = document.getElementById('plansContainer');
             container.innerHTML = "";
             let selectedOp = document.getElementById('operatorSelect').value;
-
-            // Show/Hide Admin Add Plan box inside modal if admin is logged in
-            let adminAddBox = document.getElementById('adminAddPlanModalBox');
-            if(isAdminLoggedIn) {
-                adminAddBox.style.display = 'block';
-            } else {
-                adminAddBox.style.display = 'none';
-            }
-
             let filtered = plansList.filter(p => p.operator === selectedOp && (activeCategoryFilter === 'All' || p.category === activeCategoryFilter));
 
             if(filtered.length === 0) {
-                container.innerHTML += `<p style="font-size:11px; color:#777; text-align:center; padding:10px;">No plans found for ${selectedOp} in this category.</p>`;
+                container.innerHTML = `<p style="font-size:11px; color:#777; text-align:center; padding:10px;">No plans found for ${selectedOp} in this category.</p>`;
                 return;
             }
 
@@ -870,76 +937,6 @@
                     </div>
                 `;
             });
-        }
-
-        function addNewPlanFromModal() {
-            let op = document.getElementById('operatorSelect').value;
-            let name = document.getElementById('modalPlanName').value.trim();
-            let cat = document.getElementById('modalPlanCategory').value;
-            let details = document.getElementById('modalPlanDetails').value.trim();
-            let price = Number(document.getElementById('modalPlanPrice').value);
-
-            if(!name || !details || !price) {
-                alert("Please fill in Plan Name, Details, and Price!");
-                return;
-            }
-
-            let newObj = {
-                id: Date.now(),
-                operator: op,
-                name: name,
-                category: cat,
-                details: details,
-                price: price
-            };
-
-            plansList.push(newObj);
-            localStorage.setItem('zk_plans_v15', JSON.stringify(plansList));
-            
-            document.getElementById('modalPlanName').value = "";
-            document.getElementById('modalPlanDetails').value = "";
-            document.getElementById('modalPlanPrice').value = "";
-            
-            alert(`✅ New Plan added successfully for ${op}!`);
-            renderPlans();
-        }
-
-        function deletePlan(id) {
-            if(confirm("Are you sure you want to delete this plan?")) {
-                plansList = plansList.filter(p => p.id !== id);
-                localStorage.setItem('zk_plans_v15', JSON.stringify(plansList));
-                renderPlans();
-            }
-        }
-
-        function openEditModal(id) {
-            let p = plansList.find(x => x.id === id);
-            if(p) {
-                document.getElementById('editPlanId').value = p.id;
-                document.getElementById('editPlanOp').value = p.operator;
-                document.getElementById('editPlanName').value = p.name;
-                document.getElementById('editPlanCategory').value = p.category;
-                document.getElementById('editPlanDetails').value = p.details;
-                document.getElementById('editPlanPrice').value = p.price;
-                document.getElementById('editPlanModal').style.display = 'flex';
-            }
-        }
-
-        function updatePlanData() {
-            let id = Number(document.getElementById('editPlanId').value);
-            let p = plansList.find(x => x.id === id);
-            if(p) {
-                p.operator = document.getElementById('editPlanOp').value;
-                p.name = document.getElementById('editPlanName').value.trim();
-                p.category = document.getElementById('editPlanCategory').value;
-                p.details = document.getElementById('editPlanDetails').value.trim();
-                p.price = Number(document.getElementById('editPlanPrice').value);
-
-                localStorage.setItem('zk_plans_v15', JSON.stringify(plansList));
-                document.getElementById('editPlanModal').style.display = 'none';
-                alert("✅ Plan updated successfully!");
-                renderPlans();
-            }
         }
 
         function switchTab(tabName) {
@@ -1009,9 +1006,10 @@
                     let msg = `🎮 NEW PLAY STORE REDEEM CODE ORDER!\n\n` +
                               `💰 Amount: ₹${d.amount} (Total Paid: ₹${d.total})\n` +
                               `📞 Contact No: ${d.contact}\n` +
+                              `📸 Payment Screenshot: Attached / Uploaded by User\n` +
                               `🔑 Generated Code: ${fakeCode}\n` +
                               `📅 Date: ${histObj.date}\n\n` +
-                              `Verify payment and approve in Admin panel!`;
+                              `Verify payment screenshot and approve in Admin panel!`;
                     waUrl = `https://wa.me/${adminWhatsApp}?text=` + encodeURIComponent(msg);
 
                 } else if(verificationTargetType === 'cable') {
@@ -1033,27 +1031,30 @@
                               `📞 Contact No: ${d.contact}\n` +
                               `💳 UPI ID: ${d.upi}\n` +
                               `💰 Amount: ₹${d.price} (${payMode})\n` +
+                              `📸 Payment Screenshot: Attached / Uploaded by User\n` +
                               `📍 Address: ${d.address}\n` +
                               `📅 Date: ${histObj.date}\n\n` +
-                              `Verify payment and approve in Admin panel!`;
+                              `Verify payment screenshot and approve in Admin panel!`;
                     waUrl = `https://wa.me/${adminWhatsApp}?text=` + encodeURIComponent(msg);
+
                 } else {
+                    let d = currentCheckoutItem;
                     histObj = {
                         id: Date.now(),
-                        title: `${currentCheckoutItem.title} - ${currentCheckoutItem.mobile} (${currentCheckoutItem.sim})`,
-                        price: currentCheckoutItem.price,
+                        title: `${d.title} - ${d.mobile} (${d.sim})`,
+                        price: d.price,
                         date: new Date().toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' }),
-                        status: "⏳ Payment Verification Pending (Admin Approval Required)"
+                        status: "⏳ Wait Few Minutes (Verification in Progress)"
                     };
 
-                    let adminWhatsApp = "919767136557"; 
                     let msg = `⚡ NEW RECHARGE / ORDER RECEIVED!\n\n` +
-                              `📱 Mobile Number: ${currentCheckoutItem.mobile}\n` +
-                              `📶 Sim Operator: ${currentCheckoutItem.sim}\n` +
-                              `📦 Plan/Item: ${currentCheckoutItem.title}\n` +
-                              `💰 Amount Paid: ₹${currentCheckoutItem.price}\n` +
+                              `📱 Mobile Number: ${d.mobile}\n` +
+                              `📶 Sim Operator: ${d.sim}\n` +
+                              `📦 Plan/Item: ${d.title}\n` +
+                              `💰 Amount Paid: ₹${d.price}\n` +
+                              `📸 Payment Screenshot: Attached / Uploaded by User\n` +
                               `📅 Date: ${histObj.date}\n\n` +
-                              `Verify payment and process recharge!`;
+                              `Please verify payment screenshot and process recharge!`;
                     waUrl = `https://wa.me/${adminWhatsApp}?text=` + encodeURIComponent(msg);
                 }
 
@@ -1134,6 +1135,7 @@
             document.getElementById('qrItemInfo').innerHTML = `Number: ${mob} (${sim})<br>${currentCheckoutItem.title}<br><b>Amount: ₹${price}</b>`;
             document.getElementById('rechargeModal').style.display = 'none';
             document.getElementById('qrModal').style.display = 'flex';
+            document.getElementById('rechargeProof').value = "";
             startFourMinTimer();
         }
 
@@ -1142,6 +1144,7 @@
             currentCheckoutItem = {title: `${vName} Voucher`, price: price, mobile: mob, sim: "Voucher"};
             document.getElementById('qrItemInfo').innerHTML = `${currentCheckoutItem.title}<br><b>Amount: ₹${price}</b>`;
             document.getElementById('qrModal').style.display = 'flex';
+            document.getElementById('rechargeProof').value = "";
             startFourMinTimer();
         }
 
@@ -1164,9 +1167,14 @@
         }
 
         function confirmPaymentAndSendWhatsApp() {
+            let proofInput = document.getElementById('rechargeProof');
+            if(!proofInput.files || proofInput.files.length === 0) {
+                alert("⚠️ Please upload payment screenshot to proceed!");
+                return;
+            }
             clearInterval(timerInterval);
             document.getElementById('qrModal').style.display = 'none';
-            verificationTargetType = 'recharge';
+            verificationTargetType = '';
             startVerificationProcess();
         }
 
@@ -1180,7 +1188,7 @@
                 document.getElementById('priceCableTata').value = cablePrices["Tata Play HD"] || 700;
                 document.getElementById('priceCableSun').value = cablePrices["Sun Direct"] || 500;
                 document.getElementById('priceCableDish').value = cablePrices["D2H / Dish TV"] || 550;
-                alert("🔓 Admin Unlocked successfully!");
+                alert("🔓 Admin Unlocked!");
                 renderPlans();
             } else {
                 alert("❌ Incorrect Password!");
