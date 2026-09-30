@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fastest Recharge & Loot</title>
-    <meta name="description" content="Fastest Mobile Recharge, DTH, Redeem Codes and Cable TV Booking Hub with Scrollable Modal.">
+    <meta name="description" content="Fastest Mobile Recharge, DTH, Redeem Codes and Cable TV Booking Hub with Live Ticker.">
     <link rel="manifest" href="manifest.json">
     <style>
         * {
@@ -37,6 +37,21 @@
             font-weight: bold;
             font-style: italic;
         }
+
+        /* LIVE TRANSACTION TICKER STYLE */
+        .live-ticker {
+            background: #2e7d32;
+            color: white;
+            font-size: 11px;
+            padding: 6px 10px;
+            text-align: center;
+            font-weight: bold;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
         .container {
             padding: 10px;
             max-width: 500px;
@@ -243,7 +258,7 @@
             padding: 15px;
             text-align: center;
             max-height: 90vh;
-            overflow-y: auto; /* Scroll enabled to see all buttons */
+            overflow-y: auto;
         }
 
         #successOverlay {
@@ -262,6 +277,11 @@
     </style>
 </head>
 <body>
+
+    <!-- LIVE TRANSACTION TICKER BANNER -->
+    <div class="live-ticker" id="liveTickerText">
+        🔔 Recent: Rahul (Delhi) successfully recharged ₹239 & got 20% cashback!
+    </div>
 
     <!-- 10-SECOND SCREEN NOTIFICATION TOAST POPUP -->
     <div id="notificationToast">
@@ -486,13 +506,12 @@
         </div>
     </div>
 
-    <!-- REDEEM PAYMENT MODAL WITH TOP AUTO-FILL BUTTON -->
+    <!-- REDEEM PAYMENT MODAL -->
     <div id="redeemPaymentModal">
         <div class="qr-card">
             <h3 style="font-size: 15px; color: #512da8; margin-bottom: 4px;">💳 Online Payment for Redeem Code</h3>
             <div id="redeemPayAmountInfo" style="font-size: 12px; font-weight: bold; color: #388e3c; margin-bottom: 6px;"></div>
             
-            <!-- PROMINENT AUTO-FILL DIRECT UPI PAYMENT APP BUTTON PLACED AT THE VERY TOP -->
             <a id="redeemUpiIntentBtn" href="#" class="btn-main" style="background: #ff9800; color: #000; text-decoration: none; display: block; margin-bottom: 8px; font-size: 13px; padding: 12px; font-weight: bold; box-shadow: 0 2px 6px rgba(0,0,0,0.3);">🚀 CLICK HERE TO PAY VIA GPAY / PHONEPE (AUTO-FILL)</a>
 
             <div style="background: #e8f5e9; border: 1px dashed #4caf50; padding: 8px; border-radius: 6px; margin-bottom: 8px; text-align: center;">
@@ -507,8 +526,8 @@
                 </div>
             </div>
 
-            <button class="btn-main" onclick="proceedToRedeemVerification()" style="background: #2e7d32; margin-bottom: 6px;">I Have Paid / Confirm ✅</button>
-            <button class="btn-main" onclick="document.getElementById('redeemPaymentModal').style.display='none';" style="background: #dc3545;">Cancel</button>
+            <button class="btn-main" onclick="proceedToRedeemVerification()" style="background: #2e7d32; margin-bottom: 6px; padding: 10px; font-size: 13px;">I Have Paid / Confirm ✅</button>
+            <button class="btn-main" onclick="document.getElementById('redeemPaymentModal').style.display='none';" style="background: #dc3545; padding: 8px; font-size: 12px;">Cancel</button>
         </div>
     </div>
 
@@ -554,8 +573,8 @@
                 </div>
             </div>
 
-            <button class="btn-main" onclick="proceedToCableVerification()" style="background: #2e7d32; margin-bottom: 6px;">I Have Paid / Confirm Order ✅</button>
-            <button class="btn-main" onclick="document.getElementById('cablePaymentModal').style.display='none';" style="background: #dc3545;">Cancel</button>
+            <button class="btn-main" onclick="proceedToCableVerification()" style="background: #2e7d32; margin-bottom: 6px; padding: 10px; font-size: 13px;">I Have Paid / Confirm Order ✅</button>
+            <button class="btn-main" onclick="document.getElementById('cablePaymentModal').style.display='none';" style="background: #dc3545; padding: 8px; font-size: 12px;">Cancel</button>
         </div>
     </div>
 
@@ -574,7 +593,7 @@
     <div id="qrModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:3000; justify-content:center; align-items:center; padding:15px;">
         <div class="qr-card">
             <h3 style="font-size: 15px; color: #512da8; margin-bottom: 4px;">Scan & Pay via UPI / Fam</h3>
-            <div style="font-size: 12px; font-weight: bold; color: #d32f2f; margin-bottom: 6px;">⏱️️ Time Left: <span id="timerDisplay" style="background: #ffebee; padding: 2px 6px; border-radius: 4px;">04:00</span></div>
+            <div style="font-size: 12px; font-weight: bold; color: #d32f2f; margin-bottom: 6px;">⏱ Time Left: <span id="timerDisplay" style="background: #ffebee; padding: 2px 6px; border-radius: 4px;">04:00</span></div>
             
             <a id="rechargeUpiIntentBtn" href="#" class="btn-main" style="background: #ff9800; color: #000; text-decoration: none; display: block; margin-bottom: 8px; font-size: 13px; padding: 12px; font-weight: bold;">🚀 CLICK HERE TO PAY VIA GPAY / PHONEPE (AUTO-FILL)</a>
 
@@ -590,8 +609,8 @@
                 <input type="file" id="rechargeProof" class="form-control" accept="image/*" style="font-size: 11px; padding: 4px;">
             </div>
             
-            <button class="btn-main" onclick="confirmPaymentAndSendWhatsApp()" style="background: #2e7d32; margin-bottom: 6px;">I Have Paid ✅</button>
-            <button class="btn-main" onclick="document.getElementById('qrModal').style.display='none'; clearInterval(timerInterval);" style="background: #dc3545;">Cancel</button>
+            <button class="btn-main" onclick="confirmPaymentAndSendWhatsApp()" style="background: #2e7d32; margin-bottom: 6px; padding: 10px; font-size: 13px;">I Have Paid ✅</button>
+            <button class="btn-main" onclick="document.getElementById('qrModal').style.display='none'; clearInterval(timerInterval);" style="background: #dc3545; padding: 8px; font-size: 12px;">Cancel</button>
         </div>
     </div>
 
@@ -654,6 +673,24 @@
     <script>
         let generatedOtp = "";
         let pendingEmail = "";
+
+        // LIVE TRANSACTION TICKER ROTATION LIST
+        let tickerMessages = [
+            "🔔 Recent: Rahul (Delhi) successfully recharged ₹239 & got cashback!",
+            "🔥 Loot Alert: Priya (Mumbai) got ₹50 Play Store Redeem Code instantly!",
+            "⚡ Live: Amit (Bangalore) booked JioFiber TV Connection successfully!",
+            "🎉 Cashback Credited: Rohit (Kolkata) received ₹25 Referral Bonus!",
+            "🚀 Fast Recharge: Sneha (Chennai) recharged Airtel ₹265 plan."
+        ];
+        let tickerIndex = 0;
+
+        setInterval(() => {
+            tickerIndex = (tickerIndex + 1) % tickerMessages.length;
+            let tickerEl = document.getElementById('liveTickerText');
+            if(tickerEl) {
+                tickerEl.innerText = tickerMessages[tickerIndex];
+            }
+        }, 4000);
 
         window.addEventListener('DOMContentLoaded', () => {
             checkUserLoginState();
@@ -1037,7 +1074,7 @@
             if(mode === 'Online') {
                 let proofInput = document.getElementById('cableProof');
                 if(!proofInput.files || proofInput.files.length === 0) {
-                    alert("⚠️️ Please upload payment screenshot to proceed!");
+                    alert("⚠️ Please upload payment screenshot to proceed!");
                     return;
                 }
             }
