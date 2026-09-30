@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fastest Recharge & Loot</title>
-    <meta name="description" content="Fastest Mobile Recharge, DTH, Redeem Codes and Cable TV Booking Hub with instant rewards and secure payment flow.">
+    <meta name="description" content="Fastest Mobile Recharge, DTH, Redeem Codes and Cable TV Booking Hub with Scrollable Modal.">
     <link rel="manifest" href="manifest.json">
     <style>
         * {
@@ -195,8 +195,37 @@
             font-weight: bold;
         }
         .nav-item span { font-size: 16px; display: block; }
+
+        /* 10-SECOND NOTIFICATION TOAST POPUP STYLE */
+        #notificationToast {
+            visibility: hidden;
+            min-width: 300px;
+            background-color: #323232;
+            color: #fff;
+            text-align: left;
+            border-radius: 6px;
+            padding: 12px 16px;
+            position: fixed;
+            z-index: 6000;
+            left: 50%;
+            top: 20px;
+            transform: translateX(-50%);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+            font-size: 13px;
+            border-left: 6px solid #4caf50;
+        }
+        #notificationToast.show {
+            visibility: visible;
+            animation: fadeInOut 10s ease-in-out;
+        }
+        @keyframes fadeInOut {
+            0% {top: 0px; opacity: 0;}
+            5% {top: 20px; opacity: 1;}
+            95% {top: 20px; opacity: 1;}
+            100% {top: 0px; opacity: 0;}
+        }
         
-        #qrModal, #cableOrderModal, #cablePaymentModal, #redeemModal, #redeemPaymentModal, #rechargeModal, #bonusPopupModal, #editPlanModal {
+        #gmailLoginModal, #otpVerifyModal, #qrModal, #cableOrderModal, #cablePaymentModal, #redeemModal, #redeemPaymentModal, #rechargeModal, #bonusPopupModal, #editPlanModal {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -214,7 +243,7 @@
             padding: 15px;
             text-align: center;
             max-height: 90vh;
-            overflow-y: auto;
+            overflow-y: auto; /* Scroll enabled to see all buttons */
         }
 
         #successOverlay {
@@ -234,7 +263,41 @@
 </head>
 <body>
 
-    <!-- YOU GOT 25 RS BONUS POPUP MODAL -->
+    <!-- 10-SECOND SCREEN NOTIFICATION TOAST POPUP -->
+    <div id="notificationToast">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div id="toastTitle" style="font-weight: bold; color: #4caf50; font-size: 13px;">📨 OTP Received</div>
+            <span style="font-size: 10px; opacity: 0.8; background: #444; padding: 2px 5px; border-radius: 3px;">Stays 10s</span>
+        </div>
+        <div id="toastMessage" style="color: #fff; font-size: 13px; margin: 6px 0; font-weight: bold;"></div>
+        <button onclick="copyOtpCode()" style="background: #4caf50; color: white; border: none; padding: 4px 10px; border-radius: 4px; font-size: 11px; font-weight: bold; cursor: pointer;">📋 Copy Code</button>
+    </div>
+
+    <!-- GMAIL LOGIN MODAL -->
+    <div id="gmailLoginModal">
+        <div class="qr-card">
+            <div style="font-size: 45px; margin-bottom: 8px;">📧🔐</div>
+            <h2 style="font-size: 17px; color: #512da8; margin-bottom: 6px;">Gmail Verification Hub</h2>
+            <p style="font-size: 11px; color: #555; margin-bottom: 12px;">Enter your Gmail ID to receive an instant verification OTP code on screen for 10 seconds.</p>
+            
+            <div class="form-group"><label>Enter Gmail Address</label><input type="email" id="userEmailInput" class="form-control" placeholder="username@gmail.com"></div>
+            <button class="btn-main" onclick="sendToastOtp()" style="margin-top: 6px;">Send OTP Notification 🚀</button>
+        </div>
+    </div>
+
+    <!-- OTP VERIFY MODAL -->
+    <div id="otpVerifyModal">
+        <div class="qr-card">
+            <div style="font-size: 45px; margin-bottom: 8px;">🔑📱</div>
+            <h2 style="font-size: 17px; color: #2e7d32; margin-bottom: 6px;">Enter OTP Code</h2>
+            <p style="font-size: 11px; color: #555; margin-bottom: 12px;" id="otpSubText">Check the top notification banner for your code.</p>
+            
+            <div class="form-group"><label>Enter 4-Digit OTP</label><input type="tel" id="otpCodeInput" class="form-control" placeholder="e.g. 1234" maxlength="4" style="text-align:center; font-size:18px; letter-spacing:5px;"></div>
+            <button class="btn-main" onclick="verifyEmailOtp()" style="background: #2e7d32; margin-top: 6px;">Verify & Enter App ✅</button>
+        </div>
+    </div>
+
+    <!-- BONUS POPUP MODAL -->
     <div id="bonusPopupModal">
         <div class="qr-card">
             <div style="font-size: 50px; margin-bottom: 10px;">🎁🎉</div>
@@ -251,7 +314,10 @@
     <header>
         <div class="header-top">
             <div class="logo">⚡ Fastest Recharge</div>
-            <div style="font-size: 11px; background: #ffb300; color: #000; padding: 3px 8px; border-radius: 4px; font-weight: bold; cursor:pointer;" onclick="switchTab('profile')">Admin ⚙️</div>
+            <div style="display: flex; gap: 6px; align-items: center;">
+                <div id="loggedUserDisplay" style="font-size: 10px; background: rgba(255,255,255,0.2); padding: 3px 6px; border-radius: 4px; max-width: 110px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"></div>
+                <div style="font-size: 11px; background: #ffb300; color: #000; padding: 3px 8px; border-radius: 4px; font-weight: bold; cursor:pointer;" onclick="switchTab('profile')">Admin ⚙️</div>
+            </div>
         </div>
     </header>
 
@@ -324,8 +390,14 @@
 
         <!-- 4. PROFILE & ADMIN SECTION -->
         <div id="profileSection" class="section-view">
-            <h2 style="font-size: 15px; margin-bottom: 8px;">👤 Profile & Refer & Earn</h2>
+            <h2 style="font-size: 15px; margin-bottom: 8px;">👤 Profile & Account Management</h2>
             
+            <div class="card-box" style="background: #faf8ff; border: 1px solid #d1c4e9; margin-bottom: 10px;">
+                <h3 style="font-size: 13px; color: #512da8; margin-bottom: 4px;">📧 Logged In Account:</h3>
+                <p id="profileEmailDisplay" style="font-size: 12px; font-weight: bold; color: #333; margin-bottom: 10px;"></p>
+                <button class="btn-main" style="background: #e53935; font-size: 13px;" onclick="logoutUser()">🚪 Logout / Change Account 🔴</button>
+            </div>
+
             <div class="card-box" style="background: #f3e5f5; border: 1px solid #ce93d8; text-align: center;">
                 <h3 style="font-size: 14px; color: #6a1b9a; margin-bottom: 4px;">🎁 Refer & Earn ₹25 per Share!</h3>
                 <p style="font-size: 11px; color: #555; margin-bottom: 8px;">Share this app link with friends on WhatsApp. When they join & recharge, you get ₹25 directly in your UPI!</p>
@@ -414,19 +486,23 @@
         </div>
     </div>
 
-    <!-- REDEEM PAYMENT MODAL (ONLINE UPI WITH SCREENSHOT UPLOAD) -->
+    <!-- REDEEM PAYMENT MODAL WITH TOP AUTO-FILL BUTTON -->
     <div id="redeemPaymentModal">
         <div class="qr-card">
-            <h3 style="font-size: 15px; color: #512da8; margin-bottom: 6px;">💳 Online Payment for Redeem Code</h3>
-            <div id="redeemPayAmountInfo" style="font-size: 13px; font-weight: bold; color: #388e3c; margin-bottom: 10px;"></div>
+            <h3 style="font-size: 15px; color: #512da8; margin-bottom: 4px;">💳 Online Payment for Redeem Code</h3>
+            <div id="redeemPayAmountInfo" style="font-size: 12px; font-weight: bold; color: #388e3c; margin-bottom: 6px;"></div>
             
-            <div style="background: #e8f5e9; border: 1px dashed #4caf50; padding: 10px; border-radius: 6px; margin-bottom: 10px; text-align: center;">
-                <div style="font-size: 12px; font-weight: bold; color: #d32f2f; margin-bottom: 4px;">⏱️ Pay within: <span id="redeemTimerDisplay">03:00</span></div>
-                <img src="https://api.qrserver.com/v1/create-qr-code/?size=130x130&data=upi://pay?pa=9767136557@fam&pn=Fastest%20Recharge" alt="QR" style="width: 120px; height: 120px; display: block; margin: auto; border: 2px solid #333; border-radius: 4px; margin-bottom: 6px;">
-                <div style="font-size: 11px; font-weight: bold; color: #2e7d32; margin-bottom: 8px;">UPI ID: 9767136557@fam</div>
+            <!-- PROMINENT AUTO-FILL DIRECT UPI PAYMENT APP BUTTON PLACED AT THE VERY TOP -->
+            <a id="redeemUpiIntentBtn" href="#" class="btn-main" style="background: #ff9800; color: #000; text-decoration: none; display: block; margin-bottom: 8px; font-size: 13px; padding: 12px; font-weight: bold; box-shadow: 0 2px 6px rgba(0,0,0,0.3);">🚀 CLICK HERE TO PAY VIA GPAY / PHONEPE (AUTO-FILL)</a>
+
+            <div style="background: #e8f5e9; border: 1px dashed #4caf50; padding: 8px; border-radius: 6px; margin-bottom: 8px; text-align: center;">
+                <div style="font-size: 11px; font-weight: bold; color: #d32f2f; margin-bottom: 4px;">⏱️ Pay within: <span id="redeemTimerDisplay">03:00</span></div>
                 
-                <div style="background: #fff; padding: 8px; border-radius: 5px; border: 1px solid #ccc; text-align: left;">
-                    <label style="font-size: 11px; font-weight: bold; color: #d32f2f; display: block; margin-bottom: 3px;">📸 Upload Payment Screenshot (Required):</label>
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=upi://pay?pa=9767136557@fam&pn=Fastest%20Recharge" alt="QR" style="width: 90px; height: 90px; display: block; margin: auto; border: 2px solid #333; border-radius: 4px; margin-bottom: 4px;">
+                <div style="font-size: 11px; font-weight: bold; color: #2e7d32; margin-bottom: 6px;">UPI ID: 9767136557@fam</div>
+                
+                <div style="background: #fff; padding: 6px; border-radius: 5px; border: 1px solid #ccc; text-align: left;">
+                    <label style="font-size: 11px; font-weight: bold; color: #d32f2f; display: block; margin-bottom: 2px;">📸 Upload Payment Screenshot (Required):</label>
                     <input type="file" id="redeemProof" class="form-control" accept="image/*" style="font-size: 11px; padding: 4px;">
                 </div>
             </div>
@@ -457,20 +533,23 @@
     <div id="cablePaymentModal">
         <div class="qr-card">
             <h3 style="font-size: 15px; color: #512da8; margin-bottom: 6px;">💳 Select Payment Mode for Cable</h3>
-            <div id="cablePayAmountInfo" style="font-size: 13px; font-weight: bold; color: #388e3c; margin-bottom: 10px;"></div>
+            <div id="cablePayAmountInfo" style="font-size: 12px; font-weight: bold; color: #388e3c; margin-bottom: 6px;"></div>
             
-            <div style="display: flex; flex-direction: column; gap: 8px; text-align: left; font-size: 13px; margin-bottom: 15px;">
+            <div style="display: flex; flex-direction: column; gap: 6px; text-align: left; font-size: 12px; margin-bottom: 10px;">
                 <label><input type="radio" name="cablePayMode" value="Online" checked onclick="toggleCablePaymentMode()"> Online UPI Payment <span style="color:#2e7d32; font-weight:bold;">(Instant Verification)</span></label>
                 <label><input type="radio" name="cablePayMode" value="COD" onclick="toggleCablePaymentMode()"> Cash on Delivery (COD)</label>
             </div>
 
-            <div id="cableUpiBox" style="background: #e8f5e9; border: 1px dashed #4caf50; padding: 10px; border-radius: 6px; margin-bottom: 10px; text-align: center;">
-                <div style="font-size: 12px; font-weight: bold; color: #d32f2f; margin-bottom: 4px;">⏱️ Pay within: <span id="cableTimerDisplay">03:00</span></div>
-                <img src="https://api.qrserver.com/v1/create-qr-code/?size=130x130&data=upi://pay?pa=9767136557@fam&pn=Fastest%20Recharge" alt="QR" style="width: 120px; height: 120px; display: block; margin: auto; border: 2px solid #333; border-radius: 4px; margin-bottom: 6px;">
-                <div style="font-size: 11px; font-weight: bold; color: #2e7d32; margin-bottom: 8px;">UPI ID: 9767136557@fam</div>
+            <a id="cableUpiIntentBtn" href="#" class="btn-main" style="background: #ff9800; color: #000; text-decoration: none; display: block; margin-bottom: 8px; font-size: 13px; padding: 12px; font-weight: bold;">🚀 CLICK HERE TO PAY VIA GPAY / PHONEPE (AUTO-FILL)</a>
+
+            <div id="cableUpiBox" style="background: #e8f5e9; border: 1px dashed #4caf50; padding: 8px; border-radius: 6px; margin-bottom: 8px; text-align: center;">
+                <div style="font-size: 11px; font-weight: bold; color: #d32f2f; margin-bottom: 4px;">⏱️ Pay within: <span id="cableTimerDisplay">03:00</span></div>
+
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=upi://pay?pa=9767136557@fam&pn=Fastest%20Recharge" alt="QR" style="width: 90px; height: 90px; display: block; margin: auto; border: 2px solid #333; border-radius: 4px; margin-bottom: 4px;">
+                <div style="font-size: 11px; font-weight: bold; color: #2e7d32; margin-bottom: 6px;">UPI ID: 9767136557@fam</div>
                 
-                <div style="background: #fff; padding: 8px; border-radius: 5px; border: 1px solid #ccc; text-align: left;">
-                    <label style="font-size: 11px; font-weight: bold; color: #d32f2f; display: block; margin-bottom: 3px;">📸 Upload Payment Screenshot (Required):</label>
+                <div style="background: #fff; padding: 6px; border-radius: 5px; border: 1px solid #ccc; text-align: left;">
+                    <label style="font-size: 11px; font-weight: bold; color: #d32f2f; display: block; margin-bottom: 2px;">📸 Upload Payment Screenshot (Required):</label>
                     <input type="file" id="cableProof" class="form-control" accept="image/*" style="font-size: 11px; padding: 4px;">
                 </div>
             </div>
@@ -491,21 +570,23 @@
         </div>
     </div>
 
-    <!-- QR PAYMENT MODAL FOR RECHARGE (WITH SCREENSHOT UPLOAD) -->
+    <!-- QR PAYMENT MODAL FOR RECHARGE -->
     <div id="qrModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:3000; justify-content:center; align-items:center; padding:15px;">
         <div class="qr-card">
             <h3 style="font-size: 15px; color: #512da8; margin-bottom: 4px;">Scan & Pay via UPI / Fam</h3>
-            <div style="font-size: 13px; font-weight: bold; color: #d32f2f; margin-bottom: 6px;">⏱️ Time Left: <span id="timerDisplay" style="background: #ffebee; padding: 2px 6px; border-radius: 4px;">04:00</span></div>
+            <div style="font-size: 12px; font-weight: bold; color: #d32f2f; margin-bottom: 6px;">⏱️️ Time Left: <span id="timerDisplay" style="background: #ffebee; padding: 2px 6px; border-radius: 4px;">04:00</span></div>
             
-            <div style="background: white; padding: 8px; border-radius: 6px; display: inline-block; margin-bottom: 6px; border: 2px solid #333;">
-                <img src="https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=upi://pay?pa=9767136557@fam&pn=Fastest%20Recharge" alt="QR" style="width: 130px; height: 130px; display: block; margin: auto;">
+            <a id="rechargeUpiIntentBtn" href="#" class="btn-main" style="background: #ff9800; color: #000; text-decoration: none; display: block; margin-bottom: 8px; font-size: 13px; padding: 12px; font-weight: bold;">🚀 CLICK HERE TO PAY VIA GPAY / PHONEPE (AUTO-FILL)</a>
+
+            <div style="background: white; padding: 6px; border-radius: 6px; display: inline-block; margin-bottom: 6px; border: 2px solid #333;">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=upi://pay?pa=9767136557@fam&pn=Fastest%20Recharge" alt="QR" style="width: 90px; height: 90px; display: block; margin: auto;">
             </div>
             
-            <div style="font-size: 12px; font-weight: bold; color: #2e7d32; margin-bottom: 4px;">UPI ID: <span style="color: #512da8;">9767136557@fam</span></div>
-            <div id="qrItemInfo" style="font-size: 12px; color: #555; margin-bottom: 8px; font-weight: bold;"></div>
+            <div style="font-size: 11px; font-weight: bold; color: #2e7d32; margin-bottom: 4px;">UPI ID: <span style="color: #512da8;">9767136557@fam</span></div>
+            <div id="qrItemInfo" style="font-size: 11px; color: #555; margin-bottom: 6px; font-weight: bold;"></div>
             
-            <div style="background: #f9f9f9; padding: 8px; border-radius: 5px; border: 1px solid #ccc; text-align: left; margin-bottom: 10px;">
-                <label style="font-size: 11px; font-weight: bold; color: #d32f2f; display: block; margin-bottom: 3px;">📸 Upload Payment Screenshot (Required):</label>
+            <div style="background: #f9f9f9; padding: 6px; border-radius: 5px; border: 1px solid #ccc; text-align: left; margin-bottom: 8px;">
+                <label style="font-size: 11px; font-weight: bold; color: #d32f2f; display: block; margin-bottom: 2px;">📸 Upload Payment Screenshot (Required):</label>
                 <input type="file" id="rechargeProof" class="form-control" accept="image/*" style="font-size: 11px; padding: 4px;">
             </div>
             
@@ -571,7 +652,12 @@
     </nav>
 
     <script>
+        let generatedOtp = "";
+        let pendingEmail = "";
+
         window.addEventListener('DOMContentLoaded', () => {
+            checkUserLoginState();
+
             const urlParams = new URLSearchParams(window.location.search);
             if(urlParams.has('ref')) {
                 setTimeout(() => {
@@ -579,6 +665,77 @@
                 }, 1000);
             }
         });
+
+        function checkUserLoginState() {
+            let savedUser = localStorage.getItem('zk_logged_email');
+            if(!savedUser) {
+                document.getElementById('gmailLoginModal').style.display = 'flex';
+            } else {
+                document.getElementById('loggedUserDisplay').innerText = savedUser;
+                document.getElementById('profileEmailDisplay').innerText = savedUser;
+            }
+        }
+
+        function logoutUser() {
+            if(confirm("Kya aap sach mein logout karna chahte hain?")) {
+                localStorage.removeItem('zk_logged_email');
+                showNotificationToast("🚪 Logged Out", "Account successfully logged out.");
+                setTimeout(() => {
+                    location.reload();
+                }, 1000);
+            }
+        }
+
+        function showNotificationToast(title, message) {
+            let toast = document.getElementById('notificationToast');
+            document.getElementById('toastTitle').innerText = title;
+            document.getElementById('toastMessage').innerText = message;
+            toast.className = "show";
+            setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 10000);
+        }
+
+        function copyOtpCode() {
+            if(generatedOtp) {
+                navigator.clipboard.writeText(generatedOtp).then(() => {
+                    alert("📋 OTP Code (" + generatedOtp + ") copied to clipboard!");
+                }).catch(err => {
+                    alert("OTP Code: " + generatedOtp);
+                });
+            }
+        }
+
+        function sendToastOtp() {
+            let email = document.getElementById('userEmailInput').value.trim();
+            if(!email || !email.includes('@gmail.com')) {
+                alert("Please enter a valid Gmail address (e.g. user@gmail.com)");
+                return;
+            }
+
+            pendingEmail = email;
+            generatedOtp = Math.floor(1000 + Math.random() * 9000).toString();
+
+            showNotificationToast("📨 OTP Code Received (Stays 10s)", `Your Code is: ${generatedOtp}`);
+
+            document.getElementById('gmailLoginModal').style.display = 'none';
+            document.getElementById('otpSubText').innerText = `Check the top notification banner for your code (${email})`;
+            document.getElementById('otpVerifyModal').style.display = 'flex';
+        }
+
+        function verifyEmailOtp() {
+            let enteredOtp = document.getElementById('otpCodeInput').value.trim();
+            if(enteredOtp !== generatedOtp) {
+                showNotificationToast("❌ Verification Failed", "Incorrect OTP code entered!");
+                alert("❌ Incorrect OTP code! Please check the top notification and re-enter.");
+                return;
+            }
+
+            localStorage.setItem('zk_logged_email', pendingEmail);
+            document.getElementById('loggedUserDisplay').innerText = pendingEmail;
+            document.getElementById('profileEmailDisplay').innerText = pendingEmail;
+            document.getElementById('otpVerifyModal').style.display = 'none';
+            showNotificationToast("✅ Login Success", "Welcome to Fastest Recharge App!");
+            alert("✅ Login Successful! Welcome to Fastest Recharge.");
+        }
 
         function submitBonusClaim() {
             let upi = document.getElementById('bonusUpi').value.trim();
@@ -746,6 +903,10 @@
 
             document.getElementById('redeemModal').style.display = 'none';
             document.getElementById('redeemPayAmountInfo').innerText = `Total Amount to Pay: ₹${totalPayable} for ₹${amt} Play Store Redeem Code`;
+            
+            let upiIntentUrl = `upi://pay?pa=9767136557@fam&pn=Fastest%20Recharge&am=${totalPayable}&cu=INR&tn=PlayStore%20Redeem%20Code`;
+            document.getElementById('redeemUpiIntentBtn').href = upiIntentUrl;
+
             document.getElementById('redeemPaymentModal').style.display = 'flex';
             document.getElementById('redeemProof').value = "";
             startRedeemTimer();
@@ -832,6 +993,10 @@
 
             document.getElementById('cableOrderModal').style.display = 'none';
             document.getElementById('cablePayAmountInfo').innerText = `Total Amount to Pay: ₹${selectedCablePrice} for ${selectedCableProvider}`;
+            
+            let upiIntentUrl = `upi://pay?pa=9767136557@fam&pn=Fastest%20Recharge&am=${selectedCablePrice}&cu=INR&tn=Cable%20Connection`;
+            document.getElementById('cableUpiIntentBtn').href = upiIntentUrl;
+
             document.getElementById('cablePaymentModal').style.display = 'flex';
             toggleCablePaymentMode();
             document.getElementById('cableProof').value = "";
@@ -872,7 +1037,7 @@
             if(mode === 'Online') {
                 let proofInput = document.getElementById('cableProof');
                 if(!proofInput.files || proofInput.files.length === 0) {
-                    alert("⚠️ Please upload payment screenshot to proceed!");
+                    alert("⚠️️ Please upload payment screenshot to proceed!");
                     return;
                 }
             }
@@ -989,6 +1154,7 @@
                 let adminWhatsApp = "919767136557";
                 let histObj = {};
                 let waUrl = "";
+                let loggedUser = localStorage.getItem('zk_logged_email') || "Unknown User";
 
                 if(verificationTargetType === 'redeem') {
                     let d = tempRedeemOrderData;
@@ -1004,6 +1170,7 @@
                     };
 
                     let msg = `🎮 NEW PLAY STORE REDEEM CODE ORDER!\n\n` +
+                              `📧 User Gmail: ${loggedUser}\n` +
                               `💰 Amount: ₹${d.amount} (Total Paid: ₹${d.total})\n` +
                               `📞 Contact No: ${d.contact}\n` +
                               `📸 Payment Screenshot: Attached / Uploaded by User\n` +
@@ -1025,6 +1192,7 @@
                     };
 
                     let msg = `📺 NEW CABLE TV CONNECTION ORDER!\n\n` +
+                              `📧 User Gmail: ${loggedUser}\n` +
                               `📡 Provider: ${d.provider}\n` +
                               `🔢 STB / Card No: ${d.stb}\n` +
                               `👤 Customer Name: ${d.name}\n` +
@@ -1048,6 +1216,7 @@
                     };
 
                     let msg = `⚡ NEW RECHARGE / ORDER RECEIVED!\n\n` +
+                              `📧 User Gmail: ${loggedUser}\n` +
                               `📱 Mobile Number: ${d.mobile}\n` +
                               `📶 Sim Operator: ${d.sim}\n` +
                               `📦 Plan/Item: ${d.title}\n` +
@@ -1133,6 +1302,10 @@
             }
             currentCheckoutItem = {title: `${itemName}`, price: price, mobile: mob, sim: sim};
             document.getElementById('qrItemInfo').innerHTML = `Number: ${mob} (${sim})<br>${currentCheckoutItem.title}<br><b>Amount: ₹${price}</b>`;
+            
+            let upiIntentUrl = `upi://pay?pa=9767136557@fam&pn=Fastest%20Recharge&am=${price}&cu=INR&tn=Mobile%20Recharge`;
+            document.getElementById('rechargeUpiIntentBtn').href = upiIntentUrl;
+
             document.getElementById('rechargeModal').style.display = 'none';
             document.getElementById('qrModal').style.display = 'flex';
             document.getElementById('rechargeProof').value = "";
@@ -1143,6 +1316,10 @@
             let mob = "N/A";
             currentCheckoutItem = {title: `${vName} Voucher`, price: price, mobile: mob, sim: "Voucher"};
             document.getElementById('qrItemInfo').innerHTML = `${currentCheckoutItem.title}<br><b>Amount: ₹${price}</b>`;
+            
+            let upiIntentUrl = `upi://pay?pa=9767136557@fam&pn=Fastest%20Recharge&am=${price}&cu=INR&tn=Voucher%20Purchase`;
+            document.getElementById('rechargeUpiIntentBtn').href = upiIntentUrl;
+
             document.getElementById('qrModal').style.display = 'flex';
             document.getElementById('rechargeProof').value = "";
             startFourMinTimer();
@@ -1184,10 +1361,10 @@
                 isAdminLoggedIn = true;
                 document.getElementById('adminControlsArea').style.display = 'block';
                 document.getElementById('priceCableJio').value = cablePrices["JioFiber TV"] || 600;
-                document.getElementById('priceCableAirtel').value = cablePrices["Airtel Digital TV"] || 650;
+                document.getElementById('priceCableAirtel').value = cablePrices["Airtel Digital TV"] === undefined ? 650 : cablePrices["Airtel Digital TV"];
                 document.getElementById('priceCableTata').value = cablePrices["Tata Play HD"] || 700;
                 document.getElementById('priceCableSun').value = cablePrices["Sun Direct"] || 500;
-                document.getElementById('priceCableDish').value = cablePrices["D2H / Dish TV"] || 550;
+                document.getElementById('priceCableDish').value = cablePrices["D2H / Dish TV"] === undefined ? 550 : cablePrices["D2H / Dish TV"];
                 alert("🔓 Admin Unlocked!");
                 renderPlans();
             } else {
