@@ -3,9 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fastest Recharge & Loot</title>
-    <meta name="description" content="Fastest Mobile Recharge, DTH, Redeem Codes, Cable TV and Multi-Tier Spin Wallet.">
+    <title>Fastest Recharge & Loot Hub</title>
+    <meta name="description" content="Professional Mobile Recharge, OTT Subscriptions, Redeem Codes & Reward Wallet Hub with Firebase & EmailJS OTP Authentication.">
     <link rel="manifest" href="manifest.json">
+    
+    <!-- FIREBASE SDKs & CONFIGURATION -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, doc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCMnAFnjb5RFJOErcCSEd-Iez6uFt_XlXc",
+            authDomain: "faster-recharge.firebaseapp.com",
+            projectId: "faster-recharge",
+            storageBucket: "faster-recharge.firebasestorage.app",
+            messagingSenderId: "209300832111",
+            appId: "1:209300832111:web:872808a1d571c7760e729a",
+            measurementId: "G-2EFZX5ETDV"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        window.firebaseDb = db;
+        window.doc = doc;
+        window.getDoc = getDoc;
+        window.setDoc = setDoc;
+        window.updateDoc = updateDoc;
+    </script>
+
+    <!-- EMAILJS SDK FOR REAL GMAIL OTP -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script type="text/javascript">
+        (function() {
+            emailjs.init("rNPpfrFuhiT6dIeU0");
+        })();
+    </script>
+
     <style>
         * {
             box-sizing: border-box;
@@ -15,32 +49,34 @@
             transition: background 0.3s, color 0.3s;
         }
         body {
-            background-color: var(--bg-color, #f3f0f7);
-            color: var(--text-color, #212121);
-            padding-bottom: 70px;
+            background-color: var(--bg-color, #f4f5f7);
+            color: var(--text-color, #1f2937);
+            padding-bottom: 75px;
         }
 
         body.light-mode {
-            --bg-color: #f3f0f7;
-            --text-color: #212121;
+            --bg-color: #f4f5f7;
+            --text-color: #1f2937;
             --card-bg: #ffffff;
-            --border-color: #d1c4e9;
+            --border-color: #e5e7eb;
+            --primary: #6366f1;
         }
         body.dark-mode {
-            --bg-color: #121212;
-            --text-color: #e0e0e0;
-            --card-bg: #1e1e1e;
-            --border-color: #333333;
+            --bg-color: #0f172a;
+            --text-color: #f8fafc;
+            --card-bg: #1e293b;
+            --border-color: #334155;
+            --primary: #818cf8;
         }
 
         header {
-            background: #512da8;
+            background: var(--primary, #6366f1);
             color: white;
-            padding: 12px;
+            padding: 14px 16px;
             position: sticky;
             top: 0;
             z-index: 100;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
         .header-top {
             display: flex;
@@ -48,53 +84,53 @@
             align-items: center;
         }
         .logo {
-            font-size: 18px;
+            font-size: 17px;
             font-weight: bold;
-            font-style: italic;
+            letter-spacing: 0.5px;
         }
         .container {
-            padding: 10px;
-            max-width: 500px;
+            padding: 12px;
+            max-width: 480px;
             margin: auto;
         }
         .card-box {
             background: var(--card-bg, #ffffff);
-            color: var(--text-color, #212121);
-            padding: 12px;
-            border-radius: 8px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            margin-bottom: 10px;
-            border: 1px solid var(--border-color, #eee);
+            color: var(--text-color, #1f2937);
+            padding: 14px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            margin-bottom: 12px;
+            border: 1px solid var(--border-color, #e5e7eb);
         }
-        .form-group { margin-bottom: 8px; }
+        .form-group { margin-bottom: 10px; }
         .form-group label {
             font-size: 11px;
             font-weight: 600;
-            color: var(--text-color, #444);
+            color: var(--text-color, #4b5563);
             display: block;
-            margin-bottom: 3px;
+            margin-bottom: 4px;
         }
         .form-control {
             width: 100%;
-            padding: 8px;
-            border: 1px solid var(--border-color, #ccc);
+            padding: 10px;
+            border: 1px solid var(--border-color, #cbd5e1);
             background: var(--card-bg, #fff);
             color: var(--text-color, #000);
-            border-radius: 4px;
+            border-radius: 8px;
             font-size: 13px;
             outline: none;
         }
         .btn-main {
-            background: #512da8;
+            background: #6366f1;
             color: white;
             border: none;
-            padding: 10px;
+            padding: 12px;
             width: 100%;
             font-weight: bold;
-            border-radius: 5px;
+            border-radius: 8px;
             cursor: pointer;
             font-size: 14px;
-            box-shadow: 0 2px 5px rgba(81,45,168,0.3);
+            box-shadow: 0 4px 12px rgba(99,102,241,0.3);
         }
         .services-grid {
             display: grid;
@@ -103,70 +139,36 @@
             margin-top: 8px;
         }
         .service-card {
-            background: var(--card-bg, #faf8ff);
-            border: 1px solid var(--border-color, #d1c4e9);
-            padding: 12px;
-            border-radius: 8px;
+            background: var(--card-bg, #f8fafc);
+            border: 1px solid var(--border-color, #e2e8f0);
+            padding: 14px;
+            border-radius: 10px;
             cursor: pointer;
             text-align: center;
             font-size: 12px;
             font-weight: bold;
-            color: #4a148c;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            color: #4f46e5;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
             transition: 0.2s;
         }
-        .service-card:hover { background: #f0e6fc; }
-        .service-card span { font-size: 24px; display: block; margin-bottom: 4px; }
+        .service-card:hover { transform: translateY(-2px); }
+        .service-card span { font-size: 26px; display: block; margin-bottom: 6px; }
         
         .ad-slider-box {
-            background: linear-gradient(135deg, #ff9800, #f57c00);
+            background: linear-gradient(135deg, #f59e0b, #d97706);
             color: white;
-            padding: 12px;
-            border-radius: 8px;
-            text-align: center;
-            margin-top: 10px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-        }
-
-        .purple-promo-banner {
-            background: #512da8;
-            color: white;
-            border-radius: 8px;
             padding: 14px;
-            margin-top: 10px;
+            border-radius: 12px;
             text-align: center;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+            margin-top: 10px;
+            box-shadow: 0 4px 12px rgba(245,158,11,0.2);
         }
 
-        .filter-scroll {
-            display: flex;
-            gap: 6px;
-            overflow-x: auto;
-            padding: 4px 0 8px 0;
-            scrollbar-width: none;
-        }
-        .filter-scroll::-webkit-scrollbar { display: none; }
-        .filter-chip {
-            background: #ede7f6;
-            color: #512da8;
-            padding: 5px 12px;
-            border-radius: 15px;
-            font-size: 11px;
-            font-weight: bold;
-            white-space: nowrap;
-            cursor: pointer;
-            border: 1px solid #d1c4e9;
-        }
-        .filter-chip.active {
-            background: #512da8;
-            color: white;
-        }
-
-        .plan-list-item, .cable-provider-card {
-            background: var(--card-bg, #faf8ff);
-            border: 1px solid var(--border-color, #d1c4e9);
-            padding: 10px;
-            border-radius: 6px;
+        .plan-list-item {
+            background: var(--card-bg, #f8fafc);
+            border: 1px solid var(--border-color, #e2e8f0);
+            padding: 12px;
+            border-radius: 10px;
             margin-bottom: 8px;
             display: flex;
             justify-content: space-between;
@@ -180,16 +182,16 @@
         /* FLOATING WHATSAPP LIVE CHAT BUTTON */
         #whatsappChatBubble {
             position: fixed;
-            bottom: 75px; right: 15px;
-            background: #25d366;
+            bottom: 80px; right: 16px;
+            background: #22c55e;
             color: white;
-            width: 50px; height: 50px;
+            width: 52px; height: 52px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 26px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            font-size: 28px;
+            box-shadow: 0 6px 16px rgba(34,197,94,0.4);
             cursor: pointer;
             z-index: 2000;
         }
@@ -201,75 +203,67 @@
             background: var(--card-bg, #ffffff);
             display: flex;
             justify-content: space-around;
-            padding: 6px 0;
-            box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+            padding: 8px 0;
+            box-shadow: 0 -4px 12px rgba(0,0,0,0.05);
             z-index: 1000;
-            border-top: 1px solid var(--border-color, #eee);
+            border-top: 1px solid var(--border-color, #e5e7eb);
         }
         .nav-item {
             text-align: center;
             font-size: 10px;
-            color: var(--text-color, #666);
+            color: var(--text-color, #64748b);
             cursor: pointer;
             flex: 1;
         }
         .nav-item.active {
-            color: #512da8;
+            color: #4f46e5;
             font-weight: bold;
         }
-        .nav-item span { font-size: 16px; display: block; }
+        .nav-item span { font-size: 18px; display: block; margin-bottom: 2px; }
 
-        #notificationToast {
-            visibility: hidden;
-            min-width: 300px;
-            background-color: #323232;
-            color: #fff;
-            text-align: left;
-            border-radius: 6px;
-            padding: 12px 16px;
-            position: fixed;
-            z-index: 6000;
-            left: 50%; top: 20px;
-            transform: translateX(-50%);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-            font-size: 13px;
-            border-left: 6px solid #4caf50;
-        }
-        #notificationToast.show {
-            visibility: visible;
-            animation: fadeInOut 10s ease-in-out;
-        }
-        @keyframes fadeInOut {
-            0% {top: 0px; opacity: 0;}
-            5% {top: 20px; opacity: 1;}
-            95% {top: 20px; opacity: 1;}
-            100% {top: 0px; opacity: 0;}
-        }
-        
-        #gmailLoginModal, #otpVerifyModal, #qrModal, #cableOrderModal, #cablePaymentModal, #redeemModal, #redeemPaymentModal, #rechargeModal, #bonusPopupModal, #editPlanModal, #liveChatModal, #cableSectionContainer, #spinModal, #walletModal {
+        #otpAuthModal, #walletModal, #spinModal, #liveChatModal, #rechargeModal, #redeemModal, #qrModal, #ottModal, #referModal {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.7);
+            background: rgba(0,0,0,0.6);
             z-index: 3000;
             justify-content: center;
             align-items: center;
-            padding: 15px;
+            padding: 16px;
         }
         .qr-card {
             background: var(--card-bg, white);
             color: var(--text-color, #000);
             width: 100%;
             max-width: 380px;
-            border-radius: 8px;
-            padding: 15px;
+            border-radius: 14px;
+            padding: 20px;
             text-align: center;
             max-height: 90vh;
             overflow-y: auto;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
         }
     </style>
 </head>
 <body class="light-mode">
+
+    <!-- EMAILJS OTP AUTHENTICATION MODAL -->
+    <div id="otpAuthModal">
+        <div class="qr-card">
+            <div style="font-size: 45px; margin-bottom: 8px;">📧🔐</div>
+            <h2 style="font-size: 17px; color: #4f46e5; margin-bottom: 6px;">Gmail OTP Verification</h2>
+            <p style="font-size: 11px; opacity: 0.8; margin-bottom: 12px;">Enter your real Gmail ID to receive a 4-digit verification code.</p>
+            
+            <div class="form-group"><label>Gmail Address</label><input type="email" id="authEmail" class="form-control" placeholder="user@gmail.com"></div>
+            
+            <div id="otpSectionBox" style="display: none;">
+                <div class="form-group"><label>Enter 4-Digit OTP Code</label><input type="text" id="enteredOtpCode" class="form-control" placeholder="1234" maxlength="4"></div>
+            </div>
+
+            <button class="btn-main" id="sendOtpBtn" onclick="sendGmailOtp()" style="background: #4f46e5; margin-top: 6px;">Send OTP 🚀</button>
+            <button class="btn-main" id="verifyOtpBtn" onclick="verifyGmailOtp()" style="background: #16a34a; margin-top: 6px; display: none;">Verify OTP & Login ✅</button>
+        </div>
+    </div>
 
     <!-- FLOATING WHATSAPP LIVE CHAT ICON -->
     <div id="whatsappChatBubble" onclick="openLiveChatModal()" title="Live WhatsApp Support">💬</div>
@@ -277,95 +271,104 @@
     <!-- LIVE CHAT MODAL -->
     <div id="liveChatModal">
         <div class="qr-card">
-            <div style="font-size: 40px; margin-bottom: 5px;">🟢💬</div>
-            <h2 style="font-size: 16px; color: #25d366; margin-bottom: 6px;">Live WhatsApp Support</h2>
-            <p style="font-size: 11px; opacity: 0.8; margin-bottom: 10px;">Aapka message seedha hamare WhatsApp par aayega!</p>
-            <div class="form-group"><label>Aapka Naam</label><input type="text" id="chatUserName" class="form-control" placeholder="Full Name"></div>
+            <div style="font-size: 42px; margin-bottom: 6px;">🟢💬</div>
+            <h2 style="font-size: 16px; color: #22c55e; margin-bottom: 6px;">Live WhatsApp Support</h2>
+            <p style="font-size: 11px; opacity: 0.8; margin-bottom: 12px;">Get instant assistance directly on WhatsApp!</p>
+            <div class="form-group"><label>Your Name</label><input type="text" id="chatUserName" class="form-control" placeholder="Full Name"></div>
             <div class="form-group"><label>Mobile Number</label><input type="tel" id="chatUserMobile" class="form-control" placeholder="10-digit mobile" maxlength="10"></div>
-            <div class="form-group"><label>Apni Samasya / Message Likhein</label><textarea id="chatUserMessage" class="form-control" placeholder="Type your query..." rows="3"></textarea></div>
-            <button class="btn-main" onclick="sendLiveChatToWhatsApp()" style="background: #25d366; margin-top: 6px;">Start WhatsApp Chat 🟢</button>
-            <button class="btn-main" onclick="document.getElementById('liveChatModal').style.display='none'" style="background: #dc3545; margin-top: 4px;">Close ✕</button>
+            <div class="form-group"><label>Your Query / Message</label><textarea id="chatUserMessage" class="form-control" placeholder="Type your issue..." rows="3"></textarea></div>
+            <button class="btn-main" onclick="sendLiveChatToWhatsApp()" style="background: #22c55e; margin-top: 8px;">Start WhatsApp Chat 🟢</button>
+            <button class="btn-main" onclick="document.getElementById('liveChatModal').style.display='none'" style="background: #ef4444; margin-top: 6px;">Close ✕</button>
+        </div>
+    </div>
+
+    <!-- REFER & EARN MODAL -->
+    <div id="referModal">
+        <div class="qr-card">
+            <div style="font-size: 42px; margin-bottom: 6px;">🎁👥</div>
+            <h2 style="font-size: 17px; color: #f59e0b; margin-bottom: 4px;">Refer & Earn ₹20 Cashback</h2>
+            <p style="font-size: 11px; opacity: 0.8; margin-bottom: 12px;">Share link via WhatsApp. When your friend logs in & completes a recharge/redeem, your ₹20 reward unlocks!</p>
+            
+            <div id="referralUnlockedBox" style="display: none; background: #f0fdf4; padding: 10px; border-radius: 8px; border: 1px solid #16a34a; margin-bottom: 10px; text-align: left;">
+                <div style="font-size: 11px; font-weight: bold; color: #16a34a; margin-bottom: 4px;">🎉 Friend completed order! Enter your UPI ID for ₹20 Cashback:</div>
+                <div class="form-group"><label>UPI ID</label><input type="text" id="earnedUpiInput" class="form-control" placeholder="username@upi"></div>
+                <button class="btn-main" onclick="claimReferralReward()" style="background: #16a34a; margin-top: 4px;">Claim ₹20 Cashback 🚀</button>
+            </div>
+
+            <button class="btn-main" onclick="nativeShareApp()" style="background: #f59e0b; color:#000; margin-bottom: 6px;">Share via WhatsApp / Insta 🚀</button>
+            <button class="btn-main" onclick="document.getElementById('referModal').style.display='none'" style="background: #ef4444;">Close ✕</button>
+        </div>
+    </div>
+
+    <!-- OTT SUBSCRIPTION MODAL -->
+    <div id="ottModal">
+        <div class="qr-card">
+            <div style="font-size: 40px; margin-bottom: 4px;">🎬🍿</div>
+            <h3 style="font-size: 16px; color: #4f46e5; margin-bottom: 4px;">₹20 OTT Subscription Hub</h3>
+            <p style="font-size: 11px; opacity: 0.8; margin-bottom: 10px;">Get All Series & Movies Access instantly!</p>
+            <div class="form-group"><label>Your Mobile Number (for delivery)</label><input type="tel" id="ottContact" class="form-control" placeholder="10-digit mobile" maxlength="10"></div>
+            
+            <a id="ottUpiIntentBtn" href="upi://pay?pa=9767136557@fam&pn=Fastest%20Recharge&am=20&cu=INR&tn=OTT-SUB" class="btn-main" style="background: #f59e0b; color: #000; text-decoration: none; display: block; margin-bottom: 8px; font-size: 12px; padding: 10px; font-weight: bold;">🚀 PAY ₹20 VIA GPAY / PHONEPE (Auto-Fill)</a>
+
+            <div style="background: white; padding: 4px; border-radius: 6px; display: inline-block; margin-bottom: 6px; border: 2px solid #333;">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=90x90&data=upi://pay?pa=9767136557@fam&pn=Fastest%20Recharge&am=20&cu=INR&tn=OTT-SUB" alt="QR" style="width: 80px; height: 80px; display: block; margin: auto;">
+            </div>
+            
+            <div style="font-size: 11px; font-weight: bold; color: #16a34a; margin-bottom: 6px;">UPI ID: 9767136557@fam</div>
+            
+            <div class="form-group" style="text-align: left;"><label style="color:#d97706; font-weight:bold;">Enter UTR / UPI Ref Number:</label><input type="text" id="ottUtrInput" class="form-control" placeholder="Enter 12-digit UTR"></div>
+
+            <button class="btn-main" onclick="submitOttOrder()" style="background: #16a34a; margin-bottom: 6px;">Submit & Send to WhatsApp ✅</button>
+            <button class="btn-main" onclick="document.getElementById('ottModal').style.display='none'" style="background: #ef4444;">Cancel</button>
         </div>
     </div>
 
     <!-- INTERACTIVE WALLET & WITHDRAWAL MODAL -->
     <div id="walletModal">
         <div class="qr-card">
-            <div style="font-size: 45px; margin-bottom: 5px;">💰🏦</div>
-            <h2 style="font-size: 17px; color: #00838f; margin-bottom: 4px;">My Reward Wallet</h2>
-            <div style="font-size: 26px; font-weight: bold; color: #2e7d32; margin: 10px 0;" id="modalWalletBalance">₹0</div>
+            <div style="font-size: 42px; margin-bottom: 6px;">💰🏦</div>
+            <h2 style="font-size: 17px; color: #0d9488; margin-bottom: 4px;">My Reward Wallet</h2>
+            <div style="font-size: 28px; font-weight: bold; color: #16a34a; margin: 12px 0;" id="modalWalletBalance">₹0</div>
             
-            <div id="modalWithdrawUnlocked" style="display:none; text-align: left; background: #e8f5e9; padding: 10px; border-radius: 6px; border: 1px solid #4caf50; margin-bottom: 10px;">
-                <div style="font-size: 11px; color: #2e7d32; font-weight: bold; margin-bottom: 6px;">🎉 You are eligible to withdraw! Enter your UPI ID below:</div>
-                <div class="form-group"><label>Enter Your UPI ID</label><input type="text" id="modalWithdrawUpi" class="form-control" placeholder="username@upi"></div>
-                <button class="btn-main" onclick="requestWalletWithdrawal()" style="background: #2e7d32; margin-top: 6px;">Withdraw Now 🚀</button>
+            <div id="modalWithdrawUnlocked" style="display:none; text-align: left; background: #f0fdf4; padding: 12px; border-radius: 8px; border: 1px solid #22c55e; margin-bottom: 12px;">
+                <div style="font-size: 11px; color: #16a34a; font-weight: bold; margin-bottom: 6px;">🎉 Eligible to withdraw! Enter your UPI ID:</div>
+                <div class="form-group"><label>UPI ID</label><input type="text" id="modalWithdrawUpi" class="form-control" placeholder="username@upi"></div>
+                <button class="btn-main" onclick="requestWalletWithdrawal()" style="background: #16a34a; margin-top: 6px;">Withdraw Now 🚀</button>
             </div>
 
-            <div id="modalWithdrawLocked" style="font-size: 11px; color: #d32f2f; font-weight: bold; background: #ffebee; padding: 10px; border-radius: 6px; text-align: center; margin-bottom: 10px; border: 1px dashed #d32f2f;">
-                🔒 Withdrawal Locked!<br>You need a minimum of <b>₹25</b> to withdraw. Keep earning via spin & rewards!
+            <div id="modalWithdrawLocked" style="font-size: 11px; color: #dc2626; font-weight: bold; background: #fef2f2; padding: 12px; border-radius: 8px; text-align: center; margin-bottom: 12px; border: 1px dashed #dc2626;">
+                🔒 Withdrawal Locked!<br>Minimum <b>₹25</b> required to withdraw earnings. Keep checking for spins!
             </div>
 
-            <button class="btn-main" onclick="document.getElementById('walletModal').style.display='none'" style="background: #512da8;">Close Window ✕</button>
+            <button class="btn-main" onclick="document.getElementById('walletModal').style.display='none'" style="background: #4f46e5;">Close Window ✕</button>
         </div>
     </div>
 
     <!-- SPIN & WIN MODAL -->
     <div id="spinModal">
         <div class="qr-card">
-            <div style="font-size: 45px; margin-bottom: 5px;">🎡🎁</div>
-            <h2 style="font-size: 17px; color: #512da8; margin-bottom: 4px;">Lucky Spin Wheel</h2>
-            <p style="font-size: 11px; opacity: 0.8; margin-bottom: 10px;">Spin the wheel to win your guaranteed cashback!</p>
+            <div style="font-size: 42px; margin-bottom: 6px;">🎡🎁</div>
+            <h2 style="font-size: 17px; color: #4f46e5; margin-bottom: 4px;">Lucky Spin Wheel</h2>
+            <p style="font-size: 11px; opacity: 0.8; margin-bottom: 12px;">Spin to win guaranteed cashback rewards!</p>
             
-            <div id="wheelDisplayBox" style="background: linear-gradient(135deg, #7e57c2, #512da8); color: white; border: 4px solid #ffb300; padding: 15px; border-radius: 50%; width: 130px; height: 130px; margin: 15px auto; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
+            <div id="wheelDisplayBox" style="background: linear-gradient(135deg, #818cf8, #4f46e5); color: white; border: 4px solid #f59e0b; padding: 15px; border-radius: 50%; width: 130px; height: 130px; margin: 15px auto; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold; box-shadow: 0 6px 20px rgba(0,0,0,0.2);">
                 🎯 SPIN
             </div>
 
-            <div id="spinResultText" style="font-size: 13px; font-weight: bold; color: #2e7d32; margin-bottom: 10px;"></div>
+            <div id="spinResultText" style="font-size: 13px; font-weight: bold; color: #16a34a; margin-bottom: 12px;"></div>
 
-            <button class="btn-main" id="spinActionBtn" onclick="spinTheWheel()" style="background: #ff9800; color: #000; margin-bottom: 6px;">🌀 TAP TO SPIN NOW 🚀</button>
-            <button class="btn-main" onclick="document.getElementById('spinModal').style.display='none'" style="background: #2e7d32;">Close & Enter App ✅</button>
-        </div>
-    </div>
-
-    <!-- NOTIFICATION TOAST -->
-    <div id="notificationToast">
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-            <div id="toastTitle" style="font-weight: bold; color: #4caf50; font-size: 13px;">📨 Notification</div>
-            <span style="font-size: 10px; opacity: 0.8; background: #444; padding: 2px 5px; border-radius: 3px;">Stays 10s</span>
-        </div>
-        <div id="toastMessage" style="color: #fff; font-size: 13px; margin: 6px 0; font-weight: bold;"></div>
-        <button onclick="copyOtpCode()" style="background: #4caf50; color: white; border: none; padding: 4px 10px; border-radius: 4px; font-size: 11px; font-weight: bold; cursor: pointer;">📋 Copy</button>
-    </div>
-
-    <!-- GMAIL LOGIN MODAL -->
-    <div id="gmailLoginModal">
-        <div class="qr-card">
-            <div style="font-size: 45px; margin-bottom: 8px;">📧🔐</div>
-            <h2 style="font-size: 17px; color: #512da8; margin-bottom: 6px;">Gmail Verification Hub</h2>
-            <p style="font-size: 11px; opacity: 0.8; margin-bottom: 12px;">Enter your Gmail ID to receive instant OTP.</p>
-            <div class="form-group"><label>Enter Gmail Address</label><input type="email" id="userEmailInput" class="form-control" placeholder="username@gmail.com"></div>
-            <button class="btn-main" onclick="sendToastOtp()" style="margin-top: 6px;">Send OTP 🚀</button>
-        </div>
-    </div>
-
-    <!-- OTP VERIFY MODAL -->
-    <div id="otpVerifyModal">
-        <div class="qr-card">
-            <div style="font-size: 45px; margin-bottom: 8px;">🔑📱</div>
-            <h2 style="font-size: 17px; color: #2e7d32; margin-bottom: 6px;">Enter OTP Code</h2>
-            <p style="font-size: 11px; opacity: 0.8; margin-bottom: 12px;" id="otpSubText">Check top notification banner.</p>
-            <div class="form-group"><label>Enter 4-Digit OTP</label><input type="tel" id="otpCodeInput" class="form-control" placeholder="e.g. 1234" maxlength="4" style="text-align:center; font-size:18px; letter-spacing:5px;"></div>
-            <button class="btn-main" onclick="verifyEmailOtp()" style="background: #2e7d32; margin-top: 6px;">Verify ✅</button>
+            <button class="btn-main" id="spinActionBtn" onclick="spinTheWheel()" style="background: #f59e0b; color: #000; margin-bottom: 6px;">🌀 TAP TO SPIN NOW 🚀</button>
+            <button class="btn-main" onclick="document.getElementById('spinModal').style.display='none'" style="background: #16a34a;">Close & Enter App ✅</button>
         </div>
     </div>
 
     <header>
         <div class="header-top">
-            <div class="logo">⚡ Fastest Recharge</div>
+            <div class="logo">⚡ Fastest Recharge & Loot</div>
             <div style="display: flex; gap: 6px; align-items: center;">
-                <button onclick="toggleTheme()" style="background:none; border:none; font-size:16px; cursor:pointer;" title="Toggle Dark/Light Mode">🌓</button>
-                <div id="loggedUserDisplay" style="font-size: 10px; background: rgba(255,255,255,0.2); padding: 3px 6px; border-radius: 4px; max-width: 110px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"></div>
-                <div style="font-size: 11px; background: #ffb300; color: #000; padding: 3px 8px; border-radius: 4px; font-weight: bold; cursor:pointer;" onclick="switchTab('profile')">Admin ⚙</div>
+                <button onclick="toggleTheme()" style="background:none; border:none; font-size:18px; cursor:pointer;" title="Toggle Theme">🌓</button>
+                <div id="loggedUserDisplay" style="font-size: 10px; background: rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 6px; max-width: 110px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"></div>
+                <div style="font-size: 10px; background: rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 6px; font-weight: bold; cursor:pointer;" onclick="switchTab('profile')">Admin ⚙</div>
             </div>
         </div>
     </header>
@@ -374,202 +377,169 @@
 
         <!-- 1. HOME / RECHARGE SECTION -->
         <div id="homeSection" class="section-view active">
-            <div class="card-box" style="background: linear-gradient(135deg, #512da8, #7e57c2); color: white;">
-                <h2 style="font-size: 15px; margin-bottom: 4px;">📱 Fastest Recharge & Loot Hub</h2>
-                <p style="font-size: 11px; opacity: 0.9;">Instant Mobile, DTH, Redeem Code & Cable TV!</p>
+            <div class="card-box" style="background: linear-gradient(135deg, #4f46e5, #818cf8); color: white;">
+                <h2 style="font-size: 16px; margin-bottom: 4px;">🔥 Firebase & OTP Cloud Hub</h2>
+                <p style="font-size: 11px; opacity: 0.9;">Secure Gmail OTP Login, Cloud Database & Rewards.</p>
             </div>
 
-            <!-- WALLET BANNER -->
-            <div class="card-box" onclick="openWalletModal()" style="background: linear-gradient(135deg, #00acc1, #00838f); color: white; display: flex; justify-content: space-between; align-items: center; cursor: pointer;" title="Click to view balance & withdraw">
+            <!-- CLICKABLE WALLET BANNER -->
+            <div class="card-box" onclick="openWalletModal()" style="background: linear-gradient(135deg, #0d9488, #14b8a6); color: white; display: flex; justify-content: space-between; align-items: center; cursor: pointer;">
                 <div>
                     <div style="font-size: 11px; opacity: 0.9;">💰 My Reward Wallet (Tap to Open)</div>
-                    <div id="walletBalanceDisplay" style="font-size: 20px; font-weight: bold;">₹0</div>
+                    <div id="walletBalanceDisplay" style="font-size: 22px; font-weight: bold;">₹0</div>
                 </div>
-                <button id="spinWheelNavBtn" onclick="event.stopPropagation(); openSpinModal();" style="background: #ffb300; color: #000; border: none; padding: 6px 12px; border-radius: 6px; font-weight: bold; font-size: 12px; cursor: pointer; display: none;">🎡 Spin Wheel</button>
+                <button id="spinWheelNavBtn" onclick="event.stopPropagation(); openSpinModal();" style="background: #f59e0b; color: #000; border: none; padding: 6px 12px; border-radius: 6px; font-weight: bold; font-size: 12px; cursor: pointer; display: none;">🎡 Spin Wheel</button>
+            </div>
+
+            <!-- REFER & EARN BANNER -->
+            <div class="card-box" onclick="openReferModal()" style="background: linear-gradient(135deg, #f59e0b, #d97706); color: white; display: flex; justify-content: space-between; align-items: center; cursor: pointer;">
+                <div>
+                    <div style="font-size: 13px; font-weight: bold;">🎁 Refer & Earn ₹20 Cashback</div>
+                    <div style="font-size: 10px; opacity: 0.9;">Share via WhatsApp & earn when friend orders!</div>
+                </div>
+                <button style="background: white; color: #d97706; border: none; padding: 6px 10px; border-radius: 6px; font-weight: bold; font-size: 11px; cursor: pointer;">Share 🚀</button>
             </div>
 
             <div class="card-box">
-                <h3 style="font-size: 12px; color: #512da8; margin-bottom: 6px; font-weight: bold;">⚡ Select Service</h3>
+                <h3 style="font-size: 13px; color: #4f46e5; margin-bottom: 8px; font-weight: bold;">⚡ Select Service</h3>
                 <div class="services-grid">
                     <div class="service-card" onclick="openRechargeModal()">
                         <span>📱</span>Mobile Recharge
                     </div>
-                    <div class="service-card" onclick="alert('DTH TV Recharge service selected')">
-                        <span>📡</span>DTH / TV
+                    <div class="service-card" onclick="openOttModal()">
+                        <span>🎬</span>₹20 OTT Hub
                     </div>
                     <div class="service-card" onclick="openRedeemModal()">
                         <span>🎮</span>Redeem Code
                     </div>
-                    <div class="service-card" onclick="openCableSection()">
+                    <div class="service-card" onclick="alert('Cable TV service selected')">
                         <span>📺</span>Cable TV
                     </div>
                 </div>
             </div>
 
-            <div class="ad-slider-box" id="adBannerBox">
-                <h3 style="font-size: 13px; font-weight: bold; margin-bottom: 2px;" id="adTitle">🔥 Flat 20% Cashback on First Recharge!</h3>
-                <p style="font-size: 10px; opacity: 0.9;" id="adDesc">Use UPI/Fam app to get instant credit.</p>
-            </div>
-
-            <div class="purple-promo-banner">
-                <h3 style="font-size: 14px; font-weight: bold; margin-bottom: 3px;">Low Price Recharge Enjoy App</h3>
-                <p style="font-size: 11px; opacity: 0.9;">Experience the fastest and cheapest recharges online!</p>
+            <div class="ad-slider-box">
+                <h3 style="font-size: 13px; font-weight: bold; margin-bottom: 2px;">🔥 Flat 20% Cashback on First Order!</h3>
+                <p style="font-size: 10px; opacity: 0.9;">Instant cloud verification & automated delivery.</p>
             </div>
         </div>
 
         <!-- 2. HISTORY SECTION -->
         <div id="historySection" class="section-view">
-            <h2 style="font-size: 15px; margin-bottom: 8px;">📋 Recharge & Order History</h2>
+            <h2 style="font-size: 16px; margin-bottom: 10px;">📋 Order & Transaction History</h2>
             <div id="historyListContainer">
-                <div class="card-box" style="text-align: center; opacity: 0.7; padding: 20px;"><p style="font-size:12px;">No history yet.</p></div>
+                <div class="card-box" style="text-align: center; opacity: 0.6; padding: 24px;"><p style="font-size:12px;">No order history found.</p></div>
             </div>
         </div>
 
         <!-- 3. VOUCHERS SECTION -->
         <div id="vouchersSection" class="section-view">
-            <h2 style="font-size: 15px; margin-bottom: 8px;">🛍️ Discount Vouchers & Gift Cards</h2>
-            <p style="font-size: 11px; opacity: 0.8; margin-bottom: 8px;">Buy vouchers above ₹100 & get extra cashback!</p>
-            
+            <h2 style="font-size: 16px; margin-bottom: 10px;">🛍️ Discount Vouchers & Gift Cards</h2>
             <div style="display: flex; flex-direction: column; gap: 8px;">
                 <div class="card-box" style="display:flex; justify-content:space-between; align-items:center;">
-                    <div><b>📦 Flipkart Gift Voucher</b><br><span style="font-size:11px; color:#388e3c;">Min purchase ₹100 | Get 10% Off</span></div>
-                    <button class="btn-main" style="width: auto; padding: 6px 12px; font-size: 12px;" onclick="buyVoucher('Flipkart', 100)">Buy ₹100</button>
-                </div>
-                <div class="card-box" style="display:flex; justify-content:space-between; align-items:center;">
-                    <div><b>🛒 Amazon Pay Voucher</b><br><span style="font-size:11px; color:#388e3c;">Min purchase ₹150 | Get Instant Code</span></div>
-                    <button class="btn-main" style="width: auto; padding: 6px 12px; font-size: 12px;" onclick="buyVoucher('Amazon', 150)">Buy ₹150</button>
+                    <div><b>📦 Flipkart Gift Voucher</b><br><span style="font-size:11px; color:#16a34a;">Min purchase ₹100 | 10% Off</span></div>
+                    <button class="btn-main" style="width: auto; padding: 6px 14px; font-size: 12px;" onclick="buyVoucher('Flipkart', 100)">Buy ₹100</button>
                 </div>
             </div>
         </div>
 
-        <!-- 4. PROFILE & ACCOUNT SECTION -->
+        <!-- 4. PROFILE & ADMIN SECTION -->
         <div id="profileSection" class="section-view">
-            <h2 style="font-size: 15px; margin-bottom: 8px;">👤 Profile & Account Management</h2>
+            <h2 style="font-size: 16px; margin-bottom: 10px;">👤 Profile & Gmail OTP Controls</h2>
             
             <div class="card-box" style="margin-bottom: 10px;">
-                <h3 style="font-size: 13px; color: #512da8; margin-bottom: 4px;">📧 Logged In Account:</h3>
+                <h3 style="font-size: 13px; color: #4f46e5; margin-bottom: 4px;">📧 Logged-in Gmail:</h3>
                 <p id="profileEmailDisplay" style="font-size: 12px; font-weight: bold; margin-bottom: 10px;"></p>
-                <button class="btn-main" style="background: #e53935; font-size: 13px;" onclick="logoutUser()">🚪 Logout / Change Account 🔴</button>
+                <button class="btn-main" style="background: #ef4444; font-size: 13px;" onclick="logoutUser()">🚪 Logout Session 🔴</button>
             </div>
 
-            <!-- ADMIN PANEL -->
-            <div class="card-box" id="adminBoxContainer" style="margin-top: 10px;">
-                <h3 style="font-size: 13px; color: #512da8; margin-bottom: 6px; font-weight: bold;">🔐 Admin Panel (Manage Spin & Prices)</h3>
-                <div class="form-group"><label>Admin Password</label><input type="password" id="adminPassInput" class="form-control" placeholder="••••••••"></div>
-                <button class="btn-main" onclick="verifyAdmin()" style="margin-top: 4px;">Open Admin Controls</button>
+            <!-- SECURE ADMIN PANEL WITH ORDER APPROVAL DASHBOARD -->
+            <div class="card-box" id="adminBoxContainer">
+                <h3 style="font-size: 13px; color: #4f46e5; margin-bottom: 6px; font-weight: bold;">🔐 Secure Admin Controls</h3>
+                <div class="form-group"><label>Admin Access Key</label><input type="password" id="adminPassInput" class="form-control" placeholder="••••••••"></div>
+                <button class="btn-main" onclick="verifyAdmin()" style="margin-top: 4px;">Authenticate Admin 🔓</button>
 
-                <div id="adminControlsArea" style="display: none; margin-top: 10px; border-top: 1px solid var(--border-color, #eee); padding-top: 8px;">
-                    <!-- SPIN WHEEL LIVE ON/OFF SWITCH -->
-                    <div style="background: #ede7f6; padding: 8px; border-radius: 6px; margin-bottom: 10px; text-align: left;">
-                        <label style="font-weight: bold; color: #512da8; font-size: 12px; margin-bottom: 4px; display: block;">🎡 Spin Wheel Master Switch:</label>
-                        <div style="display: flex; gap: 10px;">
-                            <button onclick="setSpinState('ON')" style="background: #2e7d32; color: white; border: none; padding: 6px 12px; border-radius: 4px; font-weight: bold; cursor: pointer; flex: 1;">Turn Spin ON 🟢</button>
-                            <button onclick="setSpinState('OFF')" style="background: #e53935; color: white; border: none; padding: 6px 12px; border-radius: 4px; font-weight: bold; cursor: pointer; flex: 1;">Turn Spin OFF 🔴</button>
+                <div id="adminControlsArea" style="display: none; margin-top: 12px; border-top: 1px solid var(--border-color, #e5e7eb); padding-top: 10px;">
+                    <div style="background: #f1f5f9; padding: 10px; border-radius: 8px; margin-bottom: 10px; text-align: left;">
+                        <label style="font-weight: bold; color: #4f46e5; font-size: 12px; margin-bottom: 4px; display: block;">🎡 Spin Wheel Master Switch:</label>
+                        <div style="display: flex; gap: 8px;">
+                            <button onclick="setSpinState('ON')" style="background: #16a34a; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-weight: bold; cursor: pointer; flex: 1;">Turn ON 🟢</button>
+                            <button onclick="setSpinState('OFF')" style="background: #dc2626; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-weight: bold; cursor: pointer; flex: 1;">Turn OFF 🔴</button>
                         </div>
                         <div id="spinStatusDisplay" style="font-size: 11px; font-weight: bold; margin-top: 6px; color: #333;">Current Status: OFF</div>
                     </div>
 
-                    <h4 style="font-size: 12px; margin-bottom: 6px;">Set Cable TV Prices (Admin):</h4>
-                    <div class="form-group"><label>JioFiber TV (₹)</label><input type="number" id="priceCableJio" class="form-control" value="600"></div>
-                    <div class="form-group"><label>Airtel Digital TV (₹)</label><input type="number" id="priceCableAirtel" class="form-control" value="650"></div>
-                    <button class="btn-main" onclick="saveCablePrices()" style="margin-bottom: 10px;">Save Cable Prices 💾</button>
+                    <!-- ADMIN PENDING ORDERS APPROVAL DASHBOARD -->
+                    <div style="background: #f1f5f9; padding: 10px; border-radius: 8px; margin-bottom: 10px; text-align: left;">
+                        <label style="font-weight: bold; color: #4f46e5; font-size: 12px; margin-bottom: 6px; display: block;">📋 Pending Customer Orders (Approve / Reject):</label>
+                        <div id="adminOrdersDashboardList">
+                            <p style="font-size: 11px; opacity: 0.6;">No pending orders.</p>
+                        </div>
+                    </div>
+
+                    <div style="background: #f1f5f9; padding: 10px; border-radius: 8px; text-align: left;">
+                        <label style="font-weight: bold; color: #4f46e5; font-size: 12px; margin-bottom: 6px; display: block;">➕ Add New Recharge Plan:</label>
+                        <div class="form-group"><label>Operator</label><select id="adminNewOp" class="form-control"><option value="Jio">Jio</option><option value="Airtel">Airtel</option><option value="Vi">Vi</option><option value="BSNL">BSNL</option></select></div>
+                        <div class="form-group"><label>Plan Name / Details</label><input type="text" id="adminNewName" class="form-control" placeholder="e.g. 2GB/Day (84 Days)"></div>
+                        <div class="form-group"><label>Price (₹)</label><input type="number" id="adminNewPrice" class="form-control" placeholder="719"></div>
+                        <button class="btn-main" onclick="addNewPlanByAdmin()" style="background: #4f46e5;">Add Plan to App 🚀</button>
+                    </div>
                 </div>
             </div>
         </div>
 
     </div>
 
-    <!-- MOBILE RECHARGE POPUP MODAL -->
+    <!-- MOBILE RECHARGE MODAL WITH PLANS -->
     <div id="rechargeModal">
         <div class="qr-card">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                <h3 style="font-size: 14px; color: #512da8; font-weight: bold;">📱 Mobile Recharge Plans</h3>
-                <button onclick="document.getElementById('rechargeModal').style.display='none'" style="background:none; border:none; color:red; font-weight:bold; cursor:pointer; font-size:14px;">✕</button>
+                <h3 style="font-size: 15px; color: #4f46e5; font-weight: bold;">📱 Mobile Recharge</h3>
+                <button onclick="document.getElementById('rechargeModal').style.display='none'" style="background:none; border:none; color:red; font-weight:bold; cursor:pointer; font-size:16px;">✕</button>
             </div>
-            <div class="form-group"><label>Mobile Number</label><input type="tel" id="rechargeMob" class="form-control" placeholder="Enter 10-digit mobile" maxlength="10"></div>
+            <div class="form-group"><label>Mobile Number</label><input type="tel" id="rechargeMob" class="form-control" placeholder="10-digit mobile" maxlength="10"></div>
             <div class="form-group">
-                <label>Operator / Sim Provider</label>
+                <label>Operator</label>
                 <select id="operatorSelect" class="form-control" onchange="renderPlans()">
-                    <option value="Jio">🔴 MyJio - Jio Prepaid</option>
-                    <option value="Airtel">🔴 Airtel - Airtel Prepaid</option>
-                    <option value="Vi">🔴 Vi - Vi App Prepaid</option>
-                    <option value="BSNL">🔵 BSNL - BSNL Prepaid</option>
+                    <option value="Jio">Jio Prepaid</option>
+                    <option value="Airtel">Airtel Prepaid</option>
+                    <option value="Vi">Vi Prepaid</option>
+                    <option value="BSNL">BSNL Prepaid</option>
                 </select>
             </div>
-
-            <div class="filter-scroll" style="margin-top: 10px;">
-                <div class="filter-chip active" onclick="filterPlans('All', this)">All Plans</div>
-                <div class="filter-chip" onclick="filterPlans('Unlimited', this)">🔥 Unlimited</div>
-                <div class="filter-chip" onclick="filterPlans('Basic', this)">⚡ Basic</div>
-            </div>
-
-            <div id="plansContainer" style="margin-top: 8px; text-align: left;"></div>
+            <div id="plansContainer" style="margin-top: 8px; text-align: left; max-height: 250px; overflow-y: auto;"></div>
         </div>
     </div>
 
-    <!-- PLAY STORE REDEEM CODE MODAL -->
+    <!-- REDEEM MODAL WITH +₹5 FEE -->
     <div id="redeemModal">
         <div class="qr-card">
-            <h3 style="font-size: 15px; color: #512da8; margin-bottom: 8px;">🎮 Play Store Redeem Code</h3>
-            <div class="form-group"><label>Enter Redeem Amount (Min ₹10)</label><input type="number" id="redeemAmount" class="form-control" placeholder="e.g. 20 (Total ₹25)" min="10" oninput="calcRedeemTotal()"></div>
-            <div style="font-size: 12px; color: #388e3c; font-weight: bold; margin-bottom: 8px;" id="redeemTotalDisplay">Total Payable: ₹0 (Min ₹10)</div>
-            <div class="form-group"><label>Mobile Number (To send code)</label><input type="tel" id="redeemContact" class="form-control" placeholder="10-digit mobile" maxlength="10"></div>
-            
-            <button class="btn-main" onclick="submitRedeemOrder()" style="background: #2e7d32; margin-top: 6px;">Proceed to Payment 🚀</button>
-            <button class="btn-main" onclick="document.getElementById('redeemModal').style.display='none'" style="background: #dc3545; margin-top: 4px;">Cancel</button>
+            <h3 style="font-size: 15px; color: #4f46e5; margin-bottom: 8px;">🎮 Play Store Redeem Code</h3>
+            <div class="form-group"><label>Amount (Min ₹10) [e.g. ₹20 Redeem costs ₹25 with fee]</label><input type="number" id="redeemAmount" class="form-control" placeholder="Amount (e.g. 20)"></div>
+            <div class="form-group"><label>Mobile Number</label><input type="tel" id="redeemContact" class="form-control" placeholder="Mobile" maxlength="10"></div>
+            <button class="btn-main" onclick="submitRedeemOrder()" style="background: #16a34a; margin-top: 6px;">Proceed 🚀</button>
+            <button class="btn-main" onclick="document.getElementById('redeemModal').style.display='none'" style="background: #ef4444; margin-top: 4px;">Cancel</button>
         </div>
     </div>
 
-    <!-- CABLE TV PROVIDERS LIST MODAL -->
-    <div id="cableSectionContainer">
-        <div class="qr-card">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                <h3 style="font-size: 14px; color: #512da8; font-weight: bold;">📺 Select TV Cable / DTH Connection</h3>
-                <button onclick="document.getElementById('cableSectionContainer').style.display='none'" style="background:none; border:none; color:red; font-weight:bold; cursor:pointer; font-size:14px;">✕</button>
-            </div>
-            <div id="cableProvidersList" style="text-align: left;"></div>
-        </div>
-    </div>
-
-    <!-- CABLE CONNECTION ORDER MODAL -->
-    <div id="cableOrderModal">
-        <div class="qr-card">
-            <h3 style="font-size: 15px; color: #512da8; margin-bottom: 8px;" id="cableModalTitle">📺 Cable TV Booking</h3>
-            <div style="font-size: 13px; color: #388e3c; font-weight: bold; margin-bottom: 8px;" id="cablePriceDisplay">Connection Price: ₹600</div>
-
-            <div class="form-group"><label>Set-Top Box (STB) / Smart Card Number</label><input type="text" id="cableStbNo" class="form-control" placeholder="Enter STB / Card No"></div>
-            <div class="form-group"><label>Full Name</label><input type="text" id="cableName" class="form-control" placeholder="Customer Full Name"></div>
-            <div class="form-group"><label>UPI ID</label><input type="text" id="cableUpi" class="form-control" placeholder="username@upi"></div>
-            <div class="form-group"><label>Mobile Number</label><input type="tel" id="cableContact" class="form-control" placeholder="10-digit mobile" maxlength="10"></div>
-            <div class="form-group"><label>Installation Address</label><input type="text" id="cableAddress" class="form-control" placeholder="House / Street / City / Pincode"></div>
-
-            <button class="btn-main" onclick="submitCableOrder()" style="background: #2e7d32; margin-top: 6px;">Proceed to Payment 🚀</button>
-            <button class="btn-main" onclick="document.getElementById('cableOrderModal').style.display='none'" style="background: #dc3545; margin-top: 4px;">Cancel</button>
-        </div>
-    </div>
-
-    <!-- QR PAYMENT MODAL FOR RECHARGE -->
+    <!-- SECURE PAYMENT & UTR SUBMISSION MODAL -->
     <div id="qrModal">
         <div class="qr-card">
-            <h3 style="font-size: 15px; color: #512da8; margin-bottom: 4px;">Scan & Pay via UPI / Fam</h3>
-            <div style="font-size: 12px; font-weight: bold; color: #d32f2f; margin-bottom: 6px;">⏱ Time Left: <span id="timerDisplay" style="background: #ffebee; padding: 2px 6px; border-radius: 4px;">04:00</span></div>
+            <h3 style="font-size: 16px; color: #4f46e5; margin-bottom: 4px;">💳 Secure Payment via Auto-Fill</h3>
+            <div id="orderIdDisplay" style="font-size: 11px; background: #e0e7ff; color: #4338ca; padding: 4px 8px; border-radius: 4px; font-weight: bold; margin-bottom: 8px;"></div>
             
-            <a id="rechargeUpiIntentBtn" href="#" class="btn-main" style="background: #ff9800; color: #000; text-decoration: none; display: block; margin-bottom: 8px; font-size: 13px; padding: 12px; font-weight: bold;">🚀 CLICK HERE TO PAY VIA GPAY / PHONEPE (AUTO-FILL)</a>
+            <a id="rechargeUpiIntentBtn" href="#" class="btn-main" style="background: #f59e0b; color: #000; text-decoration: none; display: block; margin-bottom: 10px; font-size: 13px; padding: 12px; font-weight: bold;">🚀 PAY VIA GPAY / PHONEPE (Auto-Fill)</a>
 
-            <div style="background: white; padding: 6px; border-radius: 6px; display: inline-block; margin-bottom: 6px; border: 2px solid #333;">
+            <div style="background: white; padding: 6px; border-radius: 6px; display: inline-block; margin-bottom: 8px; border: 2px solid #333;">
                 <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=upi://pay?pa=9767136557@fam&pn=Fastest%20Recharge" alt="QR" style="width: 90px; height: 90px; display: block; margin: auto;">
             </div>
             
-            <div style="font-size: 11px; font-weight: bold; color: #2e7d32; margin-bottom: 4px;">UPI ID: <span style="color: #512da8;">9767136557@fam</span></div>
-            <div id="qrItemInfo" style="font-size: 11px; color: #555; margin-bottom: 6px; font-weight: bold;"></div>
+            <div style="font-size: 11px; font-weight: bold; color: #16a34a; margin-bottom: 8px;">UPI ID: 9767136557@fam</div>
             
-            <div style="background: #f9f9f9; padding: 6px; border-radius: 5px; border: 1px solid #ccc; text-align: left; margin-bottom: 8px;">
-                <label style="font-size: 11px; font-weight: bold; color: #d32f2f; display: block; margin-bottom: 2px;">📸 Upload Payment Screenshot (Required):</label>
-                <input type="file" id="rechargeProof" class="form-control" accept="image/*" style="font-size: 11px; padding: 4px;">
-            </div>
-            
-            <button class="btn-main" onclick="confirmPaymentAndSendWhatsApp()" style="background: #2e7d32; margin-bottom: 6px; padding: 10px; font-size: 13px;">I Have Paid ✅</button>
-            <button class="btn-main" onclick="document.getElementById('qrModal').style.display='none'; clearInterval(timerInterval);" style="background: #dc3545; padding: 8px; font-size: 12px;">Cancel</button>
+            <div class="form-group" style="text-align: left;"><label style="color:#d97706; font-weight:bold;">Enter UTR / UPI Ref Number (Mandatory):</label><input type="text" id="userUtrInput" class="form-control" placeholder="Enter 12-digit UTR"></div>
+
+            <button class="btn-main" onclick="submitOrderWithUtr()" style="background: #16a34a; margin-bottom: 6px;">Proceed & Send to Admin ✅</button>
+            <button class="btn-main" onclick="document.getElementById('qrModal').style.display='none'" style="background: #ef4444;">Cancel</button>
         </div>
     </div>
 
@@ -582,73 +552,158 @@
     </nav>
 
     <script>
-        let generatedOtp = "";
-        let pendingEmail = "";
+        let generatedOtpCode = "";
+        let pendingLoginEmail = "";
+
+        let defaultPlans = [
+            {operator: "Jio", name: "Popular: 1.5GB/Day (28 Days)", price: 239},
+            {operator: "Jio", name: "Unlimited: 2GB/Day (84 Days)", price: 719},
+            {operator: "Jio", name: "Basic Talktime / Data (30 Days)", price: 155},
+            {operator: "Airtel", name: "Popular: 1.5GB/Day (28 Days)", price: 265},
+            {operator: "Airtel", name: "Unlimited: 2GB/Day (84 Days)", price: 839},
+            {operator: "Vi", name: "Popular: 1.5GB/Day (28 Days)", price: 299},
+            {operator: "BSNL", name: "Long Validity: 2GB/Day (365 Days)", price: 2999}
+        ];
 
         window.addEventListener('DOMContentLoaded', () => {
-            let savedTheme = localStorage.getItem('zk_theme');
-            if(savedTheme === 'dark') {
-                document.body.classList.remove('light-mode');
-                document.body.classList.add('dark-mode');
-            }
-
-            let lastActiveTime = localStorage.getItem('zk_last_active');
-            let currentTime = Date.now();
-            let twoDaysMillis = 2 * 24 * 60 * 60 * 1000;
-
-            if(lastActiveTime && (currentTime - Number(lastActiveTime) > twoDaysMillis)) {
-                localStorage.clear();
+            let savedTheme = localStorage.getItem('zk_theme') || 'light';
+            document.body.className = savedTheme + '-mode';
+            
+            let loggedUser = localStorage.getItem('zk_logged_user_email');
+            if (loggedUser) {
+                document.getElementById('otpAuthModal').style.display = 'none';
+                document.getElementById('loggedUserDisplay').innerText = loggedUser;
+                document.getElementById('profileEmailDisplay').innerText = loggedUser;
+                loadUserCloudWallet(loggedUser);
             } else {
-                localStorage.setItem('zk_last_active', currentTime);
+                document.getElementById('otpAuthModal').style.display = 'flex';
             }
 
-            checkUserLoginState();
-            updateWalletUI();
+            if(!localStorage.getItem('zk_custom_plans')) {
+                localStorage.setItem('zk_custom_plans', JSON.stringify(defaultPlans));
+            }
+
+            // Check if user came via referral link
+            const urlParams = new URLSearchParams(window.location.search);
+            let refUser = urlParams.get('ref');
+            if(refUser && loggedUser) {
+                localStorage.setItem('zk_referred_by_' + loggedUser, refUser);
+            }
+
+            checkReferralUnlockStatus();
             checkSpinSystemState();
         });
+
+        // SEND GMAIL OTP VIA EMAILJS
+        function sendGmailOtp() {
+            let email = document.getElementById('authEmail').value.trim();
+            if(!email || !email.includes('@')) { alert("Please enter a valid Gmail address!"); return; }
+
+            generatedOtpCode = Math.floor(1000 + Math.random() * 9000).toString();
+            pendingLoginEmail = email;
+
+            let templateParams = {
+                email: email,
+                to_email: email,
+                otp_code: generatedOtpCode,
+                passcode: generatedOtpCode
+            };
+
+            let sendBtn = document.getElementById('sendOtpBtn');
+            sendBtn.innerText = "Sending OTP...";
+            sendBtn.disabled = true;
+
+            emailjs.send('service_ozt8cpp', 'template_nyyhy2n', templateParams)
+                .then(function(response) {
+                    alert("✅ 4-Digit OTP sent successfully to " + email + "!");
+                    document.getElementById('otpSectionBox').style.display = 'block';
+                    document.getElementById('verifyOtpBtn').style.display = 'block';
+                    sendBtn.style.display = 'none';
+                }, function(error) {
+                    alert("❌ Failed to send OTP: " + JSON.stringify(error));
+                    sendBtn.innerText = "Send OTP 🚀";
+                    sendBtn.disabled = false;
+                });
+        }
+
+        // VERIFY GMAIL OTP
+        function verifyGmailOtp() {
+            let enteredOtp = document.getElementById('enteredOtpCode').value.trim();
+            if(enteredOtp !== generatedOtpCode) {
+                alert("❌ Incorrect OTP! Please check your email inbox and enter the right 4-digit code.");
+                return;
+            }
+
+            localStorage.setItem('zk_logged_user_email', pendingLoginEmail);
+            document.getElementById('otpAuthModal').style.display = 'none';
+            document.getElementById('loggedUserDisplay').innerText = pendingLoginEmail;
+            document.getElementById('profileEmailDisplay').innerText = pendingLoginEmail;
+            loadUserCloudWallet(pendingLoginEmail);
+
+            const urlParams = new URLSearchParams(window.location.search);
+            let refUser = urlParams.get('ref');
+            if(refUser) {
+                localStorage.setItem('zk_referred_by_' + pendingLoginEmail, refUser);
+            }
+
+            alert("✅ Login Successful via Gmail OTP!");
+        }
+
+        async function loadUserCloudWallet(email) {
+            try {
+                let userRef = window.doc(window.firebaseDb, "users", email);
+                let snap = await window.getDoc(userRef);
+                if (snap.exists()) {
+                    let data = snap.data();
+                    localStorage.setItem('zk_wallet_' + email, data.wallet || 0);
+                } else {
+                    await window.setDoc(userRef, { wallet: 0, email: email });
+                    localStorage.setItem('zk_wallet_' + email, 0);
+                }
+                updateWalletUI();
+            } catch(e) {
+                updateWalletUI();
+            }
+        }
+
+        async function saveUserCloudWallet(email, newBal) {
+            localStorage.setItem('zk_wallet_' + email, newBal);
+            try {
+                let userRef = window.doc(window.firebaseDb, "users", email);
+                await window.updateDoc(userRef, { wallet: newBal });
+            } catch(e) {}
+        }
+
+        function toggleTheme() {
+            let isDark = document.body.classList.contains('dark-mode');
+            document.body.className = isDark ? 'light-mode' : 'dark-mode';
+            localStorage.setItem('zk_theme', isDark ? 'light' : 'dark');
+        }
 
         function checkSpinSystemState() {
             let spinState = localStorage.getItem('zk_spin_master_state') || 'OFF';
             let spinNavBtn = document.getElementById('spinWheelNavBtn');
-            if(spinState === 'ON') {
-                spinNavBtn.style.display = 'block';
-            } else {
-                spinNavBtn.style.display = 'none';
-            }
+            spinNavBtn.style.display = (spinState === 'ON') ? 'block' : 'none';
         }
 
         function setSpinState(state) {
             localStorage.setItem('zk_spin_master_state', state);
-            
             if(state === 'ON') {
-                // Increment round number so all users get a fresh spin chance for this round!
                 let currentRound = Number(localStorage.getItem('zk_spin_round')) || 0;
                 localStorage.setItem('zk_spin_round', currentRound + 1);
-                
-                let keys = Object.keys(localStorage);
-                keys.forEach(k => {
-                    if(k.startsWith('zk_has_spun_round_')) {
-                        localStorage.removeItem(k);
-                    }
-                });
-                alert("🟢 Spin Wheel is now LIVE for all users! Unlocked for this round.");
+                Object.keys(localStorage).forEach(k => { if(k.startsWith('zk_has_spun_round_')) localStorage.removeItem(k); });
+                alert("🟢 Spin Wheel LIVE via Cloud!");
             } else {
-                alert("🔴 Spin Wheel is now turned OFF and locked for everyone.");
+                alert("🔴 Spin Wheel turned OFF.");
             }
-
             document.getElementById('spinStatusDisplay').innerText = `Current Status: ${state}`;
             checkSpinSystemState();
         }
 
         function updateWalletUI() {
-            let emailKey = localStorage.getItem('zk_logged_email') || 'guest';
+            let emailKey = localStorage.getItem('zk_logged_user_email') || 'guest';
             let userWalletKey = 'zk_wallet_' + emailKey;
-            
-            let walletBal = Number(localStorage.getItem(userWalletKey));
-            if(isNaN(walletBal)) {
-                walletBal = 0; 
-                localStorage.setItem(userWalletKey, walletBal);
-            }
+            let walletBal = Number(localStorage.getItem(userWalletKey)) || 0;
 
             document.getElementById('walletBalanceDisplay').innerText = `₹${walletBal}`;
             document.getElementById('modalWalletBalance').innerText = `₹${walletBal}`;
@@ -671,74 +726,51 @@
         }
 
         function openSpinModal() {
-            let spinState = localStorage.getItem('zk_spin_master_state') || 'OFF';
-            if(spinState !== 'ON') {
-                alert("🔒 Spin Wheel is currently offline by Admin!");
+            if(localStorage.getItem('zk_spin_master_state') !== 'ON') {
+                alert("🔒 Spin Wheel is currently offline.");
                 return;
             }
-
-            let emailKey = localStorage.getItem('zk_logged_email') || 'guest';
+            let emailKey = localStorage.getItem('zk_logged_user_email') || 'guest';
             let currentRound = localStorage.getItem('zk_spin_round') || '1';
             let spinKey = `zk_has_spun_round_${currentRound}_${emailKey}`;
-            let hasSpun = localStorage.getItem(spinKey);
-
-            let spinResultText = document.getElementById('spinResultText');
             let spinBtn = document.getElementById('spinActionBtn');
 
             document.getElementById('spinModal').style.display = 'flex';
-
-            if(hasSpun === 'true') {
-                spinResultText.innerText = "❌ You have already spun this round! Wait for admin to open next round.";
+            if(localStorage.getItem(spinKey) === 'true') {
+                document.getElementById('spinResultText').innerText = "❌ Already spun this round!";
                 spinBtn.style.display = 'none';
                 document.getElementById('wheelDisplayBox').innerText = "🔒 LOCKED";
             } else {
-                spinResultText.innerText = "";
+                document.getElementById('spinResultText').innerText = "";
                 spinBtn.style.display = 'block';
                 document.getElementById('wheelDisplayBox').innerText = "🎯 SPIN";
             }
         }
 
         function spinTheWheel() {
-            let emailKey = localStorage.getItem('zk_logged_email') || 'guest';
+            let emailKey = localStorage.getItem('zk_logged_user_email') || 'guest';
             let currentRound = localStorage.getItem('zk_spin_round') || '1';
             let spinKey = `zk_has_spun_round_${currentRound}_${emailKey}`;
-            let hasSpun = localStorage.getItem(spinKey);
-
-            if(hasSpun === 'true') {
-                alert("You have already used your spin for this round!");
-                return;
-            }
+            if(localStorage.getItem(spinKey) === 'true') return;
 
             let wheelBox = document.getElementById('wheelDisplayBox');
-            let spinBtn = document.getElementById('spinActionBtn');
-            spinBtn.style.display = 'none';
+            document.getElementById('spinActionBtn').style.display = 'none';
 
-            // Track how many times this user has spun across rounds (1st, 2nd, 3rd, 4th, 5th, 6th...)
-            let userSpinCountKey = 'zk_spin_count_' + emailKey;
-            let spinCount = Number(localStorage.getItem(userSpinCountKey)) || 0;
-            spinCount++;
-            localStorage.setItem(userSpinCountKey, spinCount);
-
-            // Determine reward based on spin count sequence: 1st=₹2, 2nd=₹5, 3rd=₹10, 4th=₹2, 5th=₹6, 6th=₹8...
-            let rewardSchedule = [2, 5, 10, 2, 6, 8];
-            let reward = rewardSchedule[(spinCount - 1) % rewardSchedule.length];
-
-            let fakeAmounts = [500, 10, 30, 5, 2, 8, 6];
+            let fakeAmounts = [500, 10, 30, 2, 100];
             let counter = 0;
             let spinInterval = setInterval(() => {
-                let randomVal = fakeAmounts[Math.floor(Math.random() * fakeAmounts.length)];
-                wheelBox.innerText = `₹${randomVal}`;
+                wheelBox.innerText = `₹${fakeAmounts[Math.floor(Math.random() * fakeAmounts.length)]}`;
                 counter++;
-                if(counter > 12) {
+                if(counter > 10) {
                     clearInterval(spinInterval);
-                    
+                    let reward = 2;
                     wheelBox.innerText = `₹${reward}`;
-                    document.getElementById('spinResultText').innerText = `🎉 Congratulations! You won ₹${reward} cashback (Spin #${spinCount})! Added to wallet.`;
+                    document.getElementById('spinResultText').innerText = `🎉 Won ₹${reward} Cashback! Saved to Cloud.`;
 
                     let userWalletKey = 'zk_wallet_' + emailKey;
                     let currentBal = Number(localStorage.getItem(userWalletKey)) || 0;
                     let newBal = currentBal + reward;
-                    localStorage.setItem(userWalletKey, newBal);
+                    saveUserCloudWallet(emailKey, newBal);
                     localStorage.setItem(spinKey, 'true');
                     updateWalletUI();
                 }
@@ -747,356 +779,331 @@
 
         function requestWalletWithdrawal() {
             let upi = document.getElementById('modalWithdrawUpi').value.trim();
-            let emailKey = localStorage.getItem('zk_logged_email') || 'guest';
+            let emailKey = localStorage.getItem('zk_logged_user_email') || 'guest';
             let userWalletKey = 'zk_wallet_' + emailKey;
             let bal = Number(localStorage.getItem(userWalletKey)) || 0;
 
-            if(!upi || upi.indexOf('@') === -1) {
-                alert("Please enter a valid UPI ID!");
-                return;
-            }
-
-            if(bal < 25) {
-                alert("Minimum withdrawal limit is ₹25!");
-                return;
-            }
-
-            let adminWhatsApp = "919767136557";
-            let msg = `💸 WALLET WITHDRAWAL REQUEST!\n\n` +
-                      `📧 User: ${localStorage.getItem('zk_logged_email')}\n` +
-                      `💰 Amount: ₹${bal}\n` +
-                      `💳 UPI ID: ${upi}\n\n` +
-                      `Please transfer the money to this UPI ID!`;
-
-            let waUrl = `https://wa.me/${adminWhatsApp}?text=` + encodeURIComponent(msg);
-            alert("✅ Withdrawal request submitted! Opening WhatsApp to notify admin...");
+            if(!upi || !upi.includes('@')) { alert("Enter valid UPI ID!"); return; }
+            if(bal < 25) { alert("Minimum withdrawal is ₹25!"); return; }
+            
+            let waUrl = `https://wa.me/919767136557?text=` + encodeURIComponent(`💸 CLOUD WITHDRAWAL REQUEST: ₹${bal} by ${emailKey} to UPI: ${upi}`);
+            alert("✅ Request submitted! Opening WhatsApp...");
             window.open(waUrl, '_blank');
         }
 
-        function toggleTheme() {
-            let body = document.body;
-            if(body.classList.contains('light-mode')) {
-                body.classList.remove('light-mode');
-                body.classList.add('dark-mode');
-                localStorage.setItem('zk_theme', 'dark');
-            } else {
-                body.classList.remove('dark-mode');
-                body.classList.add('light-mode');
-                localStorage.setItem('zk_theme', 'light');
-            }
+        function openRechargeModal() { document.getElementById('rechargeModal').style.display = 'flex'; renderPlans(); }
+        function openRedeemModal() { document.getElementById('redeemModal').style.display = 'flex'; }
+        function openReferModal() { 
+            document.getElementById('referModal').style.display = 'flex'; 
+            checkReferralUnlockStatus();
         }
+        function openOttModal() { document.getElementById('ottModal').style.display = 'flex'; }
 
-        function openLiveChatModal() {
-            document.getElementById('liveChatModal').style.display = 'flex';
-        }
+        // NATIVE SHARE SHEET INTEGRATION
+        function nativeShareApp() {
+            let userEmail = localStorage.getItem('zk_logged_user_email') || 'user';
+            let shareUrl = window.location.href.split('?')[0] + `?ref=` + encodeURIComponent(userEmail);
+            let shareText = `🔥 Fastest Recharge & Loot Hub!\nGet instant mobile recharges, redeem codes & OTT packs securely.\nJoin now using my link: ${shareUrl}`;
 
-        function sendLiveChatToWhatsApp() {
-            let name = document.getElementById('chatUserName').value.trim();
-            let mobile = document.getElementById('chatUserMobile').value.trim();
-            let msg = document.getElementById('chatUserMessage').value.trim();
-            if(!name || mobile.length < 10 || !msg) {
-                alert("Please fill in all fields correctly!");
-                return;
-            }
-            let adminWhatsApp = "919767136557";
-            let chatText = `💬 LIVE CHAT SUPPORT QUERY!\n\n👤 Name: ${name}\n📞 Mobile: ${mobile}\n✉️ Msg: ${msg}`;
-            window.open(`https://wa.me/${adminWhatsApp}?text=` + encodeURIComponent(chatText), '_blank');
-            document.getElementById('liveChatModal').style.display = 'none';
-        }
-
-        function checkUserLoginState() {
-            let savedUser = localStorage.getItem('zk_logged_email');
-            if(!savedUser) {
-                document.getElementById('gmailLoginModal').style.display = 'flex';
-            } else {
-                document.getElementById('loggedUserDisplay').innerText = savedUser;
-                document.getElementById('profileEmailDisplay').innerText = savedUser;
-            }
-        }
-
-        function logoutUser() {
-            if(confirm("Do you want to logout?")) {
-                localStorage.removeItem('zk_logged_email');
-                location.reload();
-            }
-        }
-
-        function showNotificationToast(title, message) {
-            let toast = document.getElementById('notificationToast');
-            document.getElementById('toastTitle').innerText = title;
-            document.getElementById('toastMessage').innerText = message;
-            toast.className = "show";
-            setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 10000);
-        }
-
-        function copyOtpCode() {
-            if(generatedOtp) {
-                navigator.clipboard.writeText(generatedOtp).then(() => {
-                    alert("📋 OTP Copied: " + generatedOtp);
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Fastest Recharge & Loot Hub',
+                    text: shareText,
+                    url: shareUrl,
+                }).then(() => {
+                    console.log('Shared successfully');
+                }).catch((error) => {
+                    console.log('Error sharing', error);
                 });
+            } else {
+                let waShareUrl = `https://api.whatsapp.com/send?text=` + encodeURIComponent(shareText);
+                window.open(waShareUrl, '_blank');
             }
         }
 
-        function sendToastOtp() {
-            let email = document.getElementById('userEmailInput').value.trim();
-            if(!email || !email.includes('@gmail.com')) {
-                alert("Please enter a valid Gmail address!");
-                return;
+        function checkReferralUnlockStatus() {
+            let userEmail = localStorage.getItem('zk_logged_user_email') || 'guest';
+            let unlockedKey = 'zk_referral_unlocked_' + userEmail;
+            let isUnlocked = localStorage.getItem(unlockedKey) === 'true';
+
+            if(isUnlocked) {
+                document.getElementById('referralUnlockedBox').style.display = 'block';
+            } else {
+                document.getElementById('referralUnlockedBox').style.display = 'none';
             }
-            pendingEmail = email;
-            generatedOtp = Math.floor(1000 + Math.random() * 9000).toString();
-            showNotificationToast("📨 OTP Code Received", `Your Code is: ${generatedOtp}`);
-            document.getElementById('gmailLoginModal').style.display = 'none';
-            document.getElementById('otpVerifyModal').style.display = 'flex';
         }
 
-        function verifyEmailOtp() {
-            let enteredOtp = document.getElementById('otpCodeInput').value.trim();
-            if(enteredOtp !== generatedOtp) {
-                alert("Incorrect OTP code!");
-                return;
-            }
-            localStorage.setItem('zk_logged_email', pendingEmail);
-            localStorage.setItem('zk_last_active', Date.now());
-            document.getElementById('otpVerifyModal').style.display = 'none';
-            updateWalletUI();
-            checkUserLoginState();
+        function claimReferralReward() {
+            let upi = document.getElementById('earnedUpiInput').value.trim();
+            if(!upi || !upi.includes('@')) { alert("Please enter valid UPI ID for your ₹20 cashback!"); return; }
             
-            let spinState = localStorage.getItem('zk_spin_master_state') || 'OFF';
-            let currentRound = localStorage.getItem('zk_spin_round') || '1';
-            let spinKey = `zk_has_spun_round_${currentRound}_${pendingEmail}`;
-            if(spinState === 'ON' && !localStorage.getItem(spinKey)) {
-                setTimeout(() => {
-                    openSpinModal();
-                }, 800);
+            let userEmail = localStorage.getItem('zk_logged_user_email') || 'guest';
+            let waMsg = `🎁 REFERRAL CASHBACK CLAIM (₹20)\n\n` +
+                        `👤 User: ${userEmail}\n` +
+                        `💳 Reward UPI ID: ${upi}\n\n` +
+                        `👉 Friend successfully completed order! Please send ₹20 cashback.`;
+
+            window.open(`https://wa.me/919767136557?text=` + encodeURIComponent(waMsg), '_blank');
+            alert("✅ Cashback claim sent to Admin via WhatsApp!");
+            document.getElementById('referModal').style.display = 'none';
+        }
+
+        function submitOttOrder() {
+            let mob = document.getElementById('ottContact').value.trim();
+            let utr = document.getElementById('ottUtrInput').value.trim();
+
+            if(!mob || mob.length < 10) { alert("Enter valid mobile number!"); return; }
+            if(!utr || utr.length < 6) { alert("Enter valid UTR / UPI Reference Number after paying ₹20!"); return; }
+
+            let orderId = "OTT-" + Math.floor(100000 + Math.random() * 900000);
+            let userEmail = localStorage.getItem('zk_logged_user_email') || 'Guest';
+
+            let newOrder = {
+                id: orderId,
+                title: "₹20 OTT Subscription (All Series & Movies)",
+                price: 20,
+                email: userEmail,
+                contact: mob,
+                utr: utr,
+                date: new Date().toLocaleString(),
+                status: "⏳ Status: Pending Admin Approval"
+            };
+
+            let allOrders = JSON.parse(localStorage.getItem('zk_admin_all_orders')) || [];
+            allOrders.unshift(newOrder);
+            localStorage.setItem('zk_admin_all_orders', JSON.stringify(allOrders));
+
+            let hist = JSON.parse(localStorage.getItem('zk_history_v15')) || [];
+            hist.unshift(newOrder);
+            localStorage.setItem('zk_history_v15', JSON.stringify(hist));
+
+            let referrer = localStorage.getItem('zk_referred_by_' + userEmail);
+            if(referrer) {
+                localStorage.setItem('zk_referral_unlocked_' + referrer, 'true');
             }
 
-            alert("Login Successful! Welcome.");
-        }
+            document.getElementById('ottModal').style.display = 'none';
 
-        let cablePrices = JSON.parse(localStorage.getItem('zk_cable_prices_v5')) || { "JioFiber TV": 600, "Airtel Digital TV": 650, "Tata Play HD": 700, "Sun Direct": 500, "D2H / Dish TV": 550 };
-        let cableProviders = [
-            {name: "JioFiber TV", desc: "4K HD Set-Top Box + 550+ Channels"},
-            {name: "Airtel Digital TV", desc: "Xstream Box + OTT Apps Included"},
-            {name: "Tata Play HD", desc: "Binge+ Smart STB Connection"},
-            {name: "Sun Direct", desc: "Digital Clear Picture Quality"},
-            {name: "D2H / Dish TV", desc: "All Sports & Movies Packs"}
-        ];
+            let waMsg = `🎬 NEW OTT SUBSCRIPTION ORDER\n\n` +
+                        `🆔 Order ID: ${orderId}\n` +
+                        `📦 Service: ₹20 OTT All Movies & Series\n` +
+                        `💰 Amount: ₹20\n` +
+                        `🔢 UTR Number: ${utr}\n` +
+                        `👤 User Email: ${userEmail}\n` +
+                        `📱 Mobile: ${mob}\n\n` +
+                        `👉 Please verify payment and send OTT login details to customer!`;
 
-        let plansList = JSON.parse(localStorage.getItem('zk_plans_v15')) || [
-            {id: 1, operator: "Jio", name: "1.5GB/Day (28 Days)", category: "Unlimited", details: "Unlimited Calls | 100 SMS/Day", price: 239},
-            {id: 2, operator: "Jio", name: "2GB/Day (28 Days)", category: "Unlimited", details: "Unlimited Calls | 100 SMS/Day", price: 299},
-            {id: 3, operator: "Airtel", name: "1.5GB/Day (28 Days)", category: "Unlimited", details: "Unlimited Calls | 100 SMS/Day", price: 265},
-            {id: 4, operator: "Vi", name: "1.5GB/Day (28 Days)", category: "Unlimited", details: "Unlimited Calls | 100 SMS/Day", price: 269},
-            {id: 5, operator: "BSNL", name: "2GB/Day (30 Days)", category: "Unlimited", details: "Unlimited Calls | 100 SMS/Day", price: 199}
-        ];
-
-        let historyList = JSON.parse(localStorage.getItem('zk_history_v15')) || [];
-        let currentCheckoutItem = null;
-        let timerInterval = null;
-        let isAdminLoggedIn = false;
-        let activeCategoryFilter = 'All';
-
-        function saveCablePrices() {
-            cablePrices["JioFiber TV"] = Number(document.getElementById('priceCableJio').value) || 600;
-            cablePrices["Airtel Digital TV"] = Number(document.getElementById('priceCableAirtel').value) || 650;
-            localStorage.setItem('zk_cable_prices_v5', JSON.stringify(cablePrices));
-            alert("✅ Cable TV Prices saved successfully!");
-        }
-
-        function verifyAdmin() {
-            let pass = document.getElementById('adminPassInput').value.trim();
-            if(pass === "zkadmin123" || pass === "zkadmin") {
-                isAdminLoggedIn = true;
-                document.getElementById('adminControlsArea').style.display = 'block';
-                let currentState = localStorage.getItem('zk_spin_master_state') || 'OFF';
-                document.getElementById('spinStatusDisplay').innerText = `Current Status: ${currentState}`;
-                alert("🔓 Admin Unlocked!");
-            } else {
-                alert("❌ Incorrect Password!");
-            }
-        }
-
-        function openRechargeModal() {
-            document.getElementById('rechargeModal').style.display = 'flex';
-            renderPlans();
-        }
-
-        function openRedeemModal() {
-            document.getElementById('redeemAmount').value = "";
-            document.getElementById('redeemContact').value = "";
-            document.getElementById('redeemTotalDisplay').innerText = "Total Payable: ₹0 (Min ₹10)";
-            document.getElementById('redeemModal').style.display = 'flex';
-        }
-
-        function calcRedeemTotal() {
-            let amt = Number(document.getElementById('redeemAmount').value) || 0;
-            if(amt < 10) {
-                document.getElementById('redeemTotalDisplay').innerText = "⚠️ Minimum amount should be ₹10";
-            } else {
-                document.getElementById('redeemTotalDisplay').innerText = `Total Payable: ₹${amt + 5} (For ₹${amt} Redeem Code)`;
-            }
-        }
-
-        function submitRedeemOrder() {
-            let amt = Number(document.getElementById('redeemAmount').value) || 0;
-            let contact = document.getElementById('redeemContact').value.trim();
-            if(amt < 10 || contact.length < 10) {
-                alert("Please enter a valid amount (Min ₹10) and 10-digit mobile number!");
-                return;
-            }
-            document.getElementById('redeemModal').style.display = 'none';
-            initiateCheckout(`Play Store Redeem Code ₹${amt}`, amt + 5);
-        }
-
-        function openCableSection() {
-            let cBox = document.getElementById('cableSectionContainer');
-            cBox.style.display = 'flex';
-            let listContainer = document.getElementById('cableProvidersList');
-            listContainer.innerHTML = "";
-            cableProviders.forEach(cp => {
-                let pr = cablePrices[cp.name] || 600;
-                listContainer.innerHTML += `
-                    <div class="cable-provider-card" onclick="openCableOrderModal('${cp.name}', ${pr})">
-                        <div>
-                            <div style="font-weight: bold; font-size: 13px;">📺 ${cp.name}</div>
-                            <div style="font-size: 10px; opacity: 0.8; margin-top: 2px;">${cp.desc}</div>
-                        </div>
-                        <div style="color: #2e7d32; font-weight: bold; font-size: 13px;">₹${pr} ➔</div>
-                    </div>
-                `;
-            });
-        }
-
-        function openCableOrderModal(pName, price) {
-            document.getElementById('cableSectionContainer').style.display = 'none';
-            window.tempCableName = pName;
-            window.tempCablePrice = price;
-            document.getElementById('cableModalTitle').innerText = `📺 ${pName} Connection`;
-            document.getElementById('cablePriceDisplay').innerText = `Connection Price: ₹${price}`;
-            document.getElementById('cableOrderModal').style.display = 'flex';
-        }
-
-        function submitCableOrder() {
-            let stb = document.getElementById('cableStbNo').value.trim();
-            let name = document.getElementById('cableName').value.trim();
-            if(!stb || !name) {
-                alert("Please fill in STB number and Name!");
-                return;
-            }
-            document.getElementById('cableOrderModal').style.display = 'none';
-            initiateCheckout(`Cable TV: ${window.tempCableName} (STB: ${stb})`, window.tempCablePrice);
-        }
-
-        function filterPlans(cat, chipEl) {
-            activeCategoryFilter = cat;
-            document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
-            chipEl.classList.add('active');
-            renderPlans();
+            window.open(`https://wa.me/919767136557?text=` + encodeURIComponent(waMsg), '_blank');
+            alert("✅ OTT Order submitted! Waiting for Admin verification.");
+            switchTab('history');
         }
 
         function renderPlans() {
             let container = document.getElementById('plansContainer');
             container.innerHTML = "";
-            let selectedOp = document.getElementById('operatorSelect').value;
-            let filtered = plansList.filter(p => p.operator === selectedOp && (activeCategoryFilter === 'All' || p.category === activeCategoryFilter));
+            let op = document.getElementById('operatorSelect').value;
+            let allPlans = JSON.parse(localStorage.getItem('zk_custom_plans')) || defaultPlans;
+
+            let filtered = allPlans.filter(p => p.operator === op);
+            if(filtered.length === 0) {
+                container.innerHTML = `<div style="text-align:center; padding:10px; font-size:12px; opacity:0.6;">No plans found for ${op}. Add via Admin panel.</div>`;
+                return;
+            }
 
             filtered.forEach(p => {
-                container.innerHTML += `
-                    <div class="plan-list-item" onclick="initiateCheckout('${p.operator} - ${p.name} (${p.details})', ${p.price})">
-                        <div style="flex: 1;">
-                            <div style="font-size: 13px; font-weight: bold;">₹${p.price} <span style="font-size:10px; background:#ede7f6; color:#512da8; padding:1px 5px; border-radius:3px;">${p.category}</span></div>
-                            <div style="font-size: 11px; margin-top: 2px;"><b>${p.name}</b></div>
-                            <div style="font-size: 10px; opacity: 0.8; margin-top: 1px;">📞 ${p.details}</div>
-                        </div>
-                    </div>
-                `;
+                container.innerHTML += `<div class="plan-list-item" onclick="initiateCheckout('${p.operator} - ${p.name}', ${p.price})"><div><b>₹${p.price}</b> - ${p.name}</div></div>`;
             });
         }
 
-        function initiateCheckout(itemName, price) {
-            let mob = document.getElementById('rechargeMob').value.trim() || "9999999999";
-            let sim = document.getElementById('operatorSelect') ? document.getElementById('operatorSelect').value : "Jio";
-            currentCheckoutItem = {title: `${itemName}`, price: price, mobile: mob, sim: sim};
-            document.getElementById('qrItemInfo').innerHTML = `${currentCheckoutItem.title}<br><b>Amount: ₹${price}</b>`;
-            
-            let upiIntentUrl = `upi://pay?pa=9767136557@fam&pn=Fastest%20Recharge&am=${price}&cu=INR&tn=Recharge`;
-            document.getElementById('rechargeUpiIntentBtn').href = upiIntentUrl;
+        function addNewPlanByAdmin() {
+            let op = document.getElementById('adminNewOp').value;
+            let name = document.getElementById('adminNewName').value.trim();
+            let price = Number(document.getElementById('adminNewPrice').value);
 
-            document.getElementById('rechargeModal').style.display = 'none';
-            document.getElementById('qrModal').style.display = 'flex';
-            document.getElementById('rechargeProof').value = "";
+            if(!name || !price) { alert("Please enter plan name and price!"); return; }
+
+            let allPlans = JSON.parse(localStorage.getItem('zk_custom_plans')) || defaultPlans;
+            allPlans.push({operator: op, name: name, price: price});
+            localStorage.setItem('zk_custom_plans', JSON.stringify(allPlans));
+
+            alert("✅ New plan added successfully!");
+            document.getElementById('adminNewName').value = "";
+            document.getElementById('adminNewPrice').value = "";
         }
 
-        function confirmPaymentAndSendWhatsApp() {
-            let proofInput = document.getElementById('rechargeProof');
-            if(!proofInput.files || proofInput.files.length === 0) {
-                alert("⚠️ Please upload payment screenshot to proceed!");
+        function submitRedeemOrder() {
+            let baseAmt = Number(document.getElementById('redeemAmount').value);
+            let contact = document.getElementById('redeemContact').value.trim();
+
+            if(!baseAmt || baseAmt < 10) { alert("Minimum amount is ₹10!"); return; }
+            if(!contact || contact.length < 10) { alert("Enter valid 10-digit mobile number!"); return; }
+
+            let finalAmt = baseAmt + 5;
+            initiateCheckout(`Redeem Code (Base ₹${baseAmt} + ₹5 Fee)`, finalAmt);
+        }
+
+        function initiateCheckout(item, price) {
+            let mob = document.getElementById('rechargeMob').value.trim();
+            let orderId = "ZK-" + Math.floor(100000 + Math.random() * 900000);
+            document.getElementById('orderIdDisplay').innerText = `Order ID: ${orderId}`;
+            document.getElementById('rechargeUpiIntentBtn').href = `upi://pay?pa=9767136557@fam&pn=Fastest%20Recharge&am=${price}&cu=INR&tn=${orderId}`;
+            document.getElementById('rechargeModal').style.display = 'none';
+            document.getElementById('redeemModal').style.display = 'none';
+            document.getElementById('qrModal').style.display = 'flex';
+            document.getElementById('userUtrInput').value = "";
+            window.currentOrder = { id: orderId, title: item, price: price, contact: mob || "N/A" };
+        }
+
+        function submitOrderWithUtr() {
+            let utr = document.getElementById('userUtrInput').value.trim();
+            if(!utr || utr.length < 6) {
+                alert("❌ Please enter a valid payment UTR / UPI reference number after paying!");
                 return;
             }
-            document.getElementById('qrModal').style.display = 'none';
-            let d = currentCheckoutItem;
-            let histObj = {
-                id: Date.now(),
-                title: d.title,
-                price: d.price,
-                date: new Date().toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' }),
-                status: "⏳ Payment Verification Pending"
+
+            let o = window.currentOrder;
+            let userEmail = localStorage.getItem('zk_logged_user_email') || 'Guest';
+
+            let newOrder = {
+                id: o.id,
+                title: o.title,
+                price: o.price,
+                email: userEmail,
+                contact: o.contact,
+                utr: utr,
+                date: new Date().toLocaleString(),
+                status: "⏳ Status: Pending Admin Approval"
             };
-            historyList.unshift(histObj);
-            localStorage.setItem('zk_history_v15', JSON.stringify(historyList));
+
+            let allOrders = JSON.parse(localStorage.getItem('zk_admin_all_orders')) || [];
+            allOrders.unshift(newOrder);
+            localStorage.setItem('zk_admin_all_orders', JSON.stringify(allOrders));
+
+            let hist = JSON.parse(localStorage.getItem('zk_history_v15')) || [];
+            hist.unshift(newOrder);
+            localStorage.setItem('zk_history_v15', JSON.stringify(hist));
+
+            let referrer = localStorage.getItem('zk_referred_by_' + userEmail);
+            if(referrer) {
+                localStorage.setItem('zk_referral_unlocked_' + referrer, 'true');
+            }
+
+            document.getElementById('qrModal').style.display = 'none';
             
-            let adminWhatsApp = "919767136557";
-            let msg = `⚡ NEW ORDER RECEIVED!\n📦 Item: ${d.title}\n💰 Price: ₹${d.price}\n📸 Screenshot uploaded. Please verify!`;
-            window.open(`https://wa.me/${adminWhatsApp}?text=` + encodeURIComponent(msg), '_blank');
+            let waMsg = `🔔 NEW ORDER & UTR SUBMISSION\n\n` +
+                        `🆔 Order ID: ${o.id}\n` +
+                        `📦 Item: ${o.title}\n` +
+                        `💰 Amount: ₹${o.price}\n` +
+                        `🔢 UTR Number: ${utr}\n` +
+                        `👤 User: ${userEmail}\n` +
+                        `📱 Contact: ${o.contact}\n\n` +
+                        `👉 Please check your bank account and Approve/Reject in Admin Dashboard!`;
+
+            window.open(`https://wa.me/919767136557?text=` + encodeURIComponent(waMsg), '_blank');
+            alert("✅ Order submitted successfully! Waiting for Admin verification.");
             switchTab('history');
         }
 
-        function switchTab(tabName) {
-            document.querySelectorAll('.section-view').forEach(sec => sec.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+        function renderAdminOrdersDashboard() {
+            let c = document.getElementById('adminOrdersDashboardList');
+            let allOrders = JSON.parse(localStorage.getItem('zk_admin_all_orders')) || [];
+            let pending = allOrders.filter(o => o.status.includes('Pending'));
 
-            if(tabName === 'home') {
-                document.getElementById('homeSection').classList.add('active');
-                document.getElementById('navHome').classList.add('active');
-            } else if(tabName === 'history') {
-                document.getElementById('historySection').classList.add('active');
-                document.getElementById('navHistory').classList.add('active');
-                renderHistory();
-            } else if(tabName === 'vouchers') {
-                document.getElementById('vouchersSection').classList.add('active');
-                document.getElementById('navVouchers').classList.add('active');
-            } else if(tabName === 'profile') {
-                document.getElementById('profileSection').classList.add('active');
-                document.getElementById('navProfile').classList.add('active');
-                updateWalletUI();
+            if(pending.length === 0) {
+                c.innerHTML = `<p style="font-size: 11px; opacity: 0.6;">No pending orders to approve.</p>`;
+                return;
             }
-            window.scrollTo(0, 0);
+
+            c.innerHTML = "";
+            pending.forEach((ord, idx) => {
+                c.innerHTML += `<div style="background:white; padding:10px; border-radius:8px; margin-bottom:8px; border:1px solid #cbd5e1; font-size:11px;">
+                    <b>ID: ${ord.id}</b> | ₹${ord.price}<br>
+                    <b>Item:</b> ${ord.title}<br>
+                    <b>User:</b> ${ord.email}<br>
+                    <b>UTR: <span style="color:#d97706; font-size:12px;">${ord.utr}</span></b><br>
+                    <div style="display:flex; gap:6px; margin-top:6px;">
+                        <button onclick="adminApproveOrder('${ord.id}')" style="background:#16a34a; color:white; border:none; padding:6px 12px; border-radius:4px; font-weight:bold; cursor:pointer; flex:1;">Approve ✅</button>
+                        <button onclick="adminRejectOrder('${ord.id}')" style="background:#dc2626; color:white; border:none; padding:6px 12px; border-radius:4px; font-weight:bold; cursor:pointer; flex:1;">Reject ❌</button>
+                    </div>
+                </div>`;
+            });
+        }
+
+        function adminApproveOrder(orderId) {
+            updateOrderStatusInStorage(orderId, "✅ Status: Successful (Approved by Admin)");
+            alert(`✅ Order ${orderId} Approved Successfully! User history updated.`);
+            renderAdminOrdersDashboard();
+        }
+
+        function adminRejectOrder(orderId) {
+            updateOrderStatusInStorage(orderId, "❌ Status: Failed / Rejected by Admin");
+            alert(`❌ Order ${orderId} Rejected.`);
+            renderAdminOrdersDashboard();
+        }
+
+        function updateOrderStatusInStorage(orderId, newStatus) {
+            let allOrders = JSON.parse(localStorage.getItem('zk_admin_all_orders')) || [];
+            allOrders.forEach(o => { if(o.id === orderId) o.status = newStatus; });
+            localStorage.setItem('zk_admin_all_orders', JSON.stringify(allOrders));
+
+            let hist = JSON.parse(localStorage.getItem('zk_history_v15')) || [];
+            hist.forEach(h => { if(h.id === orderId) h.status = newStatus; });
+            localStorage.setItem('zk_history_v15', JSON.stringify(hist));
+        }
+
+        function switchTab(tab) {
+            document.querySelectorAll('.section-view').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            if(tab === 'home') { document.getElementById('homeSection').classList.add('active'); document.getElementById('navHome').classList.add('active'); }
+            else if(tab === 'history') { document.getElementById('historySection').classList.add('active'); document.getElementById('navHistory').classList.add('active'); renderHistory(); }
+            else if(tab === 'vouchers') { document.getElementById('vouchersSection').classList.add('active'); document.getElementById('navVouchers').classList.add('active'); }
+            else if(tab === 'profile') { document.getElementById('profileSection').classList.add('active'); document.getElementById('navProfile').classList.add('active'); }
         }
 
         function renderHistory() {
             let c = document.getElementById('historyListContainer');
-            if(historyList.length === 0) {
-                c.innerHTML = `<div class="card-box" style="text-align: center; opacity: 0.7; padding: 20px;"><p style="font-size:12px;">No history yet.</p></div>`;
-                return;
-            }
+            let hist = JSON.parse(localStorage.getItem('zk_history_v15')) || [];
+            if(hist.length === 0) { c.innerHTML = `<div class="card-box" style="text-align:center; opacity:0.6;"><p style="font-size:12px;">No order history found.</p></div>`; return; }
             c.innerHTML = "";
-            historyList.forEach(h => {
-                c.innerHTML += `
-                    <div class="card-box" style="font-size: 12px;">
-                        <div style="font-weight: bold;">${h.title}</div>
-                        <div style="color: #512da8; font-weight: bold; margin-top: 2px;">₹${h.price}</div>
-                        <div style="opacity: 0.7; font-size: 10px; margin-top: 2px;">📅 ${h.date}</div>
-                        <div style="margin-top: 6px; background: #fff3cd; color: #856404; padding: 3px 8px; border-radius: 4px; display: inline-block; font-weight: bold; font-size: 10px;">${h.status}</div>
-                    </div>
-                `;
+            hist.forEach((h, index) => {
+                let statusColor = h.status.includes('Successful') ? '#16a34a' : (h.status.includes('Rejected') ? '#dc2626' : '#d97706');
+                c.innerHTML += `<div class="card-box" style="font-size:12px; position:relative;">
+                    <b>ID: ${h.id}</b><br>${h.title}<br><span style="color:#4f46e5; font-weight:bold;">₹${h.price}</span> | <small>${h.date}</small>
+                    <br><b>UTR:</b> ${h.utr || 'N/A'}
+                    <br><div style="margin-top:4px; font-weight:bold; color:${statusColor};">${h.status}</div>
+                    <button onclick="deleteHistoryItem(${index})" style="background:#ef4444; color:white; border:none; padding:4px 8px; border-radius:4px; font-size:10px; margin-top:6px; cursor:pointer;">Delete Order 🗑</button>
+                </div>`;
             });
         }
 
-        function shareOnWhatsapp() {
-            let currentUrl = window.location.origin + window.location.pathname;
-            let shareText = `🎁 Get Instant Cashback & Fast Recharges!\nCheck out this App:\n${currentUrl}`;
-            window.open(`https://wa.me/?text=` + encodeURIComponent(shareText), '_blank');
+        function deleteHistoryItem(index) {
+            let hist = JSON.parse(localStorage.getItem('zk_history_v15')) || [];
+            hist.splice(index, 1);
+            localStorage.setItem('zk_history_v15', JSON.stringify(hist));
+            renderHistory();
+        }
+
+        function verifyAdmin() {
+            if(document.getElementById('adminPassInput').value.trim() === "zkadmin123") {
+                document.getElementById('adminControlsArea').style.display = 'block';
+                renderAdminOrdersDashboard();
+                alert("🔓 Admin Verified Securely!");
+            } else { alert("❌ Incorrect Key!"); }
+        }
+
+        function logoutUser() {
+            localStorage.removeItem('zk_logged_user_email');
+            location.reload();
+        }
+
+        function openLiveChatModal() { document.getElementById('liveChatModal').style.display = 'flex'; }
+        function sendLiveChatToWhatsApp() {
+            let name = document.getElementById('chatUserName').value.trim();
+            let mobile = document.getElementById('chatUserMobile').value.trim();
+            let msg = document.getElementById('chatUserMessage').value.trim();
+            if(!name || mobile.length < 10 || !msg) { alert("Fill all fields!"); return; }
+            window.open(`https://wa.me/919767136557?text=` + encodeURIComponent(`💬 CHAT QUERY: ${name} (${mobile}) - ${msg}`), '_blank');
+            document.getElementById('liveChatModal').style.display = 'none';
         }
     </script>
 </body>
