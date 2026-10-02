@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Faster Recharge & Loot Hub</title>
-    <meta name="description" content="Professional Mobile Recharge, OTT Subscriptions, Redeem Codes & Reward Wallet Hub with Firebase & EmailJS OTP Authentication.">
+    <meta name="description" content="Professional Mobile Recharge, OTT Subscriptions, Redeem Codes & Reward Wallet Hub with Firebase & WhatsApp Integration.">
     
     <!-- FIREBASE SDKs & CONFIGURATION -->
     <script type="module">
@@ -33,7 +33,6 @@
         window.collection = collection;
         window.addDoc = addDoc;
 
-        // REAL-TIME SYNC FOR SPIN STATE, PLANS & ORDERS
         onSnapshot(doc(db, "settings", "admin_config"), (docSnap) => {
             if (docSnap.exists()) {
                 let data = docSnap.data();
@@ -56,12 +55,12 @@
                 window.cloudOrders.push({ firestoreId: d.id, ...d.data() });
             });
             renderHistory();
-            if(window.isAdminAuthenticated) {
+            let adminArea = document.getElementById('adminPanelSection');
+            if(adminArea && adminArea.classList.contains('active')) {
                 renderAdminOrdersDashboard();
             }
         });
 
-        // LIVE ONLINE USERS TRACKER FOR ADMIN ONLY
         setInterval(async () => {
             let activeId = localStorage.getItem('zk_active_session_id');
             if(!activeId) {
@@ -71,24 +70,20 @@
             try {
                 await setDoc(doc(db, "active_users", activeId), { lastActive: Date.now() });
             } catch(e) {}
-        }, 5000);
+        }, 3000);
 
         onSnapshot(collection(db, "active_users"), (snapshot) => {
             let count = 0;
             let now = Date.now();
             snapshot.forEach((d) => {
                 let data = d.data();
-                if(now - data.lastActive < 15000) { count++; }
+                if(now - data.lastActive < 12000) { count++; }
             });
             let onlineDisp = document.getElementById('onlineUsersDisplay');
-            if(onlineDisp && window.isAdminAuthenticated) onlineDisp.innerText = count > 0 ? count : 1;
+            if(onlineDisp) {
+                onlineDisp.innerText = count > 0 ? count : 1;
+            }
         });
-    </script>
-
-    <!-- EMAILJS SDK -->
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-    <script type="text/javascript">
-        (function() { emailjs.init("rNPpfrFuhiT6dIeU0"); })();
     </script>
 
     <style>
@@ -98,13 +93,13 @@
         body.dark-mode { --bg-color: #0f172a; --text-color: #f8fafc; --card-bg: #1e293b; --border-color: #334155; --primary: #818cf8; }
         header { background: var(--primary, #6366f1); color: white; padding: 14px 16px; position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
         .header-top { display: flex; justify-content: space-between; align-items: center; }
-        .logo { font-size: 17px; font-weight: bold; letter-spacing: 0.5px; }
+        .logo { font-size: 17px; font-weight: bold; letter-spacing: 0.5px; cursor: pointer; }
         .container { padding: 12px; max-width: 480px; margin: auto; }
         .card-box { background: var(--card-bg, #ffffff); color: var(--text-color, #1f2937); padding: 14px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 12px; border: 1px solid var(--border-color, #e5e7eb); }
         .form-group { margin-bottom: 10px; }
         .form-group label { font-size: 11px; font-weight: 600; color: var(--text-color, #4b5563); display: block; margin-bottom: 4px; }
         .form-control { width: 100%; padding: 10px; border: 1px solid var(--border-color, #cbd5e1); background: var(--card-bg, #fff); color: var(--text-color, #000); border-radius: 8px; font-size: 13px; outline: none; }
-        .btn-main { background: #6366f1; color: white; border: none; padding: 12px; width: 100%; font-weight: bold; border-radius: 8px; cursor: pointer; font-size: 14px; box-shadow: 0 4px 12px rgba(99,102,241,0.3); }
+        .btn-main { background: #6366f1; color: white; border: none; padding: 12px; width: 100%; font-weight: bold; border-radius: 8px; cursor: pointer; font-size: 14px; box-shadow: 0 4px 12px rgba(99,102,241,0.3); text-align: center; display: block; }
         .services-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 8px; }
         .service-card { background: var(--card-bg, #f8fafc); border: 1px solid var(--border-color, #e2e8f0); padding: 14px; border-radius: 10px; cursor: pointer; text-align: center; font-size: 12px; font-weight: bold; color: #4f46e5; box-shadow: 0 1px 3px rgba(0,0,0,0.02); }
         .service-card span { font-size: 26px; display: block; margin-bottom: 6px; }
@@ -122,17 +117,14 @@
 </head>
 <body class="light-mode">
 
-    <!-- AUTHENTICATION MODAL -->
-    <div id="otpAuthModal">
+    <!-- LOGIN MODAL -->
+    <div id="otpAuthModal" style="display: flex;">
         <div class="qr-card">
-            <div style="font-size: 45px; margin-bottom: 8px;">📧🔐</div>
-            <h2 style="font-size: 17px; color: #4f46e5; margin-bottom: 6px;">Faster Recharge Authentication</h2>
-            <div class="form-group"><label>Gmail Address</label><input type="email" id="authEmail" class="form-control" placeholder="user@gmail.com"></div>
-            <div id="otpSectionBox" style="display: none;">
-                <div class="form-group"><label>Enter 4-Digit OTP Code</label><input type="text" id="enteredOtpCode" class="form-control" placeholder="1234" maxlength="4"></div>
-            </div>
-            <button class="btn-main" id="sendOtpBtn" onclick="sendGmailOtp()" style="background: #4f46e5; margin-top: 6px;">Send OTP 🚀</button>
-            <button class="btn-main" id="verifyOtpBtn" onclick="verifyGmailOtp()" style="background: #16a34a; margin-top: 6px; display: none;">Verify OTP & Login ✅</button>
+            <div style="font-size: 45px; margin-bottom: 8px;">📱🔐</div>
+            <h2 style="font-size: 17px; color: #4f46e5; margin-bottom: 6px;">Faster Recharge Login</h2>
+            <p style="font-size: 11px; opacity: 0.8; margin-bottom: 12px;">Enter your Email or Mobile to start.</p>
+            <div class="form-group"><label>Email / Mobile</label><input type="text" id="authEmail" class="form-control" placeholder="user@gmail.com"></div>
+            <button class="btn-main" onclick="directLoginApp()" style="background: #4f46e5; margin-top: 6px;">Login to App 🚀</button>
         </div>
     </div>
 
@@ -140,12 +132,10 @@
     <div id="termsAcceptModal">
         <div class="qr-card" style="text-align: left;">
             <div style="text-align: center; font-size: 35px; margin-bottom: 4px;">📜</div>
-            <h3 style="font-size: 16px; color: #4f46e5; margin-bottom: 8px; text-align: center;">Terms & Conditions Agreement</h3>
+            <h3 style="font-size: 16px; color: #4f46e5; margin-bottom: 8px; text-align: center;">Terms & Conditions</h3>
             <div style="font-size: 11px; line-height: 1.5; max-height: 220px; overflow-y: auto; margin-bottom: 12px; opacity: 0.9; border: 1px solid #cbd5e1; padding: 8px; border-radius: 6px;">
-                <b>1. Acceptance:</b> By using Faster Recharge Hub, you agree to cloud verification guidelines.<br><br>
-                <b>2. Payments & UTR:</b> All orders require accurate 12-digit UTR submission.<br><br>
-                <b>3. Refund Policy:</b> No refunds after digital processing.<br><br>
-                <b>4. Compliance:</b> Use support for disputes.
+                <b>1. Guidelines:</b> Pay via Auto-Fill UPI first, then submit UTR.<br><br>
+                <b>2. Processing:</b> Fast cloud verification and admin approval.
             </div>
             <button class="btn-main" onclick="acceptTermsAndProceed()" style="background: #16a34a;">I Accept & Continue ✅</button>
         </div>
@@ -155,9 +145,9 @@
     <div id="secureAdminModal">
         <div class="qr-card">
             <div style="font-size: 45px; margin-bottom: 6px;">🔐🔒</div>
-            <h2 style="font-size: 17px; color: #4f46e5; margin-bottom: 6px;">Secret Admin Access</h2>
-            <p style="font-size: 11px; opacity: 0.8; margin-bottom: 12px;">Enter secret key to access live orders & online stats.</p>
-            <div class="form-group"><label>Admin Key</label><input type="password" id="modalAdminKeyInput" class="form-control" placeholder="••••••••"></div>
+            <h2 style="font-size: 17px; color: #4f46e5; margin-bottom: 6px;">Admin Access Control</h2>
+            <p style="font-size: 11px; opacity: 0.8; margin-bottom: 12px;">Enter admin key (zkadmin123)</p>
+            <div class="form-group"><label>Admin Access Key</label><input type="password" id="modalAdminKeyInput" class="form-control" placeholder="••••••••"></div>
             <button class="btn-main" onclick="verifySecureAdmin()" style="background: #4f46e5; margin-top: 4px;">Open Admin Panel 🔓</button>
             <button class="btn-main" onclick="document.getElementById('secureAdminModal').style.display='none'" style="background: #ef4444; margin-top: 6px;">Cancel ✕</button>
         </div>
@@ -171,7 +161,7 @@
             <div style="font-size: 42px; margin-bottom: 6px;">🟢💬</div>
             <h2 style="font-size: 16px; color: #22c55e; margin-bottom: 6px;">Support Hub</h2>
             <div class="form-group"><label>Your Name</label><input type="text" id="chatUserName" class="form-control" placeholder="Full Name"></div>
-            <div class="form-group"><label>Mobile Number</label><input type="tel" id="chatUserMobile" class="form-control" placeholder="10-digit mobile" maxlength="10"></div>
+            <div class="form-group"><label>Mobile Number</label><input type="tel" id="chatUserMobile" class="form-control" placeholder="10-digit mobile" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '')"></div>
             <div class="form-group"><label>Your Message</label><textarea id="chatUserMessage" class="form-control" placeholder="Type your issue..." rows="3"></textarea></div>
             <button class="btn-main" onclick="sendLiveChatToWhatsApp()" style="background: #22c55e; margin-top: 8px;">Send Message 🟢</button>
             <button class="btn-main" onclick="document.getElementById('liveChatModal').style.display='none'" style="background: #ef4444; margin-top: 6px;">Close ✕</button>
@@ -183,12 +173,7 @@
         <div class="qr-card">
             <div style="font-size: 42px; margin-bottom: 6px;">🎁👥</div>
             <h2 style="font-size: 17px; color: #f59e0b; margin-bottom: 4px;">Refer & Earn ₹20 Cashback</h2>
-            <div id="referralUnlockedBox" style="display: none; background: #f0fdf4; padding: 10px; border-radius: 8px; border: 1px solid #16a34a; margin-bottom: 10px; text-align: left;">
-                <div style="font-size: 11px; font-weight: bold; color: #16a34a; margin-bottom: 4px;">🎉 Friend completed order! Enter UPI ID:</div>
-                <div class="form-group"><label>UPI ID</label><input type="text" id="earnedUpiInput" class="form-control" placeholder="username@upi"></div>
-                <button class="btn-main" onclick="claimReferralReward()" style="background: #16a34a; margin-top: 4px;">Claim ₹20 Cashback 🚀</button>
-            </div>
-            <button class="btn-main" onclick="nativeShareApp()" style="background: #f59e0b; color:#000; margin-bottom: 6px;">Share App 🚀</button>
+            <button class="btn-main" onclick="nativeShareApp()" style="background: #f59e0b; color:#000; margin-bottom: 6px;">Share App via WhatsApp 🚀</button>
             <button class="btn-main" onclick="document.getElementById('referModal').style.display='none'" style="background: #ef4444;">Close ✕</button>
         </div>
     </div>
@@ -198,14 +183,20 @@
         <div class="qr-card">
             <div style="font-size: 40px; margin-bottom: 4px;">🎬🍿</div>
             <h3 style="font-size: 16px; color: #4f46e5; margin-bottom: 4px;">₹20 OTT Subscription Hub</h3>
-            <div class="form-group"><label>Your Mobile Number</label><input type="tel" id="ottContact" class="form-control" placeholder="10-digit mobile" maxlength="10"></div>
-            <a id="ottUpiIntentBtn" href="upi://pay?pa=9767136557@fam&pn=Faster%20Recharge&am=20&cu=INR&tn=OTT-SUB" class="btn-main" style="background: #f59e0b; color: #000; text-decoration: none; display: block; margin-bottom: 8px; font-size: 12px; padding: 10px; font-weight: bold;">🚀 PAY ₹20 VIA GPAY / PHONEPE</a>
+            <div class="form-group"><label>Your Mobile Number</label><input type="text" id="ottContact" class="form-control" placeholder="10-digit mobile" maxlength="10" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')"></div>
+            
+            <a id="ottUpiIntentBtn" href="upi://pay?pa=9767136557@fam&pn=Faster%20Recharge&am=20&cu=INR&tn=OTT-SUB" onclick="openOttUpiApp(event)" class="btn-main" style="background: #f59e0b; color: #000; text-decoration: none; display: block; margin-bottom: 8px; font-size: 12px; padding: 12px; font-weight: bold;">🚀 PAY ₹20 VIA GPAY / PHONEPE</a>
+            
             <div style="background: white; padding: 4px; border-radius: 6px; display: inline-block; margin-bottom: 6px; border: 2px solid #333;">
                 <img src="https://api.qrserver.com/v1/create-qr-code/?size=90x90&data=upi://pay?pa=9767136557@fam&pn=Faster%20Recharge&am=20&cu=INR&tn=OTT-SUB" alt="QR" style="width: 80px; height: 80px; display: block; margin: auto;">
             </div>
             <div style="font-size: 11px; font-weight: bold; color: #16a34a; margin-bottom: 6px;">UPI ID: 9767136557@fam</div>
-            <div class="form-group" style="text-align: left;"><label style="color:#d97706; font-weight:bold;">Enter 12-Digit UTR Number:</label><input type="text" id="ottUtrInput" class="form-control" placeholder="Enter 12-digit UTR" maxlength="12"></div>
-            <button class="btn-main" onclick="submitOttOrder()" style="background: #16a34a; margin-bottom: 6px;">Submit Order ✅</button>
+            
+            <div class="form-group" style="text-align: left;"><label style="color:#d97706; font-weight:bold;">Enter 12-Digit UTR Number:</label><input type="text" id="ottUtrInput" class="form-control" placeholder="Enter 12-digit UTR" maxlength="12" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')"></div>
+            
+            <button class="btn-main" id="ottSubmitBtn" onclick="submitOttOrder()" style="background: #9ca3af; cursor: not-allowed; margin-bottom: 4px;" disabled>Submit Order ✅</button>
+            <div id="ottWarningText" style="font-size: 10px; color: #dc2626; font-weight: bold; margin-bottom: 8px;">⚠️ Pehle upar diye gaye auto-pay button se payment karein, tabhi UTR submit hoga!</div>
+
             <button class="btn-main" onclick="document.getElementById('ottModal').style.display='none'" style="background: #ef4444;">Cancel</button>
         </div>
     </div>
@@ -216,11 +207,6 @@
             <div style="font-size: 42px; margin-bottom: 6px;">💰🏦</div>
             <h2 style="font-size: 17px; color: #0d9488; margin-bottom: 4px;">My Reward Wallet</h2>
             <div style="font-size: 28px; font-weight: bold; color: #16a34a; margin: 12px 0;" id="modalWalletBalance">₹0</div>
-            <div id="modalWithdrawUnlocked" style="display:none; text-align: left; background: #f0fdf4; padding: 12px; border-radius: 8px; border: 1px solid #22c55e; margin-bottom: 12px;">
-                <div style="font-size: 11px; color: #16a34a; font-weight: bold; margin-bottom: 6px;">🎉 Eligible to withdraw! Enter UPI ID:</div>
-                <div class="form-group"><label>UPI ID</label><input type="text" id="modalWithdrawUpi" class="form-control" placeholder="username@upi"></div>
-                <button class="btn-main" onclick="requestWalletWithdrawal()" style="background: #16a34a; margin-top: 6px;">Withdraw Now 🚀</button>
-            </div>
             <div id="modalWithdrawLocked" style="font-size: 11px; color: #dc2626; font-weight: bold; background: #fef2f2; padding: 12px; border-radius: 8px; text-align: center; margin-bottom: 12px; border: 1px dashed #dc2626;">
                 🔒 Withdrawal Locked!<br>Minimum <b>₹25</b> required.
             </div>
@@ -242,7 +228,7 @@
 
     <header>
         <div class="header-top">
-            <div class="logo" onclick="openSecureAdminModal()" style="cursor: pointer;" title="Tap for Secret Admin">⚡ Faster Recharge & Loot</div>
+            <div class="logo" onclick="openSecureAdminModal()" title="Tap for Admin">⚡ Faster Recharge & Loot</div>
             <div style="display: flex; gap: 6px; align-items: center;">
                 <button onclick="toggleTheme()" style="background:none; border:none; font-size:18px; cursor:pointer;" title="Theme">🌓</button>
                 <div id="loggedUserDisplay" style="font-size: 10px; background: rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 6px; max-width: 110px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"></div>
@@ -305,17 +291,17 @@
         <div id="profileSection" class="section-view">
             <h2 style="font-size: 16px; margin-bottom: 10px;">👤 Profile & Settings</h2>
             <div class="card-box" style="margin-bottom: 10px;">
-                <h3 style="font-size: 13px; color: #4f46e5; margin-bottom: 4px;">📧 Logged-in Gmail:</h3>
+                <h3 style="font-size: 13px; color: #4f46e5; margin-bottom: 4px;">📧 Logged-in Account:</h3>
                 <p id="profileEmailDisplay" style="font-size: 12px; font-weight: bold; margin-bottom: 10px;"></p>
                 <button class="btn-main" style="background: #ef4444; font-size: 12px;" onclick="logoutUser()">🚪 Logout Session 🔴</button>
             </div>
         </div>
 
-        <!-- SEPARATE SECURE ADMIN PANEL SECTION (HIDDEN UNLESS AUTHENTICATED) -->
+        <!-- DEDICATED ADMIN PANEL PAGE SECTION -->
         <div id="adminPanelSection" class="section-view">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                <h2 style="font-size: 16px; color: #4f46e5;">🔐 Secret Admin Panel</h2>
-                <button onclick="switchTab('home')" style="background:#ef4444; color:white; border:none; padding:4px 10px; border-radius:6px; font-size:11px; font-weight:bold; cursor:pointer;">Exit Admin ✕</button>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <h2 style="font-size: 16px; color: #4f46e5;">🔐 Admin Dashboard (Live Controls)</h2>
+                <button onclick="closeAdminPanel()" style="background:#ef4444; color:white; border:none; padding:6px 12px; border-radius:6px; font-size:11px; font-weight:bold; cursor:pointer;">Close Admin ✕</button>
             </div>
 
             <!-- LIVE ONLINE USERS STATS -->
@@ -329,7 +315,7 @@
 
             <!-- SPIN WHEEL MASTER SWITCH -->
             <div class="card-box" style="text-align: left;">
-                <label style="font-weight: bold; color: #4f46e5; font-size: 12px; margin-bottom: 4px; display: block;">🎡 Spin Wheel Master Switch:</label>
+                <label style="font-weight: bold; color: #4f46e5; font-size: 12px; margin-bottom: 4px; display: block;">🎡 Spin Wheel Master Switch (Cloud):</label>
                 <div style="display: flex; gap: 8px;">
                     <button onclick="setCloudSpinState('ON')" style="background: #16a34a; color: white; border: none; padding: 8px 12px; border-radius: 6px; font-weight: bold; cursor: pointer; flex: 1;">Turn ON 🟢</button>
                     <button onclick="setCloudSpinState('OFF')" style="background: #dc2626; color: white; border: none; padding: 8px 12px; border-radius: 6px; font-weight: bold; cursor: pointer; flex: 1;">Turn OFF 🔴</button>
@@ -363,7 +349,10 @@
                 <h3 style="font-size: 15px; color: #4f46e5; font-weight: bold;">📱 Mobile Recharge</h3>
                 <button onclick="document.getElementById('rechargeModal').style.display='none'" style="background:none; border:none; color:red; font-weight:bold; cursor:pointer; font-size:16px;">✕</button>
             </div>
-            <div class="form-group"><label>Mobile Number</label><input type="tel" id="rechargeMob" class="form-control" placeholder="10-digit mobile" maxlength="10"></div>
+            <div class="form-group">
+                <label>Mobile Number</label>
+                <input type="text" id="rechargeMob" class="form-control" placeholder="10-digit mobile" maxlength="10" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+            </div>
             <div class="form-group">
                 <label>Operator</label>
                 <select id="operatorSelect" class="form-control">
@@ -383,7 +372,10 @@
         <div class="qr-card">
             <h3 style="font-size: 15px; color: #4f46e5; margin-bottom: 8px;">🎮 Play Store Redeem Code</h3>
             <div class="form-group"><label>Amount (Min ₹10) [e.g. ₹20 Redeem costs ₹25 with fee]</label><input type="number" id="redeemAmount" class="form-control" placeholder="Amount (e.g. 20)"></div>
-            <div class="form-group"><label>Mobile Number</label><input type="tel" id="redeemContact" class="form-control" placeholder="Mobile" maxlength="10"></div>
+            <div class="form-group">
+                <label>Mobile Number</label>
+                <input type="text" id="redeemContact" class="form-control" placeholder="Mobile" maxlength="10" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+            </div>
             <button class="btn-main" onclick="submitRedeemOrder()" style="background: #16a34a; margin-top: 6px;">Proceed 🚀</button>
             <button class="btn-main" onclick="document.getElementById('redeemModal').style.display='none'" style="background: #ef4444; margin-top: 4px;">Cancel</button>
         </div>
@@ -394,13 +386,19 @@
         <div class="qr-card">
             <h3 style="font-size: 16px; color: #4f46e5; margin-bottom: 4px;">💳 Secure Payment via Auto-Fill</h3>
             <div id="orderIdDisplay" style="font-size: 11px; background: #e0e7ff; color: #4338ca; padding: 4px 8px; border-radius: 4px; font-weight: bold; margin-bottom: 8px;"></div>
-            <a id="rechargeUpiIntentBtn" href="#" class="btn-main" style="background: #f59e0b; color: #000; text-decoration: none; display: block; margin-bottom: 10px; font-size: 13px; padding: 12px; font-weight: bold;">🚀 PAY VIA GPAY / PHONEPE</a>
+            
+            <a id="rechargeUpiIntentBtn" href="#" onclick="openUpiApp(event)" class="btn-main" style="background: #f59e0b; color: #000; text-decoration: none; display: block; margin-bottom: 10px; font-size: 13px; padding: 12px; font-weight: bold;">🚀 PAY VIA GPAY / PHONEPE</a>
+
             <div style="background: white; padding: 6px; border-radius: 6px; display: inline-block; margin-bottom: 8px; border: 2px solid #333;">
                 <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=upi://pay?pa=9767136557@fam&pn=Faster%20Recharge" alt="QR" style="width: 90px; height: 90px; display: block; margin: auto;">
             </div>
             <div style="font-size: 11px; font-weight: bold; color: #16a34a; margin-bottom: 8px;">UPI ID: 9767136557@fam</div>
-            <div class="form-group" style="text-align: left;"><label style="color:#d97706; font-weight:bold;">Enter Exact 12-Digit UTR Number:</label><input type="text" id="userUtrInput" class="form-control" placeholder="Enter 12-digit UTR" maxlength="12"></div>
-            <button class="btn-main" onclick="submitOrderWithUtr()" style="background: #16a34a; margin-bottom: 6px;">Submit Order ✅</button>
+            
+            <div class="form-group" style="text-align: left;"><label style="color:#d97706; font-weight:bold;">Enter 12-Digit UTR Number:</label><input type="text" id="userUtrInput" class="form-control" placeholder="Enter 12-digit UTR" maxlength="12" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')"></div>
+            
+            <button class="btn-main" id="submitOrderBtn" onclick="submitOrderWithUtr()" style="background: #9ca3af; cursor: not-allowed; margin-bottom: 4px;" disabled>Submit Order ✅</button>
+            <div id="utrWarningText" style="font-size: 10px; color: #dc2626; font-weight: bold; margin-bottom: 8px;">⚠️ Pehle upar diye gaye auto-pay button se payment karein, tabhi UTR submit hoga!</div>
+
             <button class="btn-main" onclick="document.getElementById('qrModal').style.display='none'" style="background: #ef4444;">Cancel</button>
         </div>
     </div>
@@ -413,11 +411,10 @@
     </nav>
 
     <script>
-        let generatedOtpCode = "";
-        let pendingLoginEmail = "";
         window.cloudOrders = [];
         window.cloudSpinState = 'OFF';
-        window.isAdminAuthenticated = false;
+        window.paymentDone = false;
+        window.ottPaymentDone = false;
         window.cloudPlans = [
             {operator: "Jio", name: "Popular: 1.5GB/Day (28 Days)", price: 239},
             {operator: "Jio", name: "Unlimited: 2GB/Day (84 Days)", price: 719},
@@ -437,9 +434,14 @@
                 document.getElementById('loggedUserDisplay').innerText = loggedUser;
                 document.getElementById('profileEmailDisplay').innerText = loggedUser;
                 loadUserCloudWallet(loggedUser);
-                checkTermsAccepted(loggedUser);
             } else {
                 document.getElementById('otpAuthModal').style.display = 'flex';
+            }
+
+            // PERSISTENT ADMIN CHECK
+            if(localStorage.getItem('zk_admin_logged') === 'true') {
+                switchTab('admin');
+                renderAdminOrdersDashboard();
             }
         });
 
@@ -449,42 +451,14 @@
             localStorage.setItem('zk_theme', isDark ? 'light' : 'dark');
         }
 
-        function sendGmailOtp() {
+        function directLoginApp() {
             let email = document.getElementById('authEmail').value.trim();
-            if(!email || !email.includes('@')) { alert("Please enter valid Gmail!"); return; }
-            generatedOtpCode = Math.floor(1000 + Math.random() * 9000).toString();
-            pendingLoginEmail = email;
-
-            emailjs.send('service_ozt8cpp', 'template_nyyhy2n', { email: email, to_email: email, otp_code: generatedOtpCode, passcode: generatedOtpCode })
-                .then(function() {
-                    alert("✅ OTP sent successfully!");
-                    document.getElementById('otpSectionBox').style.display = 'block';
-                    document.getElementById('verifyOtpBtn').style.display = 'block';
-                    document.getElementById('sendOtpBtn').style.display = 'none';
-                }, function(err) { alert("❌ Failed: " + JSON.stringify(err)); });
-        }
-
-        function verifyGmailOtp() {
-            let enteredOtp = document.getElementById('enteredOtpCode').value.trim();
-            if(enteredOtp !== generatedOtpCode) { alert("❌ Incorrect OTP!"); return; }
-            localStorage.setItem('zk_logged_user_email', pendingLoginEmail);
+            if(!email) { alert("Please enter email or mobile!"); return; }
+            localStorage.setItem('zk_logged_user_email', email);
             document.getElementById('otpAuthModal').style.display = 'none';
-            document.getElementById('loggedUserDisplay').innerText = pendingLoginEmail;
-            document.getElementById('profileEmailDisplay').innerText = pendingLoginEmail;
-            loadUserCloudWallet(pendingLoginEmail);
-            document.getElementById('termsAcceptModal').style.display = 'flex';
-        }
-
-        function checkTermsAccepted(email) {
-            if(localStorage.getItem('zk_terms_accepted_' + email) !== 'true') {
-                document.getElementById('termsAcceptModal').style.display = 'flex';
-            }
-        }
-
-        function acceptTermsAndProceed() {
-            let email = localStorage.getItem('zk_logged_user_email');
-            if(email) localStorage.setItem('zk_terms_accepted_' + email, 'true');
-            document.getElementById('termsAcceptModal').style.display = 'none';
+            document.getElementById('loggedUserDisplay').innerText = email;
+            document.getElementById('profileEmailDisplay').innerText = email;
+            loadUserCloudWallet(email);
         }
 
         async function loadUserCloudWallet(email) {
@@ -509,6 +483,11 @@
         }
 
         function openSecureAdminModal() {
+            if(localStorage.getItem('zk_admin_logged') === 'true') {
+                switchTab('admin');
+                renderAdminOrdersDashboard();
+                return;
+            }
             document.getElementById('modalAdminKeyInput').value = "";
             document.getElementById('secureAdminModal').style.display = 'flex';
         }
@@ -516,13 +495,19 @@
         function verifySecureAdmin() {
             let key = document.getElementById('modalAdminKeyInput').value.trim();
             if(key === "zkadmin123") {
-                window.isAdminAuthenticated = true;
+                localStorage.setItem('zk_admin_logged', 'true');
                 document.getElementById('secureAdminModal').style.display = 'none';
                 switchTab('admin');
-                alert("🔓 Welcome to Secret Admin Panel!");
+                renderAdminOrdersDashboard();
+                alert("🔓 Admin Verified Successfully!");
             } else {
                 alert("❌ Incorrect Admin Key!");
             }
+        }
+
+        function closeAdminPanel() {
+            localStorage.removeItem('zk_admin_logged');
+            switchTab('home');
         }
 
         async function setCloudSpinState(state) {
@@ -561,7 +546,6 @@
             let bal = Number(localStorage.getItem('zk_wallet_' + emailKey)) || 0;
             document.getElementById('walletBalanceDisplay').innerText = `₹${bal}`;
             document.getElementById('modalWalletBalance').innerText = `₹${bal}`;
-            document.getElementById('modalWithdrawUnlocked').style.display = (bal >= 25) ? 'block' : 'none';
             document.getElementById('modalWithdrawLocked').style.display = (bal >= 25) ? 'none' : 'block';
         }
 
@@ -584,7 +568,31 @@
 
         function openRechargeModal() { document.getElementById('rechargeMob').value = ""; document.getElementById('plansContainer').style.display = 'none'; document.getElementById('rechargeModal').style.display = 'flex'; }
         function openRedeemModal() { document.getElementById('redeemModal').style.display = 'flex'; }
-        function openOttModal() { document.getElementById('ottModal').style.display = 'flex'; }
+        
+        function openOttModal() {
+            document.getElementById('ottContact').value = "";
+            document.getElementById('ottUtrInput').value = "";
+            window.ottPaymentDone = false;
+            let subBtn = document.getElementById('ottSubmitBtn');
+            subBtn.disabled = true;
+            subBtn.style.background = "#9ca3af";
+            subBtn.style.cursor = "not-allowed";
+            document.getElementById('ottWarningText').style.display = 'block';
+            document.getElementById('ottModal').style.display = 'flex';
+        }
+
+        function openOttUpiApp(e) {
+            e.preventDefault();
+            window.ottPaymentDone = true;
+            let subBtn = document.getElementById('ottSubmitBtn');
+            subBtn.disabled = false;
+            subBtn.style.background = "#16a34a";
+            subBtn.style.cursor = "pointer";
+            document.getElementById('ottWarningText').style.display = 'none';
+
+            let targetUrl = document.getElementById('ottUpiIntentBtn').getAttribute('href');
+            window.location.href = targetUrl;
+        }
 
         function proceedToPlans() {
             let mob = document.getElementById('rechargeMob').value.trim();
@@ -604,18 +612,66 @@
             container.style.display = 'block';
         }
 
+        function submitRedeemOrder() {
+            let amt = Number(document.getElementById('redeemAmount').value);
+            let mob = document.getElementById('redeemContact').value.trim();
+            if(!amt || amt < 10) { alert("Enter minimum ₹10 amount!"); return; }
+            if(!mob || mob.length < 10) { alert("Enter valid mobile number!"); return; }
+
+            let orderId = "RED-" + Math.floor(100000 + Math.random() * 900000);
+            let totalPay = amt + 5;
+            document.getElementById('orderIdDisplay').innerText = `Order ID: ${orderId} (Redeem ₹${amt})`;
+            let upiLink = `upi://pay?pa=9767136557@fam&pn=Faster%20Recharge&am=${totalPay}&cu=INR&tn=${orderId}`;
+            document.getElementById('rechargeUpiIntentBtn').href = upiLink;
+            document.getElementById('redeemModal').style.display = 'none';
+            document.getElementById('qrModal').style.display = 'flex';
+            document.getElementById('userUtrInput').value = "";
+
+            window.paymentDone = false;
+            let subBtn = document.getElementById('submitOrderBtn');
+            subBtn.disabled = true;
+            subBtn.style.background = "#9ca3af";
+            subBtn.style.cursor = "not-allowed";
+            document.getElementById('utrWarningText').style.display = 'block';
+
+            window.currentOrder = { id: orderId, title: `Play Store Redeem Code ₹${amt}`, price: totalPay, contact: mob };
+        }
+
         function initiateCheckout(item, price) {
             let mob = document.getElementById('rechargeMob').value.trim() || "N/A";
             let orderId = "ZK-" + Math.floor(100000 + Math.random() * 900000);
             document.getElementById('orderIdDisplay').innerText = `Order ID: ${orderId}`;
-            document.getElementById('rechargeUpiIntentBtn').href = `upi://pay?pa=9767136557@fam&pn=Faster%20Recharge&am=${price}&cu=INR&tn=${orderId}`;
+            let upiLink = `upi://pay?pa=9767136557@fam&pn=Faster%20Recharge&am=${price}&cu=INR&tn=${orderId}`;
+            document.getElementById('rechargeUpiIntentBtn').href = upiLink;
             document.getElementById('rechargeModal').style.display = 'none';
             document.getElementById('qrModal').style.display = 'flex';
             document.getElementById('userUtrInput').value = "";
+            
+            window.paymentDone = false;
+            let subBtn = document.getElementById('submitOrderBtn');
+            subBtn.disabled = true;
+            subBtn.style.background = "#9ca3af";
+            subBtn.style.cursor = "not-allowed";
+            document.getElementById('utrWarningText').style.display = 'block';
+
             window.currentOrder = { id: orderId, title: item, price: price, contact: mob };
         }
 
+        function openUpiApp(e) {
+            e.preventDefault();
+            window.paymentDone = true;
+            let subBtn = document.getElementById('submitOrderBtn');
+            subBtn.disabled = false;
+            subBtn.style.background = "#16a34a";
+            subBtn.style.cursor = "pointer";
+            document.getElementById('utrWarningText').style.display = 'none';
+
+            let targetUrl = document.getElementById('rechargeUpiIntentBtn').getAttribute('href');
+            window.location.href = targetUrl;
+        }
+
         async function submitOrderWithUtr() {
+            if(!window.paymentDone) { alert("⚠️ Please click 'PAY VIA GPAY / PHONEPE' first!"); return; }
             let utr = document.getElementById('userUtrInput').value.trim();
             if(!utr || utr.length !== 12) { alert("❌ UTR must be exact 12 digits!"); return; }
             let o = window.currentOrder;
@@ -629,21 +685,23 @@
             try {
                 await window.addDoc(window.collection(window.firebaseDb, "orders"), newOrder);
                 
-                // SEND GMAIL NOTIFICATION TO ADMIN VIA EMAILJS
-                emailjs.send('service_ozt8cpp', 'template_nyyhy2n', {
-                    to_email: 'zk5610965@gmail.com',
-                    email: 'zk5610965@gmail.com',
-                    otp_code: `NEW ORDER: ${o.id} | ₹${o.price} | UTR: ${utr} | User: ${userEmail}`,
-                    passcode: `Contact: ${o.contact} | Item: ${o.title}`
-                });
+                let waMsg = `🔔 NEW ORDER & UTR SUBMISSION\n\n` +
+                            `🆔 Order ID: ${o.id}\n` +
+                            `📦 Item: ${o.title}\n` +
+                            `💰 Amount: ₹${o.price}\n` +
+                            `🔢 UTR Number: ${utr}\n` +
+                            `👤 User: ${userEmail}\n` +
+                            `📱 Contact: ${o.contact}`;
+                window.open(`https://wa.me/919767136557?text=` + encodeURIComponent(waMsg), '_blank');
 
                 document.getElementById('qrModal').style.display = 'none';
-                alert("✅ Order submitted successfully! Notification sent to Admin Gmail.");
+                alert("✅ Order submitted successfully! Opening WhatsApp for Admin Notification.");
                 switchTab('history');
-            } catch(e) { alert("Error saving to cloud"); }
+            } catch(e) { alert("Error saving to cloud: " + e.message); }
         }
 
         async function submitOttOrder() {
+            if(!window.ottPaymentDone) { alert("⚠️ Please click 'PAY ₹20 VIA GPAY / PHONEPE' first!"); return; }
             let mob = document.getElementById('ottContact').value.trim();
             let utr = document.getElementById('ottUtrInput').value.trim();
             if(!mob || mob.length < 10) { alert("Enter valid mobile number!"); return; }
@@ -660,17 +718,17 @@
             try {
                 await window.addDoc(window.collection(window.firebaseDb, "orders"), newOrder);
                 
-                emailjs.send('service_ozt8cpp', 'template_nyyhy2n', {
-                    to_email: 'zk5610965@gmail.com',
-                    email: 'zk5610965@gmail.com',
-                    otp_code: `NEW OTT ORDER: ${orderId} | UTR: ${utr} | User: ${userEmail}`,
-                    passcode: `Mobile: ${mob}`
-                });
+                let waMsg = `🎬 NEW OTT ORDER\n\n` +
+                            `🆔 Order ID: ${orderId}\n` +
+                            `🔢 UTR: ${utr}\n` +
+                            `👤 User: ${userEmail}\n` +
+                            `📱 Mobile: ${mob}`;
+                window.open(`https://wa.me/919767136557?text=` + encodeURIComponent(waMsg), '_blank');
 
                 document.getElementById('ottModal').style.display = 'none';
-                alert("✅ OTT Order submitted! Notification sent to Admin Gmail.");
+                alert("✅ OTT Order submitted! Opening WhatsApp for Admin Notification.");
                 switchTab('history');
-            } catch(e) { alert("Error"); }
+            } catch(e) { alert("Error: " + e.message); }
         }
 
         function renderAdminOrdersDashboard() {
@@ -703,7 +761,7 @@
             else if(tab === 'history') { document.getElementById('historySection').classList.add('active'); document.getElementById('navHistory').classList.add('active'); renderHistory(); }
             else if(tab === 'vouchers') { document.getElementById('vouchersSection').classList.add('active'); document.getElementById('navVouchers').classList.add('active'); }
             else if(tab === 'profile') { document.getElementById('profileSection').classList.add('active'); document.getElementById('navProfile').classList.add('active'); }
-            else if(tab === 'admin') { document.getElementById('adminPanelSection').classList.add('active'); renderAdminOrdersDashboard(); }
+            else if(tab === 'admin') { document.getElementById('adminPanelSection').classList.add('active'); }
         }
 
         function renderHistory() {
