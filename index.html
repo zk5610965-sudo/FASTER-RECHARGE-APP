@@ -133,8 +133,8 @@
             <div style="text-align: center; font-size: 35px; margin-bottom: 4px;">📜</div>
             <h3 style="font-size: 16px; color: #4f46e5; margin-bottom: 8px; text-align: center;">Terms & Conditions</h3>
             <div style="font-size: 11px; line-height: 1.5; max-height: 220px; overflow-y: auto; margin-bottom: 12px; opacity: 0.9; border: 1px solid #cbd5e1; padding: 8px; border-radius: 6px;">
-                <b>1. Guidelines:</b> Pay via Auto-Fill UPI first, then submit UTR.<br><br>
-                <b>2. Processing:</b> Fast cloud verification and admin approval.
+                <b>1. Guidelines:</b> Pay via Auto-Fill UPI first, then submit UTR[span_6](start_span)[span_6](end_span).<br><br>
+                <b>2. Processing:</b> Fast cloud verification and admin approval[span_7](start_span)[span_7](end_span).
             </div>
             <button class="btn-main" onclick="acceptTermsAndProceed()" style="background: #16a34a;">I Accept & Continue ✅</button>
         </div>
@@ -193,9 +193,8 @@
             
             <div class="form-group" style="text-align: left;"><label style="color:#d97706; font-weight:bold;">Enter 12-Digit UTR Number:</label><input type="text" id="ottUtrInput" class="form-control" placeholder="Enter 12-digit UTR" maxlength="12" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')"></div>
             
-            <!-- Strict Payment Check Before Enabling Submit Button -->
             <button class="btn-main" id="ottSubmitBtn" onclick="submitOttOrder()" style="background: #9ca3af; cursor: not-allowed; margin-bottom: 4px;" disabled>Submit Order ✅</button>
-            <div id="ottWarningText" style="font-size: 10px; color: #dc2626; font-weight: bold; margin-bottom: 8px;">Please click the Auto-Pay button above to pay first; only then will the UTR submit option unlock.</div>
+            <div id="ottWarningText" style="font-size: 10px; color: #dc2626; font-weight: bold; margin-bottom: 8px;">Please click the Auto-Pay button above to pay first; only then will the UTR submit option unlock[span_8](start_span)[span_8](end_span).</div>
 
             <button class="btn-main" onclick="document.getElementById('ottModal').style.display='none'" style="background: #ef4444; margin-top: 6px;">Cancel</button>
         </div>
@@ -396,9 +395,8 @@
             
             <div class="form-group" style="text-align: left;"><label style="color:#d97706; font-weight:bold;">Enter 12-Digit UTR Number:</label><input type="text" id="userUtrInput" class="form-control" placeholder="Enter 12-digit UTR" maxlength="12" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')"></div>
             
-            <!-- Strict Payment Lock Before Submit -->
             <button class="btn-main" id="submitOrderBtn" onclick="submitOrderWithUtr()" style="background: #9ca3af; cursor: not-allowed; margin-bottom: 4px;" disabled>Submit Order ✅</button>
-            <div id="utrWarningText" style="font-size: 10px; color: #dc2626; font-weight: bold; margin-bottom: 8px;">Please click the Auto-Pay button above to pay first; only then will the UTR submit option unlock.</div>
+            <div id="utrWarningText" style="font-size: 10px; color: #dc2626; font-weight: bold; margin-bottom: 8px;">Please click the Auto-Pay button above to pay first; only then will the UTR submit option unlock[span_9](start_span)[span_9](end_span).</div>
 
             <button class="btn-main" onclick="document.getElementById('qrModal').style.display='none'" style="background: #ef4444; margin-top: 6px;">Cancel</button>
         </div>
@@ -685,23 +683,24 @@
 
             let o = window.currentOrder;
             let userEmail = localStorage.getItem('zk_logged_user_email') || 'Guest';
+            let orderDate = new Date().toLocaleString();
 
             let newOrder = {
                 id: o.id, title: o.title, price: o.price, email: userEmail, contact: o.contact, utr: utr,
-                date: new Date().toLocaleString(), status: "⏳ Status: Pending Admin Approval"
+                date: orderDate, status: "⏳ Status: Successful (Checking Payment Status...)"
             };
 
             try {
                 await window.addDoc(window.collection(window.firebaseDb, "orders"), newOrder);
                 
-                let waMsg = `🔔 NEW ORDER DETAILS\n\n` +
+                let waMsg = `🔔 NEW ORDER SUBMISSION\n\n` +
                             `🆔 Order ID: ${o.id}\n` +
                             `📦 Service: ${o.title}\n` +
                             `💰 Amount: ₹${o.price}\n` +
                             `🔢 UTR Number: ${utr}\n` +
                             `👤 User: ${userEmail}\n` +
                             `📱 Contact: ${o.contact}\n` +
-                            `⏰ Time: ${newOrder.date}`;
+                            `⏰ Time: ${orderDate}`;
                 window.open(`https://wa.me/919767136557?text=` + encodeURIComponent(waMsg), '_blank');
 
                 document.getElementById('qrModal').style.display = 'none';
@@ -731,13 +730,13 @@
 
             let newOrder = {
                 id: orderId, title: "₹20 OTT Subscription", price: 20, email: userEmail, contact: mob, utr: utr,
-                date: orderDate, status: "⏳ Status: Pending Admin Approval"
+                date: orderDate, status: "⏳ Status: Successful (Checking Payment Status...)"
             };
 
             try {
                 await window.addDoc(window.collection(window.firebaseDb, "orders"), newOrder);
                 
-                let waMsg = `🎬 NEW OTT ORDER DETAILS\n\n` +
+                let waMsg = `🎬 NEW OTT ORDER SUBMISSION\n\n` +
                             `🆔 Order ID: ${orderId}\n` +
                             `🔢 UTR: ${utr}\n` +
                             `👤 User: ${userEmail}\n` +
@@ -757,7 +756,7 @@
 
         function renderAdminOrdersDashboard() {
             let c = document.getElementById('adminOrdersDashboardList');
-            let pending = window.cloudOrders.filter(o => o.status.includes('Pending'));
+            let pending = window.cloudOrders.filter(o => o.status.includes('Successful') || o.status.includes('Pending'));
             if(pending.length === 0) { c.innerHTML = `<p style="font-size: 11px; opacity: 0.6;">No pending orders.</p>`; return; }
             c.innerHTML = "";
             pending.forEach(ord => {
@@ -795,12 +794,13 @@
             if(userOrders.length === 0) { c.innerHTML = `<div class="card-box" style="text-align:center; opacity:0.6;"><p style="font-size:12px;">No order history found.</p></div>`; return; }
             c.innerHTML = "";
             userOrders.forEach(h => {
-                let statusBg = h.status.includes('Successful') ? '#dcfce7' : h.status.includes('Rejected') ? '#fee2e2' : '#fef9c3';
-                let statusColor = h.status.includes('Successful') ? '#16a34a' : h.status.includes('Rejected') ? '#dc2626' : '#d97706';
+                let statusBg = h.status.includes('Successful') && !h.status.includes('Checking') ? '#dcfce7' : h.status.includes('Rejected') ? '#fee2e2' : '#dcfce7';
+                let statusColor = h.status.includes('Successful') && !h.status.includes('Checking') ? '#16a34a' : h.status.includes('Rejected') ? '#dc2626' : '#16a34a';
                 c.innerHTML += `<div class="card-box" style="font-size:12px;">
                     <b>ID: ${h.id}</b><br>${h.title}<br><span style="color:#4f46e5; font-weight:bold;">₹${h.price}</span> | <small>${h.date}</small>
                     <br><b>UTR:</b> ${h.utr}
-                    <br><div style="margin-top:6px; padding:6px; background:${statusBg}; color:${statusColor}; font-weight:bold; border-radius:4px; text-align:center;">${h.status}</div>
+                    <br><div style="margin-top:6px; padding:6px; background:${statusBg}; color:${statusColor}; font-weight:bold; border-radius:4px; text-align:center;">Successful<br><span style="font-size:10px; font-weight:normal; opacity:0.9;">Checking payment status...</span></div>
+                    <div style="margin-top:4px; font-weight:bold; text-align:center; color:${statusColor};">${h.status}</div>
                 </div>`;
             });
         }
