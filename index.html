@@ -85,6 +85,12 @@
         });
     </script>
 
+    <!-- EMAILJS SDK FOR CONFIRMATION EMAILS -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script type="text/javascript">
+        (function() { emailjs.init("rNPpfrFuhiT6dIeU0"); })();
+    </script>
+
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; transition: background 0.3s, color 0.3s; }
         body { background-color: var(--bg-color, #f4f5f7); color: var(--text-color, #1f2937); padding-bottom: 75px; }
@@ -110,10 +116,9 @@
         .nav-item { text-align: center; font-size: 10px; color: var(--text-color, #64748b); cursor: pointer; flex: 1; }
         .nav-item.active { color: #4f46e5; font-weight: bold; }
         .nav-item span { font-size: 18px; display: block; margin-bottom: 2px; }
-        #otpAuthModal, #walletModal, #spinModal, #liveChatModal, #rechargeModal, #redeemModal, #qrModal, #ottModal, #referModal, #termsAcceptModal, #secureAdminModal, #successBlastModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 4000; justify-content: center; align-items: center; padding: 16px; }
+        #otpAuthModal, #walletModal, #spinModal, #liveChatModal, #rechargeModal, #redeemModal, #qrModal, #ottModal, #referModal, #termsAcceptModal, #secureAdminModal, #successBlastModal, #captchaModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 4000; justify-content: center; align-items: center; padding: 16px; }
         .qr-card { background: var(--card-bg, white); color: var(--text-color, #000); width: 100%; max-width: 380px; border-radius: 14px; padding: 20px; text-align: center; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
         
-        /* Blast Success Animation Styles */
         @keyframes blastPop {
             0% { transform: scale(0.3); opacity: 0; }
             50% { transform: scale(1.1); opacity: 1; }
@@ -128,16 +133,46 @@
             border-radius: 16px;
             text-align: center;
         }
+
+        @keyframes spinCircle {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .spinner {
+            width: 45px;
+            height: 45px;
+            border: 5px solid #e5e7eb;
+            border-top: 5px solid #16a34a;
+            border-radius: 50%;
+            animation: spinCircle 1s linear infinite;
+            margin: 0 auto 12px auto;
+        }
     </style>
 </head>
 <body class="light-mode">
 
+    <!-- CAPTCHA VERIFICATION MODAL -->
+    <div id="captchaModal">
+        <div class="qr-card">
+            <h3 style="font-size: 16px; color: #4f46e5; margin-bottom: 12px;">🤖 Security Verification</h3>
+            <div id="captchaSpinnerBox">
+                <div class="spinner"></div>
+                <p style="font-size: 12px; font-weight: bold; color: #4b5563;">Verifying human presence...</p>
+            </div>
+            <div id="captchaSuccessBox" style="display: none;">
+                <div style="font-size: 40px; margin-bottom: 6px;">✅</div>
+                <p style="font-size: 13px; font-weight: bold; color: #16a34a; margin-bottom: 12px;">Verification Complete!</p>
+                <button class="btn-main" onclick="finalizeOrderAfterCaptcha()" style="background: #16a34a;">Continue to Submit 🚀</button>
+            </div>
+        </div>
+    </div>
+
     <!-- SUCCESS BLAST ANIMATION MODAL -->
     <div id="successBlastModal">
         <div class="blast-box">
-            <div style="font-size: 55px; margin-bottom: 8px;">🎉🚀</div>
-            <h2 style="font-size: 20px; font-weight: bold; margin-bottom: 6px;">Successful!</h2>
-            <p style="font-size: 12px; font-weight: 600; opacity: 0.9;">Checking payment status...</p>
+            <div style="font-size: 50px; margin-bottom: 6px;">🎉🚀</div>
+            <h2 style="font-size: 18px; font-weight: bold; margin-bottom: 4px;">Successful!</h2>
+            <p style="font-size: 12px; font-weight: 600; opacity: 0.9;">Wait a minute, checking payment status...</p>
         </div>
     </div>
 
@@ -158,8 +193,8 @@
             <div style="text-align: center; font-size: 35px; margin-bottom: 4px;">📜</div>
             <h3 style="font-size: 16px; color: #4f46e5; margin-bottom: 8px; text-align: center;">Terms & Conditions</h3>
             <div style="font-size: 11px; line-height: 1.5; max-height: 220px; overflow-y: auto; margin-bottom: 12px; opacity: 0.9; border: 1px solid #cbd5e1; padding: 8px; border-radius: 6px;">
-                <b>1. Guidelines:</b> Pay via Auto-Fill UPI first, then submit UTR[span_2](start_span)[span_2](end_span).<br><br>
-                <b>2. Processing:</b> Fast cloud verification and admin approval[span_3](start_span)[span_3](end_span).
+                <b>1. Guidelines:</b> Pay via Auto-Fill UPI first, then submit UTR.<br><br>
+                <b>2. Processing:</b> Fast cloud verification and admin approval.
             </div>
             <button class="btn-main" onclick="acceptTermsAndProceed()" style="background: #16a34a;">I Accept & Continue ✅</button>
         </div>
@@ -218,8 +253,8 @@
             
             <div class="form-group" style="text-align: left;"><label style="color:#d97706; font-weight:bold;">Enter 12-Digit UTR Number:</label><input type="text" id="ottUtrInput" class="form-control" placeholder="Enter 12-digit UTR" maxlength="12" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')"></div>
             
-            <button class="btn-main" id="ottSubmitBtn" onclick="submitOttOrder()" style="background: #9ca3af; cursor: not-allowed; margin-bottom: 4px;" disabled>Submit Order ✅</button>
-            <div id="ottWarningText" style="font-size: 10px; color: #dc2626; font-weight: bold; margin-bottom: 8px;">Please click the Auto-Pay button above to pay first; only then will the UTR submit option unlock[span_4](start_span)[span_4](end_span).</div>
+            <button class="btn-main" id="ottSubmitBtn" onclick="triggerCaptchaForOtt()" style="background: #9ca3af; cursor: not-allowed; margin-bottom: 4px;" disabled>Submit Order ✅</button>
+            <div id="ottWarningText" style="font-size: 10px; color: #dc2626; font-weight: bold; margin-bottom: 8px;">Please click the Auto-Pay button above to pay first; only then will the UTR submit option unlock.</div>
 
             <button class="btn-main" onclick="document.getElementById('ottModal').style.display='none'" style="background: #ef4444; margin-top: 6px;">Cancel</button>
         </div>
@@ -420,8 +455,8 @@
             
             <div class="form-group" style="text-align: left;"><label style="color:#d97706; font-weight:bold;">Enter 12-Digit UTR Number:</label><input type="text" id="userUtrInput" class="form-control" placeholder="Enter 12-digit UTR" maxlength="12" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')"></div>
             
-            <button class="btn-main" id="submitOrderBtn" onclick="submitOrderWithUtr()" style="background: #9ca3af; cursor: not-allowed; margin-bottom: 4px;" disabled>Submit Order ✅</button>
-            <div id="utrWarningText" style="font-size: 10px; color: #dc2626; font-weight: bold; margin-bottom: 8px;">Please click the Auto-Pay button above to pay first; only then will the UTR submit option unlock[span_5](start_span)[span_5](end_span).</div>
+            <button class="btn-main" id="submitOrderBtn" onclick="triggerCaptcha()" style="background: #9ca3af; cursor: not-allowed; margin-bottom: 4px;" disabled>Submit Order ✅</button>
+            <div id="utrWarningText" style="font-size: 10px; color: #dc2626; font-weight: bold; margin-bottom: 8px;">Please click the Auto-Pay button above to pay first; only then will the UTR submit option unlock.</div>
 
             <button class="btn-main" onclick="document.getElementById('qrModal').style.display='none'" style="background: #ef4444; margin-top: 6px;">Cancel</button>
         </div>
@@ -696,35 +731,85 @@
             window.location.href = targetUrl;
         }
 
-        async function submitOrderWithUtr() {
+        // CAPTCHA TRIGGER FOR RECHARGE / REDEEM
+        function triggerCaptcha() {
             if (!window.paymentDone) { alert("Please click the Auto-Pay button above to pay first!"); return; }
-            if (window.isSubmitting) return;
             let utr = document.getElementById('userUtrInput').value.trim();
             if(!utr || utr.length !== 12) { alert("❌ UTR must be exact 12 digits!"); return; }
 
+            document.getElementById('qrModal').style.display = 'none';
+            runCaptchaVerification('recharge');
+        }
+
+        // CAPTCHA TRIGGER FOR OTT
+        function triggerCaptchaForOtt() {
+            if (!window.ottPaymentDone) { alert("Please click the Auto-Pay button above to pay first!"); return; }
+            let mob = document.getElementById('ottContact').value.trim();
+            let utr = document.getElementById('ottUtrInput').value.trim();
+            if(!mob || mob.length < 10) { alert("Enter valid mobile number!"); return; }
+            if(!utr || utr.length !== 12) { alert("❌ UTR must be exact 12 digits!"); return; }
+
+            document.getElementById('ottModal').style.display = 'none';
+            runCaptchaVerification('ott');
+        }
+
+        function runCaptchaVerification(type) {
+            window.pendingOrderType = type;
+            document.getElementById('captchaSpinnerBox').style.display = 'block';
+            document.getElementById('captchaSuccessBox').style.display = 'none';
+            document.getElementById('captchaModal').style.display = 'flex';
+
+            // 3 seconds loading, then show tick box
+            setTimeout(() => {
+                document.getElementById('captchaSpinnerBox').style.display = 'none';
+                document.getElementById('captchaSuccessBox').style.display = 'block';
+            }, 3000);
+        }
+
+        async function finalizeOrderAfterCaptcha() {
+            document.getElementById('captchaModal').style.display = 'none';
+            if (window.isSubmitting) return;
             window.isSubmitting = true;
+
             let o = window.currentOrder;
             let userEmail = localStorage.getItem('zk_logged_user_email') || 'Guest';
             let orderDate = new Date().toLocaleString();
+            let newOrder = {};
+            let waMsg = "";
 
-            let newOrder = {
-                id: o.id, title: o.title, price: o.price, email: userEmail, contact: o.contact, utr: utr,
-                date: orderDate, status: "⏳ Pending Admin Approval"
-            };
+            if (window.pendingOrderType === 'recharge') {
+                let utr = document.getElementById('userUtrInput').value.trim();
+                newOrder = {
+                    id: o.id, title: o.title, price: o.price, email: userEmail, contact: o.contact, utr: utr,
+                    date: orderDate, status: "⏳ Few minutes for successful"
+                };
+                waMsg = `🔔 NEW SUCCESSFUL ORDER\n\n` +
+                        `🆔 Order ID: ${o.id}\n` +
+                        `📦 Service: ${o.title}\n` +
+                        `💰 Amount: ₹${o.price}\n` +
+                        `🔢 UTR Number: ${utr}\n` +
+                        `👤 User: ${userEmail}\n` +
+                        `📱 Contact: ${o.contact}\n` +
+                        `⏰ Time: ${orderDate}`;
+            } else {
+                let mob = document.getElementById('ottContact').value.trim();
+                let utr = document.getElementById('ottUtrInput').value.trim();
+                let orderId = "OTT-" + Math.floor(100000 + Math.random() * 900000);
+                window.currentOttOrderId = orderId;
+                newOrder = {
+                    id: orderId, title: "₹20 OTT Subscription", price: 20, email: userEmail, contact: mob, utr: utr,
+                    date: orderDate, status: "⏳ Few minutes for successful"
+                };
+                waMsg = `🎬 NEW SUCCESSFUL OTT ORDER\n\n` +
+                        `🆔 Order ID: ${orderId}\n` +
+                        `🔢 UTR: ${utr}\n` +
+                        `👤 User: ${userEmail}\n` +
+                        `📱 Mobile: ${mob}\n` +
+                        `⏰ Time: ${orderDate}`;
+            }
 
             try {
                 await window.addDoc(window.collection(window.firebaseDb, "orders"), newOrder);
-                
-                let waMsg = `🔔 NEW SUCCESSFUL ORDER\n\n` +
-                            `🆔 Order ID: ${o.id}\n` +
-                            `📦 Service: ${o.title}\n` +
-                            `💰 Amount: ₹${o.price}\n` +
-                            `🔢 UTR Number: ${utr}\n` +
-                            `👤 User: ${userEmail}\n` +
-                            `📱 Contact: ${o.contact}\n` +
-                            `⏰ Time: ${orderDate}`;
-                
-                document.getElementById('qrModal').style.display = 'none';
                 
                 // Show Blast Success Animation Modal
                 let blastModal = document.getElementById('successBlastModal');
@@ -736,7 +821,7 @@
                     // Open WhatsApp automatically
                     window.open(`https://wa.me/919767136557?text=` + encodeURIComponent(waMsg), '_blank');
                     switchTab('history');
-                }, 1800);
+                }, 2000);
 
             } catch(e) {
                 window.isSubmitting = false;
@@ -744,74 +829,37 @@
             }
         }
 
-        async function submitOttOrder() {
-            if (!window.ottPaymentDone) { alert("Please click the Auto-Pay button above to pay first!"); return; }
-            if (window.isSubmitting) return;
-            let mob = document.getElementById('ottContact').value.trim();
-            let utr = document.getElementById('ottUtrInput').value.trim();
-            if(!mob || mob.length < 10) { alert("Enter valid mobile number!"); return; }
-            if(!utr || utr.length !== 12) { alert("❌ UTR must be exact 12 digits!"); return; }
-
-            window.isSubmitting = true;
-            let orderId = "OTT-" + Math.floor(100000 + Math.random() * 900000);
-            let userEmail = localStorage.getItem('zk_logged_user_email') || 'Guest';
-            let orderDate = new Date().toLocaleString();
-
-            let newOrder = {
-                id: orderId, title: "₹20 OTT Subscription", price: 20, email: userEmail, contact: mob, utr: utr,
-                date: orderDate, status: "⏳ Pending Admin Approval"
-            };
-
-            try {
-                await window.addDoc(window.collection(window.firebaseDb, "orders"), newOrder);
-                
-                let waMsg = `🎬 NEW SUCCESSFUL OTT ORDER\n\n` +
-                            `🆔 Order ID: ${orderId}\n` +
-                            `🔢 UTR: ${utr}\n` +
-                            `👤 User: ${userEmail}\n` +
-                            `📱 Mobile: ${mob}\n` +
-                            `⏰ Time: ${orderDate}`;
-                
-                document.getElementById('ottModal').style.display = 'none';
-                
-                // Show Blast Success Animation Modal
-                let blastModal = document.getElementById('successBlastModal');
-                blastModal.style.display = 'flex';
-
-                setTimeout(() => {
-                    blastModal.style.display = 'none';
-                    window.isSubmitting = false;
-                    // Open WhatsApp automatically
-                    window.open(`https://wa.me/919767136557?text=` + encodeURIComponent(waMsg), '_blank');
-                    switchTab('history');
-                }, 1800);
-
-            } catch(e) {
-                window.isSubmitting = false;
-                alert("Error: " + e.message);
-            }
-        }
-
         function renderAdminOrdersDashboard() {
             let c = document.getElementById('adminOrdersDashboardList');
-            let pending = window.cloudOrders.filter(o => o.status.includes('Pending') || o.status.includes('Checking'));
+            let pending = window.cloudOrders.filter(o => o.status.includes('Few minutes') || o.status.includes('Pending'));
             if(pending.length === 0) { c.innerHTML = `<p style="font-size: 11px; opacity: 0.6;">No pending orders.</p>`; return; }
             c.innerHTML = "";
             pending.forEach(ord => {
                 c.innerHTML += `<div style="background:white; color:#000; padding:10px; border-radius:8px; margin-bottom:8px; border:1px solid #cbd5e1; font-size:11px;">
                     <b>ID: ${ord.id}</b> | ₹${ord.price}<br><b>User:</b> ${ord.email}<br><b>Contact:</b> ${ord.contact}<br><b>UTR: <span style="color:#d97706;">${ord.utr}</span></b><br>
                     <div style="display:flex; gap:6px; margin-top:6px;">
-                        <button onclick="updateCloudOrderStatus('${ord.firestoreId}', '✅ Status: Successful')" style="background:#16a34a; color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer; flex:1;">Approve ✅</button>
-                        <button onclick="updateCloudOrderStatus('${ord.firestoreId}', '❌ Status: Rejected')" style="background:#dc2626; color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer; flex:1;">Reject ❌</button>
+                        <button onclick="updateCloudOrderStatus('${ord.firestoreId}', '✅ Successful', '${ord.email}', '${ord.title}')" style="background:#16a34a; color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer; flex:1;">Approve ✅</button>
+                        <button onclick="updateCloudOrderStatus('${ord.firestoreId}', '❌ Status: Rejected', '${ord.email}', '${ord.title}')" style="background:#dc2626; color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer; flex:1;">Reject ❌</button>
                     </div>
                 </div>`;
             });
         }
 
-        async function updateCloudOrderStatus(firestoreId, status) {
+        async function updateCloudOrderStatus(firestoreId, status, userEmail, itemTitle) {
             try {
                 await window.updateDoc(window.doc(window.firebaseDb, "orders", firestoreId), { status: status });
-                alert("✅ Order status updated on Cloud!");
+                
+                if (status.includes('Successful')) {
+                    // Send confirmation email via EmailJS
+                    emailjs.send('service_ozt8cpp', 'template_nyyhy2n', {
+                        to_email: userEmail,
+                        email: userEmail,
+                        otp_code: `SUCCESSFUL RECHARGE`,
+                        passcode: `Tumhra recharge/order (${itemTitle}) successfully ho chuka hai! Thank you for using Faster Recharge Hub.`
+                    }).catch(err => console.log(err));
+                }
+
+                alert("✅ Order status updated successfully & notification sent!");
             } catch(e) { alert("Error updating status"); }
         }
 
