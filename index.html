@@ -4,9 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Faster Recharge & Loot Hub</title>
-    <meta name="description" content="Professional Mobile Recharge, OTT Subscriptions, Redeem Codes & Reward Wallet Hub with Firebase & WhatsApp Integration.">
     
-    <!-- FIREBASE SDKs & CONFIGURATION -->
+    <!-- FIREBASE SDKs -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, doc, getDoc, setDoc, updateDoc, onSnapshot, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -194,10 +193,11 @@
             
             <div class="form-group" style="text-align: left;"><label style="color:#d97706; font-weight:bold;">Enter 12-Digit UTR Number:</label><input type="text" id="ottUtrInput" class="form-control" placeholder="Enter 12-digit UTR" maxlength="12" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')"></div>
             
+            <!-- Strict Payment Check Before Enabling Submit Button -->
             <button class="btn-main" id="ottSubmitBtn" onclick="submitOttOrder()" style="background: #9ca3af; cursor: not-allowed; margin-bottom: 4px;" disabled>Submit Order ✅</button>
-            <div id="ottWarningText" style="font-size: 10px; color: #dc2626; font-weight: bold; margin-bottom: 8px;">⚠️ Pehle upar diye gaye auto-pay button se payment karein, tabhi UTR submit hoga!</div>
+            <div id="ottWarningText" style="font-size: 10px; color: #dc2626; font-weight: bold; margin-bottom: 8px;">Please click the Auto-Pay button above to pay first; only then will the UTR submit option unlock.</div>
 
-            <button class="btn-main" onclick="document.getElementById('ottModal').style.display='none'" style="background: #ef4444;">Cancel</button>
+            <button class="btn-main" onclick="document.getElementById('ottModal').style.display='none'" style="background: #ef4444; margin-top: 6px;">Cancel</button>
         </div>
     </div>
 
@@ -304,10 +304,10 @@
                 <button onclick="closeAdminPanel()" style="background:#ef4444; color:white; border:none; padding:6px 12px; border-radius:6px; font-size:11px; font-weight:bold; cursor:pointer;">Close Admin ✕</button>
             </div>
 
-            <!-- LIVE ONLINE USERS STATS -->
+            <!-- LIVE ONLINE USERS STATS & TRAFFIC -->
             <div class="card-box" style="background: linear-gradient(135deg, #0d9488, #14b8a6); color: white; display: flex; justify-content: space-between; align-items: center;">
                 <div>
-                    <div style="font-size: 11px; opacity: 0.9;">🟢 Real-Time Active Users on Site</div>
+                    <div style="font-size: 11px; opacity: 0.9;">🟢 Real-Time Active Users on Site (Traffic)</div>
                     <div id="onlineUsersDisplay" style="font-size: 24px; font-weight: bold;">1</div>
                 </div>
                 <div style="font-size: 28px;">📡</div>
@@ -396,10 +396,11 @@
             
             <div class="form-group" style="text-align: left;"><label style="color:#d97706; font-weight:bold;">Enter 12-Digit UTR Number:</label><input type="text" id="userUtrInput" class="form-control" placeholder="Enter 12-digit UTR" maxlength="12" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')"></div>
             
+            <!-- Strict Payment Lock Before Submit -->
             <button class="btn-main" id="submitOrderBtn" onclick="submitOrderWithUtr()" style="background: #9ca3af; cursor: not-allowed; margin-bottom: 4px;" disabled>Submit Order ✅</button>
-            <div id="utrWarningText" style="font-size: 10px; color: #dc2626; font-weight: bold; margin-bottom: 8px;">⚠️ Pehle upar diye gaye auto-pay button se payment karein, tabhi UTR submit hoga!</div>
+            <div id="utrWarningText" style="font-size: 10px; color: #dc2626; font-weight: bold; margin-bottom: 8px;">Please click the Auto-Pay button above to pay first; only then will the UTR submit option unlock.</div>
 
-            <button class="btn-main" onclick="document.getElementById('qrModal').style.display='none'" style="background: #ef4444;">Cancel</button>
+            <button class="btn-main" onclick="document.getElementById('qrModal').style.display='none'" style="background: #ef4444; margin-top: 6px;">Cancel</button>
         </div>
     </div>
 
@@ -413,8 +414,11 @@
     <script>
         window.cloudOrders = [];
         window.cloudSpinState = 'OFF';
+        window.activeTabName = 'home';
         window.paymentDone = false;
         window.ottPaymentDone = false;
+        window.isSubmitting = false;
+
         window.cloudPlans = [
             {operator: "Jio", name: "Popular: 1.5GB/Day (28 Days)", price: 239},
             {operator: "Jio", name: "Unlimited: 2GB/Day (84 Days)", price: 719},
@@ -438,7 +442,6 @@
                 document.getElementById('otpAuthModal').style.display = 'flex';
             }
 
-            // PERSISTENT ADMIN CHECK
             if(localStorage.getItem('zk_admin_logged') === 'true') {
                 switchTab('admin');
                 renderAdminOrdersDashboard();
@@ -671,9 +674,15 @@
         }
 
         async function submitOrderWithUtr() {
-            if(!window.paymentDone) { alert("⚠️ Please click 'PAY VIA GPAY / PHONEPE' first!"); return; }
+            if (!window.paymentDone) { alert("Please click the Auto-Pay button above to pay first!"); return; }
+            if (window.isSubmitting) return;
             let utr = document.getElementById('userUtrInput').value.trim();
             if(!utr || utr.length !== 12) { alert("❌ UTR must be exact 12 digits!"); return; }
+
+            window.isSubmitting = true;
+            let subBtn = document.getElementById('submitOrderBtn');
+            subBtn.innerText = "Submitting...";
+
             let o = window.currentOrder;
             let userEmail = localStorage.getItem('zk_logged_user_email') || 'Guest';
 
@@ -685,50 +694,65 @@
             try {
                 await window.addDoc(window.collection(window.firebaseDb, "orders"), newOrder);
                 
-                let waMsg = `🔔 NEW ORDER & UTR SUBMISSION\n\n` +
+                let waMsg = `🔔 NEW ORDER DETAILS\n\n` +
                             `🆔 Order ID: ${o.id}\n` +
-                            `📦 Item: ${o.title}\n` +
+                            `📦 Service: ${o.title}\n` +
                             `💰 Amount: ₹${o.price}\n` +
                             `🔢 UTR Number: ${utr}\n` +
                             `👤 User: ${userEmail}\n` +
-                            `📱 Contact: ${o.contact}`;
+                            `📱 Contact: ${o.contact}\n` +
+                            `⏰ Time: ${newOrder.date}`;
                 window.open(`https://wa.me/919767136557?text=` + encodeURIComponent(waMsg), '_blank');
 
                 document.getElementById('qrModal').style.display = 'none';
-                alert("✅ Order submitted successfully! Opening WhatsApp for Admin Notification.");
+                subBtn.innerText = "Submit Order ✅";
+                window.isSubmitting = false;
+                alert("✅ Order submitted successfully! Opening WhatsApp.");
                 switchTab('history');
-            } catch(e) { alert("Error saving to cloud: " + e.message); }
+            } catch(e) {
+                window.isSubmitting = false;
+                subBtn.innerText = "Submit Order ✅";
+                alert("Error saving to cloud: " + e.message);
+            }
         }
 
         async function submitOttOrder() {
-            if(!window.ottPaymentDone) { alert("⚠️ Please click 'PAY ₹20 VIA GPAY / PHONEPE' first!"); return; }
+            if (!window.ottPaymentDone) { alert("Please click the Auto-Pay button above to pay first!"); return; }
+            if (window.isSubmitting) return;
             let mob = document.getElementById('ottContact').value.trim();
             let utr = document.getElementById('ottUtrInput').value.trim();
             if(!mob || mob.length < 10) { alert("Enter valid mobile number!"); return; }
             if(!utr || utr.length !== 12) { alert("❌ UTR must be exact 12 digits!"); return; }
 
+            window.isSubmitting = true;
             let orderId = "OTT-" + Math.floor(100000 + Math.random() * 900000);
             let userEmail = localStorage.getItem('zk_logged_user_email') || 'Guest';
+            let orderDate = new Date().toLocaleString();
 
             let newOrder = {
                 id: orderId, title: "₹20 OTT Subscription", price: 20, email: userEmail, contact: mob, utr: utr,
-                date: new Date().toLocaleString(), status: "⏳ Status: Pending Admin Approval"
+                date: orderDate, status: "⏳ Status: Pending Admin Approval"
             };
 
             try {
                 await window.addDoc(window.collection(window.firebaseDb, "orders"), newOrder);
                 
-                let waMsg = `🎬 NEW OTT ORDER\n\n` +
+                let waMsg = `🎬 NEW OTT ORDER DETAILS\n\n` +
                             `🆔 Order ID: ${orderId}\n` +
                             `🔢 UTR: ${utr}\n` +
                             `👤 User: ${userEmail}\n` +
-                            `📱 Mobile: ${mob}`;
+                            `📱 Mobile: ${mob}\n` +
+                            `⏰ Time: ${orderDate}`;
                 window.open(`https://wa.me/919767136557?text=` + encodeURIComponent(waMsg), '_blank');
 
                 document.getElementById('ottModal').style.display = 'none';
-                alert("✅ OTT Order submitted! Opening WhatsApp for Admin Notification.");
+                window.isSubmitting = false;
+                alert("✅ OTT Order submitted! Opening WhatsApp.");
                 switchTab('history');
-            } catch(e) { alert("Error: " + e.message); }
+            } catch(e) {
+                window.isSubmitting = false;
+                alert("Error: " + e.message);
+            }
         }
 
         function renderAdminOrdersDashboard() {
@@ -771,10 +795,12 @@
             if(userOrders.length === 0) { c.innerHTML = `<div class="card-box" style="text-align:center; opacity:0.6;"><p style="font-size:12px;">No order history found.</p></div>`; return; }
             c.innerHTML = "";
             userOrders.forEach(h => {
+                let statusBg = h.status.includes('Successful') ? '#dcfce7' : h.status.includes('Rejected') ? '#fee2e2' : '#fef9c3';
+                let statusColor = h.status.includes('Successful') ? '#16a34a' : h.status.includes('Rejected') ? '#dc2626' : '#d97706';
                 c.innerHTML += `<div class="card-box" style="font-size:12px;">
                     <b>ID: ${h.id}</b><br>${h.title}<br><span style="color:#4f46e5; font-weight:bold;">₹${h.price}</span> | <small>${h.date}</small>
                     <br><b>UTR:</b> ${h.utr}
-                    <br><div style="margin-top:4px; font-weight:bold;">${h.status}</div>
+                    <br><div style="margin-top:6px; padding:6px; background:${statusBg}; color:${statusColor}; font-weight:bold; border-radius:4px; text-align:center;">${h.status}</div>
                 </div>`;
             });
         }
