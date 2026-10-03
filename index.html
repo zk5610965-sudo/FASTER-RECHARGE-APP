@@ -85,7 +85,7 @@
         });
     </script>
 
-    <!-- EMAILJS SDK FOR CONFIRMATION EMAILS -->
+    <!-- EMAILJS SDK -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script type="text/javascript">
         (function() { emailjs.init("rNPpfrFuhiT6dIeU0"); })();
@@ -167,12 +167,16 @@
         </div>
     </div>
 
-    <!-- SUCCESS BLAST ANIMATION MODAL -->
+    <!-- SUCCESS BLAST ANIMATION & WHATSAPP DIRECT BUTTON MODAL -->
     <div id="successBlastModal">
-        <div class="blast-box">
-            <div style="font-size: 50px; margin-bottom: 6px;">🎉🚀</div>
-            <h2 style="font-size: 18px; font-weight: bold; margin-bottom: 4px;">Successful!</h2>
-            <p style="font-size: 12px; font-weight: 600; opacity: 0.9;">Wait a minute, checking payment status...</p>
+        <div class="qr-card" style="background: #dcfce7; border: 3px solid #16a34a;">
+            <div style="font-size: 45px; margin-bottom: 6px;">🎉🚀</div>
+            <h2 style="font-size: 18px; font-weight: bold; color: #166534; margin-bottom: 4px;">Successful!</h2>
+            <p style="font-size: 12px; font-weight: 600; color: #166534; margin-bottom: 14px;">Order submitted. Few minutes for successful verification.</p>
+            
+            <a id="whatsappDirectBtn" href="#" target="_blank" class="btn-main" style="background: #22c55e; color: white; text-decoration: none; margin-bottom: 8px; font-size: 13px; padding: 12px; display: block; font-weight: bold;">💬 Send Order Details to WhatsApp 🟢</a>
+            
+            <button class="btn-main" onclick="closeSuccessAndGoHistory()" style="background: #4f46e5;">View Order History 📋</button>
         </div>
     </div>
 
@@ -184,19 +188,6 @@
             <p style="font-size: 11px; opacity: 0.8; margin-bottom: 12px;">Enter your Email or Mobile to start.</p>
             <div class="form-group"><label>Email / Mobile</label><input type="text" id="authEmail" class="form-control" placeholder="user@gmail.com"></div>
             <button class="btn-main" onclick="directLoginApp()" style="background: #4f46e5; margin-top: 6px;">Login to App 🚀</button>
-        </div>
-    </div>
-
-    <!-- TERMS ACCEPTANCE MODAL -->
-    <div id="termsAcceptModal">
-        <div class="qr-card" style="text-align: left;">
-            <div style="text-align: center; font-size: 35px; margin-bottom: 4px;">📜</div>
-            <h3 style="font-size: 16px; color: #4f46e5; margin-bottom: 8px; text-align: center;">Terms & Conditions</h3>
-            <div style="font-size: 11px; line-height: 1.5; max-height: 220px; overflow-y: auto; margin-bottom: 12px; opacity: 0.9; border: 1px solid #cbd5e1; padding: 8px; border-radius: 6px;">
-                <b>1. Guidelines:</b> Pay via Auto-Fill UPI first, then submit UTR.<br><br>
-                <b>2. Processing:</b> Fast cloud verification and admin approval.
-            </div>
-            <button class="btn-main" onclick="acceptTermsAndProceed()" style="background: #16a34a;">I Accept & Continue ✅</button>
         </div>
     </div>
 
@@ -254,7 +245,7 @@
             <div class="form-group" style="text-align: left;"><label style="color:#d97706; font-weight:bold;">Enter 12-Digit UTR Number:</label><input type="text" id="ottUtrInput" class="form-control" placeholder="Enter 12-digit UTR" maxlength="12" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')"></div>
             
             <button class="btn-main" id="ottSubmitBtn" onclick="triggerCaptchaForOtt()" style="background: #9ca3af; cursor: not-allowed; margin-bottom: 4px;" disabled>Submit Order ✅</button>
-            <div id="ottWarningText" style="font-size: 10px; color: #dc2626; font-weight: bold; margin-bottom: 8px;">Please click the Auto-Pay button above to pay first; only then will the UTR submit option unlock.</div>
+            <div id="ottWarningText" style="font-size: 10px; color: #dc2626; font-weight: bold; margin-bottom: 8px;">Please click the Auto-Pay button above to pay first; only then will the UTR submit option unlock[span_0](start_span)[span_0](end_span).</div>
 
             <button class="btn-main" onclick="document.getElementById('ottModal').style.display='none'" style="background: #ef4444; margin-top: 6px;">Cancel</button>
         </div>
@@ -339,7 +330,7 @@
 
         <!-- VOUCHERS SECTION -->
         <div id="vouchersSection" class="section-view">
-            <h2 style="font-size: 16px; margin-bottom: 10px;">🛍️ Discount Vouchers</h2>
+            <h2 style="font-size: 16px; margin-bottom: 10px;">🛍️️ Discount Vouchers</h2>
             <div class="card-box" style="display:flex; justify-content:space-between; align-items:center;">
                 <div><b>📦 Flipkart Gift Voucher</b><br><span style="font-size:11px; color:#16a34a;">Min purchase ₹100 | 10% Off</span></div>
                 <button class="btn-main" style="width: auto; padding: 6px 14px; font-size: 12px;" onclick="buyVoucher('Flipkart', 100)">Buy ₹100</button>
@@ -456,7 +447,7 @@
             <div class="form-group" style="text-align: left;"><label style="color:#d97706; font-weight:bold;">Enter 12-Digit UTR Number:</label><input type="text" id="userUtrInput" class="form-control" placeholder="Enter 12-digit UTR" maxlength="12" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')"></div>
             
             <button class="btn-main" id="submitOrderBtn" onclick="triggerCaptcha()" style="background: #9ca3af; cursor: not-allowed; margin-bottom: 4px;" disabled>Submit Order ✅</button>
-            <div id="utrWarningText" style="font-size: 10px; color: #dc2626; font-weight: bold; margin-bottom: 8px;">Please click the Auto-Pay button above to pay first; only then will the UTR submit option unlock.</div>
+            <div id="utrWarningText" style="font-size: 10px; color: #dc2626; font-weight: bold; margin-bottom: 8px;">Please click the Auto-Pay button above to pay first; only then will the UTR submit option unlock[span_1](start_span)[span_1](end_span).</div>
 
             <button class="btn-main" onclick="document.getElementById('qrModal').style.display='none'" style="background: #ef4444; margin-top: 6px;">Cancel</button>
         </div>
@@ -500,10 +491,9 @@
                 document.getElementById('otpAuthModal').style.display = 'flex';
             }
 
-            if(localStorage.getItem('zk_admin_logged') === 'true') {
-                switchTab('admin');
-                renderAdminOrdersDashboard();
-            }
+            // Ensure Admin Session never opens automatically on fresh load
+            localStorage.removeItem('zk_admin_logged');
+            switchTab('home');
         });
 
         function toggleTheme() {
@@ -731,7 +721,6 @@
             window.location.href = targetUrl;
         }
 
-        // CAPTCHA TRIGGER FOR RECHARGE / REDEEM
         function triggerCaptcha() {
             if (!window.paymentDone) { alert("Please click the Auto-Pay button above to pay first!"); return; }
             let utr = document.getElementById('userUtrInput').value.trim();
@@ -741,7 +730,6 @@
             runCaptchaVerification('recharge');
         }
 
-        // CAPTCHA TRIGGER FOR OTT
         function triggerCaptchaForOtt() {
             if (!window.ottPaymentDone) { alert("Please click the Auto-Pay button above to pay first!"); return; }
             let mob = document.getElementById('ottContact').value.trim();
@@ -759,7 +747,6 @@
             document.getElementById('captchaSuccessBox').style.display = 'none';
             document.getElementById('captchaModal').style.display = 'flex';
 
-            // 3 seconds loading, then show tick box
             setTimeout(() => {
                 document.getElementById('captchaSpinnerBox').style.display = 'none';
                 document.getElementById('captchaSuccessBox').style.display = 'block';
@@ -795,7 +782,6 @@
                 let mob = document.getElementById('ottContact').value.trim();
                 let utr = document.getElementById('ottUtrInput').value.trim();
                 let orderId = "OTT-" + Math.floor(100000 + Math.random() * 900000);
-                window.currentOttOrderId = orderId;
                 newOrder = {
                     id: orderId, title: "₹20 OTT Subscription", price: 20, email: userEmail, contact: mob, utr: utr,
                     date: orderDate, status: "⏳ Few minutes for successful"
@@ -811,22 +797,21 @@
             try {
                 await window.addDoc(window.collection(window.firebaseDb, "orders"), newOrder);
                 
-                // Show Blast Success Animation Modal
-                let blastModal = document.getElementById('successBlastModal');
-                blastModal.style.display = 'flex';
+                let encodedMsg = encodeURIComponent(waMsg);
+                document.getElementById('whatsappDirectBtn').href = `https://wa.me/919767136557?text=` + encodedMsg;
 
-                setTimeout(() => {
-                    blastModal.style.display = 'none';
-                    window.isSubmitting = false;
-                    // Open WhatsApp automatically
-                    window.open(`https://wa.me/919767136557?text=` + encodeURIComponent(waMsg), '_blank');
-                    switchTab('history');
-                }, 2000);
+                document.getElementById('successBlastModal').style.display = 'flex';
+                window.isSubmitting = false;
 
             } catch(e) {
                 window.isSubmitting = false;
                 alert("Error saving to cloud: " + e.message);
             }
+        }
+
+        function closeSuccessAndGoHistory() {
+            document.getElementById('successBlastModal').style.display = 'none';
+            switchTab('history');
         }
 
         function renderAdminOrdersDashboard() {
@@ -850,16 +835,19 @@
                 await window.updateDoc(window.doc(window.firebaseDb, "orders", firestoreId), { status: status });
                 
                 if (status.includes('Successful')) {
-                    // Send confirmation email via EmailJS
                     emailjs.send('service_ozt8cpp', 'template_nyyhy2n', {
                         to_email: userEmail,
                         email: userEmail,
-                        otp_code: `SUCCESSFUL RECHARGE`,
-                        passcode: `Tumhra recharge/order (${itemTitle}) successfully ho chuka hai! Thank you for using Faster Recharge Hub.`
-                    }).catch(err => console.log(err));
+                        otp_code: `SUCCESSFUL RECEPT & CONFIRMATION`,
+                        passcode: `Tumhra recharge/order (${itemTitle}) successfully ho chuka hai! Thank you for using Faster Recharge & Loot Hub.`
+                    }).then(function(response) {
+                        alert("✅ Order Approved & Email Receipt sent to user successfully!");
+                    }, function(error) {
+                        alert("✅ Order Approved, but email failed to send.");
+                    });
+                } else {
+                    alert("❌ Order status updated to Rejected!");
                 }
-
-                alert("✅ Order status updated successfully & notification sent!");
             } catch(e) { alert("Error updating status"); }
         }
 
